@@ -21,12 +21,14 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
+#include "timer.h"
+
 enum {NONE=0, LEFT, RIGHT, UP, DOWN};
 static int curx,cury;
 static int paused=0;
 static int colors=0;
 static int row,col;
-static WINDOW *grid, *timer, *stats, *title;
+WINDOW *grid, *timer, *stats, *title;
 
 static void init_ncurses(void)
 {
@@ -47,8 +49,8 @@ static void init_windows(void)
 {
    title = newwin(1, 64, 0, 1);
    grid=newwin(19, 37, 2, 28);
-   timer = newwin(5, 25, 2, 1);
-   stats = newwin(14, 25, 7, 1);
+   timer = newwin(6, 25, 2, 1);
+   stats = newwin(13, 25, 8, 1);
 }
 
 static void draw_grid(void)
@@ -99,18 +101,6 @@ static void draw_grid(void)
    refresh();
 }
 
-static void draw_timer()
-{
-   int left;
-
-   left = 1;
-   box(timer, 0, 0);
-   mvwaddstr(timer, 1, 5, "Time Remaining");
-
-   wrefresh(timer);
-   doupdate();
-   refresh();
-}
 
 static void draw_stats()
 {
@@ -119,10 +109,12 @@ static void draw_stats()
    left = 1;
    box(stats, 0, 0);
    mvwaddstr(stats, 1, 1, "Mode: Campaign");
-   mvwaddstr(stats, 3, 1, "Skill:   10");
-   mvwaddstr(stats, 4, 1, "Numbers: x/81 (x left)");
-   mvwhline(stats, 11, 1, ACS_HLINE, 23);
-   mvwaddstr(stats, 12,1, " Score:    34327");
+   mvwaddstr(stats, 4, 1, "Difficulty: 10/10");
+   mvwaddstr(stats, 5, 1, "Numbers:    56/81");
+   mvwaddstr(stats, 6 ,1, "Remaining:  25 left");
+   mvwaddstr(stats, 9,1, "Time Taken: 3m 24s");
+   mvwhline(stats, 10, 1, ACS_HLINE, 23);
+   mvwaddstr(stats, 11,1, " Score:    34327");
 
    wrefresh(stats);
    doupdate();
@@ -146,7 +138,8 @@ static void draw_xs()
    refresh();
 }
 
-static void movec(int dir) {
+static void movec(int dir)
+{
    int updown=2;
    int leftright=4;
    int first_row = 3;
@@ -186,7 +179,7 @@ int main(void)
    draw_xs();
    draw_title();
    draw_grid();
-   draw_timer();
+   start_timer(10, 03);
    draw_stats();
    curx=30;
    cury=3;
