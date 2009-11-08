@@ -25,6 +25,7 @@
 #include "timer.h"
 
 extern WINDOW *timer;
+extern int paused;
 
 /* "Font" for numbers taken from htop, by Hisham Muhammad */
 static char *timer_digits[3][10] = {
@@ -50,6 +51,10 @@ void start_timer(int mins, int secs)
 
 void catch_alarm(int sig)
 {
+   if (paused) {
+      alarm(1);
+      return;
+   }
    if (!countdown.secs && !countdown.mins) return;
 
    if (countdown.secs > 0) {
