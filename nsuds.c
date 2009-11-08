@@ -21,9 +21,10 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
+static int paused=0;
 static int colors=0;
 static int row,col;
-static WINDOW *grid;
+static WINDOW *grid, *timer, *stats;
 
 static void init_ncurses(void)
 {
@@ -41,87 +42,111 @@ static void init_ncurses(void)
    refresh();
 }
 
-static void draw_grid(void) {
+static void init_windows(void) 
+{
+   grid=newwin(19, 37, 1, 28);
+   timer = newwin(5, 25, 1, 1);
+   stats = newwin(14, 25, 6, 1);
+}
+
+static void draw_grid(void)
+{
    int i, j;
    int left;
 
-   left = 20;
-   clear();
+   left = 28;
    refresh();
-   grid=newwin(40, 40, 1, left);
+   werase(grid);
 
-   /* Top border */
-   mvwaddch(grid, 0, 0, ACS_ULCORNER);
-   mvwhline(grid, 0, 1, ACS_HLINE, 35);
-   for (i=12; i<36; i+=12) 
-      mvwaddch(grid, 0, i, ACS_TTEE);
-   mvwaddch(grid, 0, 36, ACS_URCORNER);
+   box(grid, 0, 0);
 
-   /* Horizontal insides */
-   for (i=2; i<18; i+=2) {
-      if (i%6==0) continue;
-      mvwhline(grid, i, 1, '-', 35);
-   }
-   /* Vertical insides */
-   for (i=4; i<36; i+=4) {
-      if (i%12==0) continue;
-      mvwvline(grid, 1, i, '|', 17);
-   }
-   /* Verticals */
-   for (i=1; i<18; i+=1) {
-      if (i%6==0) continue;
-      for (j=0; j<=36;j+=12) {
-         mvwaddch(grid, i, j, ACS_VLINE);
+   if (paused) {
+      mvwaddstr(grid, 9, 15, "Paused");
+   } else {
+
+      /* Horizontal insides */
+      for (i=2; i<18; i+=2) {
+         if (i%6==0) continue;
+         mvwhline(grid, i, 1, '-', 35);
+      }
+      /* Vertical insides */
+      for (i=4; i<36; i+=4) {
+         if (i%12==0) continue;
+         mvwvline(grid, 1, i, '|', 17);
+      }
+      /* Verticals */
+      for (i=1; i<18; i+=1) {
+         if (i%6==0) continue;
+         for (j=0; j<=36;j+=12) {
+            mvwaddch(grid, i, j, ACS_VLINE);
+         }
+      }
+
+      /* Horizontal */
+      for (i=6; i<18; i+=6) {
+         mvwaddch(grid, i, 0, ACS_LTEE);
+         mvwhline(grid, i, 1, ACS_HLINE, 36);
+         for (j=12; j<=36; j+=12)
+            mvwaddch(grid, i, j, ACS_PLUS);
+         mvwaddch(grid, i, 36, ACS_RTEE);
       }
    }
-
-   /* Horizontal */
-   for (i=6; i<18; i+=6) {
-      mvwaddch(grid, i, 0, ACS_LTEE);
-      mvwhline(grid, i, 1, ACS_HLINE, 36);
-      for (j=12; j<=36; j+=12)
-         mvwaddch(grid, i, j, ACS_PLUS);
-      mvwaddch(grid, i, 36, ACS_RTEE);
-   }
-
-   /* Bottom border */
-   mvwaddch(grid, 18, 0, ACS_LLCORNER);
-   mvwhline(grid, 18, 1, ACS_HLINE, 35);
-   for (i=12; i<36; i+=12) 
-      mvwaddch(grid, 36, i, ACS_BTEE);
-   mvwaddch(grid, 18, 36, ACS_LRCORNER);
-      
-
-#if 0
-   /* Horizontal */
-   for (i=1; i < 18; i+=2) {
-      mvwaddch(grid, i, 0, ACS_LTEE);
-      mvwhline(grid, i, 1, ACS_HLINE, 35);
-      mvwaddch(grid, i, 36, ACS_RTEE);
-   }
-   /* Vertical */
-   for (i=4; i < 36; i+=4) {
-      mvwaddch(grid, 1, i, ACS_LTEE);
-      mvwvline(grid, 1, i, ACS_VLINE, 18);
-      mvwaddch(grid, 1, i, ACS_RTEE);
-   }
-#endif
 
    wrefresh(grid);
    doupdate();
    refresh();
 }
-   /*
-   mvwaddch(grid, 0, 0, ACS_LTEE);
-   whline(grid, ACS_HLINE, 35);
-   waddch(grid, ACS_RTEE);
-   */
 
-int main(void) {
+static void draw_timer()
+{
+   int left;
+
+   left = 1;
+   box(timer, 0, 0);
+   mvwaddstr(timer, 1, 5, "Time Remaining");
+
+   wrefresh(timer);
+   doupdate();
+   refresh();
+}
+
+static void draw_stats()
+{
+   int left;
+
+   left = 1;
+   box(stats, 0, 0);
+   mvwaddstr(stats, 1, 1, "Mode: Campaign");
+   mvwaddstr(stats, 3, 1, "Skill:   10");
+   mvwaddstr(stats, 4, 1, "Numbers: x/81 (x left)");
+   mvwhline(stats, 11, 1, ACS_HLINE, 23);
+   mvwaddstr(stats, 12,1, " Score:    34327");
+
+   wrefresh(stats);
+   doupdate();
+   refresh();
+}
+
+static void draw_xs()
+{
+   int i,j;
+   refresh();
+   for (i=0; i<row; i++)
+      mvhline(i, 0, ACS_CKBOARD, col);
+   refresh();
+}
+
+int main(void)
+{
    char c;
 
    init_ncurses();
+   init_windows();
+   clear();
+   draw_xs();
    draw_grid();
+   draw_timer();
+   draw_stats();
    while ((c = getch())) {
       switch (c) {
          case 'q':
@@ -130,6 +155,10 @@ int main(void) {
             delwin(grid);
             endwin();
             goto done;
+         case 'p':
+            paused=!paused;
+            draw_grid();
+            break;
          default:
             break;
       }
@@ -137,27 +166,4 @@ int main(void) {
 done:
    exit(0);
 }
-
-
-/* 
-   +-----------------------------------+
-   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-   |---|---|---|---|---|---|---|---|---|
-   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-   |---|---|---|---|---|---|---|---|---|
-   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-   |---|---|---|---|---|---|---|---|---|
-   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-   |---|---|---|---|---|---|---|---|---|
-   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-   |---|---|---|---|---|---|---|---|---|
-   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-   |---|---|---|---|---|---|---|---|---|
-   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-   |---|---|---|---|---|---|---|---|---|
-   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-   |---|---|---|---|---|---|---|---|---|
-   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-   +-----------------------------------+
-*/
 
