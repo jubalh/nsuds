@@ -23,13 +23,12 @@
 
 #include "timer.h"
 
-enum {NONE=0, LEFT, RIGHT, UP, DOWN};
 static int curx,cury;
 static int paused=0;
 static int colors=0;
 static int row,col;
-WINDOW *grid, *timer, *stats, *title;
 
+/* Set up decent defaults */
 static void init_ncurses(void)
 {
    initscr(); /* Enter curses */
@@ -45,7 +44,7 @@ static void init_ncurses(void)
    refresh();
 }
 
-static void init_windows(void) 
+static void init_windows(void)
 {
    title = newwin(1, 64, 0, 1);
    grid=newwin(19, 37, 2, 28);

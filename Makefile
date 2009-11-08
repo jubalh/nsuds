@@ -1,9 +1,12 @@
 # Temp makefile, until we add autotools
 
 CC = gcc
-CFLAGS = -g -Wall -W -lncurses
+CFLAGS = -g -Wall -W -lncurses -Wno-unused
 
 all:
-	$(CC) -c timer.c   -o timer.o $(CFLAGS)
-	$(CC) -c nsuds.c   -o nsuds.o $(CFLAGS)
-	$(CC) *.o -o nsuds $(CFLAGS)
+	@echo CC		timer.o
+	@$(CC) -c timer.c   -o timer.o $(CFLAGS)
+	@echo CC		nsuds.c
+	@$(CC) -c nsuds.c   -o nsuds.o $(CFLAGS)
+	@echo Made binary file ./nsuds
+	@$(CC) *.o -o nsuds $(CFLAGS)
