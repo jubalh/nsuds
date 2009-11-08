@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
+enum {NONE=0, LEFT, RIGHT, UP, DOWN};
+static int curx,cury;
 static int paused=0;
 static int colors=0;
 static int row,col;
@@ -36,7 +38,6 @@ static void init_ncurses(void)
    init_pair(1, COLOR_BLUE, COLOR_BLACK);
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
-   curs_set(0);   /* Hide cursor */
    keypad(stdscr, TRUE); /* Catch special keys */
    getmaxyx(stdscr, row, col);
    refresh();
@@ -138,16 +139,46 @@ static void draw_title()
 
 static void draw_xs()
 {
-   int i,j;
+   int i;
    refresh();
    for (i=0; i<row; i++)
       mvhline(i, 0, ACS_CKBOARD, col);
    refresh();
 }
 
+static void movec(int dir) {
+   int updown=2;
+   int leftright=4;
+   int first_row = 3;
+   int first_col = 30;
+
+   switch (dir) {
+      case UP:
+         if (cury > first_row)
+            cury-=updown;
+         break;
+      case DOWN:
+         if (cury < (first_row + updown * 8))
+            cury+=updown;
+         break;
+      case LEFT:
+         if (curx > first_col)
+            curx -= leftright;
+         break;
+      case RIGHT:
+         if (curx < (first_col + leftright * 8))
+            curx+=leftright;
+         break;
+      default:
+         break;
+   }
+   move(cury,curx);
+   refresh();
+}
+
 int main(void)
 {
-   char c;
+   int c;
 
    init_ncurses();
    init_windows();
@@ -157,8 +188,23 @@ int main(void)
    draw_grid();
    draw_timer();
    draw_stats();
+   curx=30;
+   cury=3;
+   movec(0);
    while ((c = getch())) {
       switch (c) {
+         case KEY_LEFT:
+            movec(LEFT);
+            break;
+         case KEY_RIGHT:
+            movec(RIGHT);
+            break;
+         case KEY_UP:
+            movec(UP);
+            break;
+         case KEY_DOWN:
+            movec(DOWN);
+            break;
          case 'q':
             werase(grid);
             wnoutrefresh(grid);
