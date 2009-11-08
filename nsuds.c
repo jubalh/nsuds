@@ -194,15 +194,24 @@ int main(void)
    while ((c = getch())) {
       switch (c) {
          case KEY_LEFT:
+         case 'h':
+         case 'a':
             movec(LEFT);
             break;
+
          case KEY_RIGHT:
+         case 'l':
+         case 'd':
             movec(RIGHT);
             break;
          case KEY_UP:
+         case 'k':
+         case 'w':
             movec(UP);
             break;
          case KEY_DOWN:
+         case 'j':
+         case 's':
             movec(DOWN);
             break;
          case 'q':
