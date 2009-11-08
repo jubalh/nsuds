@@ -24,7 +24,7 @@
 static int paused=0;
 static int colors=0;
 static int row,col;
-static WINDOW *grid, *timer, *stats;
+static WINDOW *grid, *timer, *stats, *title;
 
 static void init_ncurses(void)
 {
@@ -44,9 +44,10 @@ static void init_ncurses(void)
 
 static void init_windows(void) 
 {
-   grid=newwin(19, 37, 1, 28);
-   timer = newwin(5, 25, 1, 1);
-   stats = newwin(14, 25, 6, 1);
+   title = newwin(1, 64, 0, 1);
+   grid=newwin(19, 37, 2, 28);
+   timer = newwin(5, 25, 2, 1);
+   stats = newwin(14, 25, 7, 1);
 }
 
 static void draw_grid(void)
@@ -127,6 +128,14 @@ static void draw_stats()
    refresh();
 }
 
+static void draw_title()
+{
+   mvwaddstr(title, 0, 5, "Welcome to nsuds: The Ncurses Sudoku System");
+   wrefresh(title);
+   doupdate();
+   refresh();
+}
+
 static void draw_xs()
 {
    int i,j;
@@ -144,6 +153,7 @@ int main(void)
    init_windows();
    clear();
    draw_xs();
+   draw_title();
    draw_grid();
    draw_timer();
    draw_stats();
