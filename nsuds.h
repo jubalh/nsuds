@@ -21,6 +21,8 @@
 enum {NONE=0, LEFT, RIGHT, UP, DOWN};
 WINDOW *grid, *timer, *stats, *title;
 
+#define abs(x) ((x>0)?x:-x)
+
 
 static void init_ncurses(void);
 static void init_windows(void);

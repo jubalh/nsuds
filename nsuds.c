@@ -75,8 +75,8 @@ static bool grid_valid(void)
 
       /* Add finds to colf/rowf */
       for (j=0; j<9; j++) {
-         if (grid_data[i][j]) colf[grid_data[i][j]-1]++;
-         if (grid_data[j][i]) rowf[grid_data[j][i]-1]++;
+         if (abs(grid_data[i][j])) colf[abs(grid_data[i][j])-1]++;
+         if (abs(grid_data[j][i])) rowf[abs(grid_data[j][i])-1]++;
       }
       
       /* Check if a number was found more than once per
@@ -94,9 +94,9 @@ static bool grid_valid(void)
          
          /* Check #'s within each segment */
          for (k=0;k<3;k++) {
-            if (grid_data[i+k][j])   rowf[grid_data[i+k][j]-1]++;
-            if (grid_data[i+k][j+1]) rowf[grid_data[i+k][j+1]-1]++;
-            if (grid_data[i+k][j+2]) rowf[grid_data[i+k][j+2]-1]++;
+            if (abs(grid_data[i+k][j]))   rowf[abs(grid_data[i+k][j])-1]++;
+            if (abs(grid_data[i+k][j+1])) rowf[abs(grid_data[i+k][j+1])-1]++;
+            if (abs(grid_data[i+k][j+2])) rowf[abs(grid_data[i+k][j+2])-1]++;
          }
 
          for (k=0; k<9; k++) {
@@ -230,6 +230,15 @@ static void movec(int dir)
    refresh();
 }
 
+static void gfillch(int y, int x, char ch)
+{
+   gmove(y, x);
+   addch(ch);
+   grid_data[y][x] = -(ch-'0');
+   gmove(cury,curx);
+}
+
+
 static void fillch(char ch)
 {
    if (ch == '0') addch(' ');
@@ -251,6 +260,9 @@ int main(void)
    draw_grid();
    start_timer(20, 00);
    draw_stats();
+   gfillch(0,0, '9');
+   gfillch(3,4, '3');
+   
    gmove(cury, curx);
    while ((c = getch())) {
       switch (c) {
@@ -259,7 +271,6 @@ int main(void)
          case 'a':
             movec(LEFT);
             break;
-
          case KEY_RIGHT:
          case 'l':
          case 'd':
@@ -288,11 +299,12 @@ int main(void)
             break;
          case 'c':
          case KEY_DC:
-            fillch('0');
+            if (grid_data[cury][curx]>=0)
+               fillch('0');
             draw_stats();
             break;
          default:
-            if (c>='1' && c<='9') {
+            if (c>='1' && c<='9' && grid_data[cury][curx]>=0) {
                fillch(c);
                draw_stats();
             }
