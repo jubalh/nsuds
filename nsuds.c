@@ -285,6 +285,7 @@ int main(void)
          case 'p':
             paused=!paused;
             draw_grid();
+            curs_set(!paused);
             break;
          case 'c':
          case KEY_DC:
