@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <ncurses.h>
 
 #include "nsuds.h"
@@ -167,6 +168,10 @@ static void draw_grid(void)
 }
 
 
+
+
+
+
 static void draw_stats()
 {
    int left;
@@ -233,9 +238,36 @@ static void movec(int dir)
 static void gfillch(int y, int x, char ch)
 {
    gmove(y, x);
-   addch(ch);
+   if (ch == '0') addch(' ');
+   else addch(ch);
    grid_data[y][x] = -(ch-'0');
    gmove(cury,curx);
+}
+
+/* Poorly generate a puzzle, for testing */
+static void generate(int num)
+{
+   int i;
+   int findx, findy;
+   srand(time(NULL));
+   for (i=0; i < num; i++) {
+      /* Find random empty square */
+      while (1) {
+         findy = rand()%9;
+         findx = rand()%9;
+
+         if (!grid_data[findy][findx]) {
+            gfillch(findy, findx, '1' + (rand()%8) );
+            if (!grid_valid()) {
+               gfillch(findy, findx, '0');
+               refresh();
+               continue;
+            }
+            refresh();
+            break;
+         }
+      }
+   }
 }
 
 
@@ -258,10 +290,9 @@ int main(void)
    draw_xs();
    draw_title();
    draw_grid();
+   generate(30);
    start_timer(20, 00);
    draw_stats();
-   gfillch(0,0, '9');
-   gfillch(3,4, '3');
    
    gmove(cury, curx);
    while ((c = getch())) {
