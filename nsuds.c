@@ -25,7 +25,7 @@
 #include "nsuds.h"
 #include "timer.h"
 
-static int curx,cury;
+static int curx=0,cury=0;
 signed char grid_data[9][9]; /* grid_data[y/row][x/col] */
 int paused=0;
 static int colors=0;
@@ -205,45 +205,37 @@ static void draw_xs()
    refresh();
 }
 
+
+/* Get screen location of grid coords */
+#define gy2scr(y) (3 +  (y * 2))
+#define gx2scr(x) (30 + (x * 4))
+#define gmove(y, x) move(gy2scr(y), gx2scr(x))
+
 static void movec(int dir)
 {
-   int updown=2;
-   int leftright=4;
-   int first_row = 3;
-   int first_col = 30;
-
    switch (dir) {
       case UP:
-         if (cury > first_row)
-            cury-=updown;
+         if (cury > 0) gmove(--cury, curx);
          break;
       case DOWN:
-         if (cury < (first_row + updown * 8))
-            cury+=updown;
+         if (cury < 8) gmove(++cury, curx);
          break;
       case LEFT:
-         if (curx > first_col)
-            curx -= leftright;
+         if (curx > 0) gmove(cury, --curx);
          break;
       case RIGHT:
-         if (curx < (first_col + leftright * 8))
-            curx+=leftright;
-         break;
-      default:
+         if (curx < 8) gmove(cury, ++curx);
          break;
    }
-   move(cury,curx);
    refresh();
 }
 
 static void fillch(char ch)
 {
-   if (ch == '0') 
-      mvaddch(cury,curx, ' ');
-   else 
-      mvaddch(cury, curx, ch);
-   grid_data[(cury-3)/2][(curx-30)/4]= ch-'0';
-   move(cury,curx);
+   if (ch == '0') addch(' ');
+   else addch(ch);
+   grid_data[cury][curx]= ch-'0';
+   gmove(cury,curx);
 }
 
 int main(void)
@@ -259,9 +251,7 @@ int main(void)
    draw_grid();
    start_timer(20, 00);
    draw_stats();
-   curx=30;
-   cury=3;
-   movec(0);
+   gmove(cury, curx);
    while ((c = getch())) {
       switch (c) {
          case KEY_LEFT:
