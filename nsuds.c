@@ -19,12 +19,14 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ncurses.h>
 
 #include "nsuds.h"
 #include "timer.h"
 
 static int curx,cury;
+signed char grid_data[9][9]; /* grid_data[y/row][x/col] */
 int paused=0;
 static int colors=0;
 static int row,col;
@@ -52,6 +54,60 @@ static void init_windows(void)
    timer = newwin(6, 25, 2, 1);
    stats = newwin(13, 25, 8, 1);
 }
+
+static void init_grid(void)
+{
+   memset(grid_data, 0, 9*9);
+}
+
+/* Check if a full or partially filled
+ * sudoku grid is valid or not */
+static bool grid_valid(void)
+{
+   int i,j,k;
+   char rowf[9], colf[9];
+
+   /* Check rows/cols */
+   for (i=0; i<9; i++) {
+      /* Reset row/col finds */
+      memset(&rowf, 0, 9);
+      memset(&colf, 0, 9);
+
+      /* Add finds to colf/rowf */
+      for (j=0; j<9; j++) {
+         if (grid_data[i][j]) colf[grid_data[i][j]-1]++;
+         if (grid_data[j][i]) rowf[grid_data[j][i]-1]++;
+      }
+      
+      /* Check if a number was found more than once per
+       * row/col */
+      for (j=0; j<9; j++) {
+         if (colf[j] > 1|| rowf[j] > 1) return 0;
+      }
+   }
+
+   /* Check segments (segment start=(i,j)) */
+   for (i=0; i<9; i+=3) {
+      for (j=0; j<9; j+=3) {
+         memset(&rowf, 0, 9);
+         memset(&colf, 0, 9);
+         
+         /* Check #'s within each segment */
+         for (k=0;k<3;k++) {
+            if (grid_data[i+k][j])   rowf[grid_data[i+k][j]-1]++;
+            if (grid_data[i+k][j+1]) rowf[grid_data[i+k][j+1]-1]++;
+            if (grid_data[i+k][j+2]) rowf[grid_data[i+k][j+2]-1]++;
+         }
+
+         for (k=0; k<9; k++) {
+            if (rowf[k] > 1) return 0;
+         }
+      }
+   }
+
+   return 1;
+}
+                  
 
 static void draw_grid(void)
 {
@@ -105,6 +161,7 @@ static void draw_grid(void)
 static void draw_stats()
 {
    int left;
+   werase(stats);
 
    left = 1;
    box(stats, 0, 0);
@@ -112,6 +169,7 @@ static void draw_stats()
    mvwaddstr(stats, 4, 1, "Difficulty: 10/10");
    mvwaddstr(stats, 5, 1, "Numbers:    56/81");
    mvwaddstr(stats, 6 ,1, "Remaining:  25 left");
+   mvwprintw(stats, 7, 1, "Valid: %s", (grid_valid() ? "Yes":"No"));
    mvwaddstr(stats, 9,1, "Time Taken: 3m 24s");
    mvwhline(stats, 10, 1, ACS_HLINE, 23);
    mvwaddstr(stats, 11,1, " Score:    34327");
@@ -169,12 +227,23 @@ static void movec(int dir)
    refresh();
 }
 
+static void fillch(char ch)
+{
+   if (ch == '0') 
+      mvaddch(cury,curx, ' ');
+   else 
+      mvaddch(cury, curx, ch);
+   grid_data[(cury-3)/2][(curx-30)/4]= ch-'0';
+   move(cury,curx);
+}
+
 int main(void)
 {
    int c;
 
    init_ncurses();
    init_windows();
+   init_grid();
    clear();
    draw_xs();
    draw_title();
@@ -217,7 +286,16 @@ int main(void)
             paused=!paused;
             draw_grid();
             break;
+         case 'c':
+         case KEY_DC:
+            fillch('0');
+            draw_stats();
+            break;
          default:
+            if (c>='1' && c<='9') {
+               fillch(c);
+               draw_stats();
+            }
             break;
       }
    }

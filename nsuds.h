@@ -22,9 +22,9 @@ enum {NONE=0, LEFT, RIGHT, UP, DOWN};
 WINDOW *grid, *timer, *stats, *title;
 
 
-
 static void init_ncurses(void);
 static void init_windows(void);
+static void init_grid(void);
 static void draw_grid(void);
 static void draw_stats();
 static void draw_title();
