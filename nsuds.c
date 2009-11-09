@@ -107,6 +107,15 @@ static bool grid_valid(void)
 
    return 1;
 }
+
+static int grid_filled(void)
+{
+   int i, j, ret=0;
+   for (i=0; i<9; i++)
+      for (j=0;j<9;j++)
+         if (grid_data[i][j]) ret++;
+   return ret;
+}
                   
 
 static void draw_grid(void)
@@ -167,8 +176,8 @@ static void draw_stats()
    box(stats, 0, 0);
    mvwaddstr(stats, 1, 1, "Mode: Campaign");
    mvwaddstr(stats, 4, 1, "Difficulty: 10/10");
-   mvwaddstr(stats, 5, 1, "Numbers:    56/81");
-   mvwaddstr(stats, 6 ,1, "Remaining:  25 left");
+   mvwprintw(stats, 5, 1, "Numbers:    %2d/81", grid_filled());
+   mvwprintw(stats, 6 ,1, "Remaining:  %2d left", 81-grid_filled());
    mvwprintw(stats, 7, 1, "Valid: %s", (grid_valid() ? "Yes":"No"));
    mvwaddstr(stats, 9,1, "Time Taken: 3m 24s");
    mvwhline(stats, 10, 1, ACS_HLINE, 23);

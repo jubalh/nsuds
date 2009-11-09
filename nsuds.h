@@ -24,6 +24,7 @@ WINDOW *grid, *timer, *stats, *title;
 
 static void init_ncurses(void);
 static void init_windows(void);
+static int grid_filled(void);
 static void init_grid(void);
 static void draw_grid(void);
 static void draw_stats();
