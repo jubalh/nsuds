@@ -38,12 +38,12 @@ static char *empty="   ";
 static struct {
    int mins;
    int secs;
-} countdown;
+} cdown; /* cdown */
 
 void start_timer(int mins, int secs)
 {
-   countdown.mins = mins;
-   countdown.secs = secs;
+   cdown.mins = mins;
+   cdown.secs = secs;
    signal(SIGALRM, catch_alarm);
    draw_timer();
    alarm(1);
@@ -51,20 +51,16 @@ void start_timer(int mins, int secs)
 
 void catch_alarm(int sig)
 {
-   if (paused) {
-      alarm(1);
-      return;
-   }
-   if (!countdown.secs && !countdown.mins) return;
-
-   if (countdown.secs > 0) {
-      countdown.secs--;
-   } else {
-      countdown.mins--;
-      countdown.secs=59;
-   }
-
    alarm(1);
+   if (paused || (!cdown.secs && !cdown.mins)) return;
+
+   if (cdown.secs > 0) {
+      cdown.secs--;
+   } else {
+      cdown.mins--;
+      cdown.secs=59;
+   }
+
    draw_timer();
 }
 
@@ -73,18 +69,20 @@ void catch_alarm(int sig)
 
 static char *digits2str(int line, int dig) {
    /* dig = 1..4 (MM:SS or 12:34) */
-   if (dig==1) {
-      if (countdown.mins / 10) 
-         return timer_digits[line-1][countdown.mins / 10];
-      else return empty;
-   } else if (dig==2) {
-      return timer_digits[line-1][countdown.mins % 10];
-   } else if (dig==3) {
-      return timer_digits[line-1][countdown.secs / 10];
-   } else if (dig==4) {
-      return timer_digits[line-1][countdown.secs % 10];
-   } else {
-      return empty;
+   switch (dig) {
+      case 1:
+         if (cdown.mins / 10) 
+            return timer_digits[line-1][cdown.mins / 10];
+         else return empty;
+         break;
+      case 2:
+         return timer_digits[line-1][cdown.mins % 10];
+      case 3:
+         return timer_digits[line-1][cdown.secs / 10];
+      case 4:
+         return timer_digits[line-1][cdown.secs % 10];
+      default:
+         return empty;
    }
 }
 
@@ -94,7 +92,7 @@ void draw_timer()
    int left;
    werase(timer);
 
-   if (countdown.mins > 19) left = 2;
+   if (cdown.mins > 19) left = 2;
    else left = 1;
    box(timer, 0, 0);
    mvwaddstr(timer, 1, 5, "Time Remaining");
@@ -106,6 +104,4 @@ void draw_timer()
    doupdate();
    refresh();
 }
-
-
 
