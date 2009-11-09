@@ -94,13 +94,13 @@ void draw_timer()
    int left;
    werase(timer);
 
-   if (countdown.mins > 9) left = 1;
+   if (countdown.mins > 19) left = 2;
    else left = 1;
    box(timer, 0, 0);
    mvwaddstr(timer, 1, 5, "Time Remaining");
-   mvwprintw(timer, 2, 1, "%s%s   %s%s", time2strs(1));
-   mvwprintw(timer, 3, 1, "%s%s . %s%s", time2strs(2));
-   mvwprintw(timer, 4, 1, "%s%s . %s%s", time2strs(3));
+   mvwprintw(timer, 2, left, "%s%s   %s%s", time2strs(1));
+   mvwprintw(timer, 3, left, "%s%s . %s%s", time2strs(2));
+   mvwprintw(timer, 4, left, "%s%s . %s%s", time2strs(3));
 
    wrefresh(timer);
    doupdate();

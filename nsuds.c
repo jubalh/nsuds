@@ -179,7 +179,7 @@ int main(void)
    draw_xs();
    draw_title();
    draw_grid();
-   start_timer(10, 03);
+   start_timer(20, 00);
    draw_stats();
    curx=30;
    cury=3;
