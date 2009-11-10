@@ -31,11 +31,16 @@ static char grid_data[9][9]; /* grid_data[y/row][x/col] */
 static int curx=0,cury=0;    /* Current (selected) grid coords */
 static bool initialized=0;   /* Is grid initialized? */
 
-/* Get screen location of grid coords */
-#define gy2scr(y) (3 +  (y * 2))
+/* Get screen coords from grid coords */
+#define gy2scr(y) (3  + (y * 2))
 #define gx2scr(x) (30 + (x * 4))
-/* Move to grid coord */
-#define gmove(y, x) move(gy2scr(y), gx2scr(x))
+/* Get grid window coords from  grid coords */
+#define gy2win(y) (1 + (y * 2))
+#define gx2win(x) (2 + (x * 4))
+/* Move grid cursor to grid coord */
+#define gmove(y, x) wmove(grid, gy2win(y), gx2win(x))
+/* Move screen cursor to grid coord */
+#define smove(y, x) move(gy2scr(y), gx2scr(x))
 
 
 /* Initialize the grid */
@@ -50,32 +55,30 @@ void movec(int dir)
 {
    switch (dir) {
       case UP:
-         if (cury > 0) gmove(--cury, curx);
+         if (cury > 0) smove(--cury, curx);
          break;
       case DOWN:
-         if (cury < 8) gmove(++cury, curx);
+         if (cury < 8) smove(++cury, curx);
          break;
       case LEFT:
-         if (curx > 0) gmove(cury, --curx);
+         if (curx > 0) smove(cury, --curx);
          break;
       case RIGHT:
-         if (curx < 8) gmove(cury, ++curx);
+         if (curx < 8) smove(cury, ++curx);
          break;
       case CUR:
-         gmove(cury, curx);
+         smove(cury, curx);
          break;
    }
-   refresh();
 }
 
 /* Add an immutable char to the grid */
 static void gaddimch(int y, int x, char ch)
 {
    gmove(y, x);
-   if (ch == '0') addch(' ');
-   else addch(ch);
+   if (ch == '0') waddch(grid, ' ');
+   else waddch(grid, ch);
    grid_data[y][x] = -(ch-'0');
-   gmove(cury,curx);
 }
 
 /* Add a mutable char to the current grid location */
@@ -83,10 +86,11 @@ void gaddch(char ch)
 {
    /* If char is immutable, do nothing */
    if (grid_data[cury][curx]<0) return;
-   if (ch == '0') addch(' ');
-   else addch(ch);
-   grid_data[cury][curx]= ch-'0';
    gmove(cury,curx);
+   if (ch == '0') waddch(grid, ' ');
+   else waddch(grid, ch);
+   grid_data[cury][curx]= ch-'0';
+   wnoutrefresh(grid);
 }
 
 
@@ -156,12 +160,11 @@ void draw_grid_contents(void)
       for (j=0; j<9; j++) {
          gmove(i, j);
          if (grid_data[i][j] != 0) 
-            addch(abs(grid_data[i][j]) + '0');
-         refresh();
+            waddch(grid, abs(grid_data[i][j]) + '0');
       }
    }
 
-   gmove(cury, curx);
+   wnoutrefresh(grid);
 }
 
 /* Poorly generate a puzzle, for testing */
@@ -180,10 +183,8 @@ void generate(int num)
             gaddimch(findy, findx, '1' + (rand()%8) );
             if (!grid_valid()) {
                gaddimch(findy, findx, '0');
-               refresh();
                continue;
             }
-            refresh();
             break;
          }
       }

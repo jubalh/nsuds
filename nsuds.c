@@ -52,7 +52,6 @@ static void init_ncurses(void)
    noecho();      /* Don't echo typed chars */
    keypad(stdscr, TRUE); /* Catch special keys */
    getmaxyx(stdscr, row, col);
-   refresh();
 }
 
 static void init_windows(void) 
@@ -70,7 +69,6 @@ static void draw_grid(void)
    int left;
 
    left = 28;
-   refresh();
    werase(grid);
 
    box(grid, 0, 0);
@@ -107,13 +105,9 @@ static void draw_grid(void)
       }
    }
 
-   wrefresh(grid);
-   refresh();
-
+   wnoutrefresh(grid);
    draw_grid_contents();
-
-   wrefresh(grid);
-   refresh();
+   movec(CUR);
 }
 
 
@@ -133,26 +127,22 @@ static void draw_stats()
    mvwhline(stats, 10, 1, ACS_HLINE, 23);
    mvwaddstr(stats, 11,1, " Score:    34327");
 
-   wrefresh(stats);
-   doupdate();
-   refresh();
+   wnoutrefresh(stats);
+   movec(CUR);
 }
 
 static void draw_title()
 {
    mvwaddstr(title, 0, 5, "Welcome to nsuds: The Ncurses Sudoku System");
-   wrefresh(title);
-   doupdate();
-   refresh();
+   wnoutrefresh(title);
 }
 
 static void draw_xs()
 {
    int i;
-   refresh();
    for (i=0; i<row; i++)
       mvhline(i, 0, ACS_CKBOARD, col);
-   refresh();
+   wnoutrefresh(stdscr);
 }
 
 
@@ -165,54 +155,61 @@ int main(void)
    clear();
    draw_xs();
    draw_title();
-   draw_grid();
    generate(30);
+   draw_grid();
    start_timer(20, 00);
    draw_stats();
-   
    movec(CUR);
+   doupdate();
+   
    while ((c = getch())) {
       switch (c) {
          case KEY_LEFT:
          case 'h':
          case 'a':
             movec(LEFT);
+            doupdate();
             break;
          case KEY_RIGHT:
          case 'l':
          case 'd':
             movec(RIGHT);
+            doupdate();
             break;
          case KEY_UP:
          case 'k':
          case 'w':
             movec(UP);
+            doupdate();
             break;
          case KEY_DOWN:
          case 'j':
          case 's':
             movec(DOWN);
+            doupdate();
             break;
          case 'q':
             werase(grid);
-            wnoutrefresh(grid);
             delwin(grid);
             endwin();
             goto done;
          case 'p':
             paused=!paused;
             draw_grid();
+            doupdate();
             curs_set(!paused);
             break;
          case 'c':
          case KEY_DC:
             gaddch('0');
             draw_stats();
+            doupdate();
             break;
          default:
             if (c>='1' && c<='9') {
                gaddch(c);
                draw_stats();
+               doupdate();
             }
             break;
       }
