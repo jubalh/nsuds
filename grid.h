@@ -27,8 +27,10 @@ enum {NONE=0, LEFT, RIGHT, UP, DOWN, CUR};
 extern void init_grid(void);
 extern void movec(int dir);
 extern void gaddch(char ch);
-extern bool grid_valid(void);
 extern int grid_filled(void);
+extern void draw_grid_contents(void);
+
+extern bool grid_valid(void);
 extern void generate(int num);
 
 #endif

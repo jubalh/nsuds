@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "nsuds.h"
 #include "grid.h"
 
 static void gaddimch(int y, int x, char ch);
@@ -146,6 +147,22 @@ int grid_filled(void)
    return ret;
 }
 
+void draw_grid_contents(void)
+{
+   int i, j;
+
+   if (paused) return;
+   for (i=0; i<9; i++) {
+      for (j=0; j<9; j++) {
+         gmove(i, j);
+         if (grid_data[i][j] != 0) 
+            addch(abs(grid_data[i][j]) + '0');
+         refresh();
+      }
+   }
+
+   gmove(cury, curx);
+}
 
 /* Poorly generate a puzzle, for testing */
 void generate(int num)

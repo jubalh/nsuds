@@ -108,7 +108,11 @@ static void draw_grid(void)
    }
 
    wrefresh(grid);
-   doupdate();
+   refresh();
+
+   draw_grid_contents();
+
+   wrefresh(grid);
    refresh();
 }
 
