@@ -17,11 +17,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
+#define _XOPEN_SOURCE
 
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
 #include <ncurses.h>
+#include <errno.h>
+#include <err.h>
 
 #include "nsuds.h"
 #include "timer.h"
@@ -42,16 +45,31 @@ static struct {
 
 void start_timer(int mins, int secs)
 {
+   struct sigaction new;
+
    cdown.mins = mins;
    cdown.secs = secs;
-   signal(SIGALRM, catch_alarm);
+
+   /* Set up signal handler */
+   new.sa_handler = catch_alarm;
+   sigemptyset(&new.sa_mask);
+   new.sa_flags = 0;
+   
+#ifdef SA_RESTART
+   /* Restart interrupted system calls */
+   new.sa_flags |= SA_RESTART;
+#endif
+   
+   if (sigaction(SIGALRM, &new, NULL) < 0)
+      err(errno, "Can't set up signal handler");
+
+   /* Update timer */
    draw_timer();
    alarm(1);
 }
 
 void catch_alarm(int sig)
 {
-   signal(SIGALRM, catch_alarm);
    alarm(1);
    if (paused || (!cdown.secs && !cdown.mins)) return;
 
