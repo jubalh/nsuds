@@ -25,9 +25,16 @@
 
 #include "nsuds.h"
 #include "timer.h"
+#include "grid.h"
 
-static int curx=0,cury=0;
-signed char grid_data[9][9]; /* grid_data[y/row][x/col] */
+static void init_ncurses(void);
+static void init_windows(void);
+static void draw_grid(void);
+static void draw_stats();
+static void draw_title();
+static void draw_xs();
+
+WINDOW *grid, *timer, *stats, *title;
 int paused=0;
 static int colors=0;
 static int row,col;
@@ -56,68 +63,6 @@ static void init_windows(void)
    stats = newwin(13, 25, 8, 1);
 }
 
-static void init_grid(void)
-{
-   memset(grid_data, 0, 9*9);
-}
-
-/* Check if a full or partially filled
- * sudoku grid is valid or not */
-static bool grid_valid(void)
-{
-   int i,j,k;
-   char rowf[9], colf[9];
-
-   /* Check rows/cols */
-   for (i=0; i<9; i++) {
-      /* Reset row/col finds */
-      memset(&rowf, 0, 9);
-      memset(&colf, 0, 9);
-
-      /* Add finds to colf/rowf */
-      for (j=0; j<9; j++) {
-         if (abs(grid_data[i][j])) colf[abs(grid_data[i][j])-1]++;
-         if (abs(grid_data[j][i])) rowf[abs(grid_data[j][i])-1]++;
-      }
-      
-      /* Check if a number was found more than once per
-       * row/col */
-      for (j=0; j<9; j++) {
-         if (colf[j] > 1|| rowf[j] > 1) return 0;
-      }
-   }
-
-   /* Check segments (segment start=(i,j)) */
-   for (i=0; i<9; i+=3) {
-      for (j=0; j<9; j+=3) {
-         memset(&rowf, 0, 9);
-         memset(&colf, 0, 9);
-         
-         /* Check #'s within each segment */
-         for (k=0;k<3;k++) {
-            if (abs(grid_data[i+k][j]))   rowf[abs(grid_data[i+k][j])-1]++;
-            if (abs(grid_data[i+k][j+1])) rowf[abs(grid_data[i+k][j+1])-1]++;
-            if (abs(grid_data[i+k][j+2])) rowf[abs(grid_data[i+k][j+2])-1]++;
-         }
-
-         for (k=0; k<9; k++) {
-            if (rowf[k] > 1) return 0;
-         }
-      }
-   }
-
-   return 1;
-}
-
-static int grid_filled(void)
-{
-   int i, j, ret=0;
-   for (i=0; i<9; i++)
-      for (j=0;j<9;j++)
-         if (grid_data[i][j]) ret++;
-   return ret;
-}
-                  
 
 static void draw_grid(void)
 {
@@ -168,10 +113,6 @@ static void draw_grid(void)
 }
 
 
-
-
-
-
 static void draw_stats()
 {
    int left;
@@ -211,81 +152,12 @@ static void draw_xs()
 }
 
 
-/* Get screen location of grid coords */
-#define gy2scr(y) (3 +  (y * 2))
-#define gx2scr(x) (30 + (x * 4))
-#define gmove(y, x) move(gy2scr(y), gx2scr(x))
-
-static void movec(int dir)
-{
-   switch (dir) {
-      case UP:
-         if (cury > 0) gmove(--cury, curx);
-         break;
-      case DOWN:
-         if (cury < 8) gmove(++cury, curx);
-         break;
-      case LEFT:
-         if (curx > 0) gmove(cury, --curx);
-         break;
-      case RIGHT:
-         if (curx < 8) gmove(cury, ++curx);
-         break;
-   }
-   refresh();
-}
-
-static void gfillch(int y, int x, char ch)
-{
-   gmove(y, x);
-   if (ch == '0') addch(' ');
-   else addch(ch);
-   grid_data[y][x] = -(ch-'0');
-   gmove(cury,curx);
-}
-
-/* Poorly generate a puzzle, for testing */
-static void generate(int num)
-{
-   int i;
-   int findx, findy;
-   srand(time(NULL));
-   for (i=0; i < num; i++) {
-      /* Find random empty square */
-      while (1) {
-         findy = rand()%9;
-         findx = rand()%9;
-
-         if (!grid_data[findy][findx]) {
-            gfillch(findy, findx, '1' + (rand()%8) );
-            if (!grid_valid()) {
-               gfillch(findy, findx, '0');
-               refresh();
-               continue;
-            }
-            refresh();
-            break;
-         }
-      }
-   }
-}
-
-
-static void fillch(char ch)
-{
-   if (ch == '0') addch(' ');
-   else addch(ch);
-   grid_data[cury][curx]= ch-'0';
-   gmove(cury,curx);
-}
-
 int main(void)
 {
    int c;
 
    init_ncurses();
    init_windows();
-   init_grid();
    clear();
    draw_xs();
    draw_title();
@@ -294,7 +166,7 @@ int main(void)
    start_timer(20, 00);
    draw_stats();
    
-   gmove(cury, curx);
+   movec(CUR);
    while ((c = getch())) {
       switch (c) {
          case KEY_LEFT:
@@ -330,13 +202,12 @@ int main(void)
             break;
          case 'c':
          case KEY_DC:
-            if (grid_data[cury][curx]>=0)
-               fillch('0');
+            gaddch('0');
             draw_stats();
             break;
          default:
-            if (c>='1' && c<='9' && grid_data[cury][curx]>=0) {
-               fillch(c);
+            if (c>='1' && c<='9') {
+               gaddch(c);
                draw_stats();
             }
             break;

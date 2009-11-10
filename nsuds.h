@@ -17,20 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
+#ifndef _NSUDS_NSUDS_H
+#define _NSUDS_NSUDS_H
 
-enum {NONE=0, LEFT, RIGHT, UP, DOWN};
-WINDOW *grid, *timer, *stats, *title;
+extern WINDOW *grid, *timer, *stats, *title;
+extern int paused;
 
-#define abs(x) ((x>0)?x:-x)
-
-
-static void init_ncurses(void);
-static void init_windows(void);
-static int grid_filled(void);
-static void init_grid(void);
-static void draw_grid(void);
-static void draw_stats();
-static void draw_title();
-static void draw_xs();
-static void movec(int dir);
+#endif
 

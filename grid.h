@@ -18,12 +18,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
 
-#ifndef _NSUDS_TIMER_H
-#define _NSUDS_TIMER_H
+#ifndef _NSUDS_GRID_H
+#define _NSUDS_GRID_H
 
-extern void draw_timer();
-extern void catch_alarm(int sig);
-extern void start_timer(int mins, int secs);
+enum {NONE=0, LEFT, RIGHT, UP, DOWN, CUR};
+#define abs(x) ((x>0)?x:-x)
+
+extern void init_grid(void);
+extern void movec(int dir);
+extern void gaddch(char ch);
+extern bool grid_valid(void);
+extern int grid_filled(void);
+extern void generate(int num);
 
 #endif
 

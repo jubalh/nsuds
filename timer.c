@@ -22,10 +22,10 @@
 #include <unistd.h>
 #include <signal.h>
 #include <ncurses.h>
+
+#include "nsuds.h"
 #include "timer.h"
 
-extern WINDOW *timer;
-extern int paused;
 
 /* "Font" for numbers taken from htop, by Hisham Muhammad */
 static char *timer_digits[3][10] = {
@@ -51,6 +51,7 @@ void start_timer(int mins, int secs)
 
 void catch_alarm(int sig)
 {
+   signal(SIGALRM, catch_alarm);
    alarm(1);
    if (paused || (!cdown.secs && !cdown.mins)) return;
 
