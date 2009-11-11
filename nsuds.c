@@ -141,6 +141,7 @@ static void draw_stats()
 
 static void draw_title()
 {
+   werase(grid);
    mvwaddstr(title, 0, 5, "Welcome to nsuds: The Ncurses Sudoku System");
    wnoutrefresh(title);
 }
@@ -148,6 +149,7 @@ static void draw_title()
 static void draw_xs()
 {
    int i;
+   werase(grid);
    for (i=0; i<row; i++)
       mvhline(i, 0, ACS_CKBOARD, col);
    wnoutrefresh(stdscr);
