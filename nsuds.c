@@ -96,11 +96,10 @@ static void draw_grid(void)
          mvwvline(grid, 1, i, '|', 17);
       }
       /* Verticals */
-      for (i=1; i<18; i+=1) {
-         if (i%6==0) continue;
-         for (j=0; j<=36;j+=12) {
-            mvwaddch(grid, i, j, ACS_VLINE);
-         }
+      for (i=12; i<36; i+=12) {
+         mvwaddch(grid, 0, i, ACS_TTEE);
+         mvwvline(grid, 1, i, ACS_VLINE, 17);
+         mvwaddch(grid, 18,i, ACS_BTEE);
       }
 
       /* Horizontal */
