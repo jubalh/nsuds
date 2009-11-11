@@ -23,5 +23,5 @@ depend:
 
 grid.o: nsuds.h grid.h
 menu.o: menu.h
-nsuds.o: nsuds.h timer.h grid.h menu.h
+nsuds.o: nsuds.h timer.h grid.h
 timer.o: nsuds.h timer.h

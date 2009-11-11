@@ -52,6 +52,14 @@ static void init_ncurses(void)
    noecho();      /* Don't echo typed chars */
    keypad(stdscr, TRUE); /* Catch special keys */
    getmaxyx(stdscr, row, col);
+   /* It seems that there's a bug in ncurses where
+    * anything written to the virtual screen before 
+    * the very first call to refresh() will sometimes 
+    * be discarded, depending on a lot of things..
+    *
+    * Causes a lot of random weirdness otherwise,
+    * so please don't remove. */
+   refresh();
 }
 
 static void init_windows(void) 
