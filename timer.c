@@ -120,7 +120,6 @@ void draw_timer()
    mvwprintw(timer, 4, left, "%s%s . %s%s", time2strs(3));
 
    wrefresh(timer);
-   doupdate();
    refresh();
 }
 

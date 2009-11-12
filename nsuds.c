@@ -30,9 +30,10 @@
 static void init_ncurses(void);
 static void init_windows(void);
 static void draw_grid(void);
-static void draw_stats();
-static void draw_title();
-static void draw_xs();
+static void draw_stats(void);
+static void draw_title(void);
+static void draw_xs(void);
+static void draw_all(void);
 
 WINDOW *grid, *timer, *stats, *title;
 int paused=0, difficulty=0;
@@ -117,7 +118,7 @@ static void draw_grid(void)
 }
 
 
-static void draw_stats()
+static void draw_stats(void)
 {
    int left;
    werase(stats);
@@ -137,20 +138,32 @@ static void draw_stats()
    movec(CUR);
 }
 
-static void draw_title()
+static void draw_title(void)
 {
-   werase(grid);
+   werase(title);
    mvwaddstr(title, 0, 5, "Welcome to nsuds: The Ncurses Sudoku System");
    wnoutrefresh(title);
 }
 
-static void draw_xs()
+static void draw_xs(void)
 {
    int i;
    werase(grid);
    for (i=0; i<row; i++)
       mvhline(i, 0, ACS_CKBOARD, col);
    wnoutrefresh(stdscr);
+}
+
+static void draw_all(void)
+{
+   clear();
+   draw_xs();
+   draw_title();
+   draw_timer();
+   draw_grid();
+   draw_stats();
+   movec(CUR);
+   doupdate();
 }
 
 
@@ -160,15 +173,9 @@ int main(void)
 
    init_ncurses();
    init_windows();
-   clear();
-   draw_xs();
-   draw_title();
    generate();
-   draw_grid();
    start_timer(20, 00);
-   draw_stats();
-   movec(CUR);
-   doupdate();
+   draw_all();
    
    while ((c = getch())) {
       switch (c) {
@@ -210,14 +217,18 @@ int main(void)
          case 'c':
          case KEY_DC:
             gaddch('0');
+            draw_grid();
             draw_stats();
             doupdate();
             break;
          case 'r':
             generate();
-            draw_stats();
-            draw_grid();
-            doupdate();
+            start_timer(20, 0);
+            draw_all();
+            break;
+         case KEY_RESIZE:
+            getmaxyx(stdscr, row, col);
+            draw_all();
             break;
          default:
             if (c>='1' && c<='9') {
