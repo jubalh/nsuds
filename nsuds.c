@@ -45,9 +45,8 @@ static void init_ncurses(void)
    initscr(); /* Enter curses */
    if (has_colors()) {
       start_color(); 
+      init_pair(1, COLOR_CYAN, COLOR_BLACK);
    }
-
-   init_pair(1, COLOR_BLUE, COLOR_BLACK);
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
    keypad(stdscr, TRUE); /* Catch special keys */

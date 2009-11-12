@@ -88,10 +88,8 @@ void gaddch(char ch)
    /* If char is immutable, do nothing */
    if (grid_data[cury][curx]<0) return;
    gmove(cury,curx);
-   if (ch == '0') waddch(grid, ' ');
-   else waddch(grid, ch);
    grid_data[cury][curx]= ch-'0';
-   wnoutrefresh(grid);
+   draw_grid_contents();
 }
 
 
@@ -160,8 +158,13 @@ void draw_grid_contents(void)
    for (i=0; i<9; i++) {
       for (j=0; j<9; j++) {
          gmove(i, j);
-         if (grid_data[i][j] != 0) 
-            waddch(grid, abs(grid_data[i][j]) + '0');
+         if (grid_data[i][j] != 0) {
+            if (grid_data[i][j] > 0 && has_colors()) {
+               waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(1));
+            } else {
+               waddch(grid, abs(grid_data[i][j]) + '0');
+            }
+         }
       }
    }
 
