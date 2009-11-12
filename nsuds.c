@@ -48,6 +48,7 @@ static void init_ncurses(void)
    if (has_colors()) {
       start_color(); 
       init_pair(1, COLOR_CYAN, COLOR_BLACK);
+      init_pair(2, COLOR_WHITE, COLOR_RED);
    }
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
@@ -167,6 +168,35 @@ static void draw_all(void)
    doupdate();
 }
 
+/* Draw game over screen */
+void game_over(void)
+{
+   int c;
+   WINDOW *go;
+   /* Pause clock */
+   paused = 1;
+   /* Draw game over windown */
+   go = newwin(8, 44, 5, 12);
+   wattrset(go, COLOR_PAIR(2));
+   wbkgd(go, COLOR_PAIR(2));
+   werase(go);
+   mvwprintw(go, 0, 15, "!GAME OVER!");
+   mvwprintw(go, 2, 1, "You failed to complete the puzzle in time. "
+      "Keep practicing, to improve your skills, and don't forget "
+      "to use 'p' to pause the game.");
+   mvwprintw(go, 6, 5, "Press any key to start a new game");
+   wrefresh(go);
+
+   /* Wait for input */
+   while ((c = getch()) == ERR) ;
+
+   /* Start a new game */
+   generate();
+   start_timer(20, 0);
+   paused = !paused;
+   draw_all();
+}
+
 
 int main(void)
 {
@@ -175,7 +205,7 @@ int main(void)
    init_ncurses();
    init_windows();
    generate();
-   start_timer(20, 00);
+   start_timer(20, 0);
    draw_all();
    
    while ((c = getch())) {

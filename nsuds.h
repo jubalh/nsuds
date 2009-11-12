@@ -22,6 +22,7 @@
 
 extern WINDOW *grid, *timer, *stats, *title;
 extern int paused, difficulty;
+extern void game_over(void);
 
 #endif
 

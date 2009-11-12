@@ -71,13 +71,20 @@ void start_timer(int mins, int secs)
 void catch_alarm(int sig)
 {
    alarm(1);
-   if (paused || (!cdown.secs && !cdown.mins)) return;
+   if (paused) return;
 
    if (cdown.secs > 0) {
       cdown.secs--;
    } else {
       cdown.mins--;
       cdown.secs=59;
+   }
+
+   /* If timer reaches 0 */
+   if (!cdown.secs && !cdown.mins) {
+      alarm(0);
+      game_over();
+      return;
    }
 
    draw_timer();
