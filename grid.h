@@ -24,7 +24,6 @@
 enum {NONE=0, LEFT, RIGHT, UP, DOWN, CUR};
 #define abs(x) ((x>0)?x:-x)
 
-extern void init_grid(void);
 extern void movec(int dir);
 extern void gaddch(char ch);
 extern int grid_filled(void);

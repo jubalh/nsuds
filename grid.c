@@ -27,8 +27,9 @@
 #include "grid.h"
 
 static void gaddimch(int y, int x, char ch);
+static void init_grid(void);
 
-char grid_data[9][9]; /* grid_data[y/row][x/col] */
+char grid_data[9][9]={{0}}; /* grid_data[y/row][x/col] */
 static int curx=0,cury=0;    /* Current (selected) grid coords */
 static bool initialized=0;   /* Is grid initialized? */
 
@@ -42,13 +43,6 @@ static bool initialized=0;   /* Is grid initialized? */
 #define gmove(y, x) wmove(grid, gy2win(y), gx2win(x))
 /* Move screen cursor to grid coord */
 #define smove(y, x) move(gy2scr(y), gx2scr(x))
-
-
-/* Initialize the grid */
-void init_grid(void)
-{
-   memset(grid_data, 0, 9*9);
-}
 
 
 /* Move cursor to another grid space */
@@ -154,7 +148,10 @@ void draw_grid_contents(void)
 {
    int i, j;
 
+   /* Check if paused */
    if (paused) return;
+
+   /* Draw grid contents */
    for (i=0; i<9; i++) {
       for (j=0; j<9; j++) {
          gmove(i, j);
