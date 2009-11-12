@@ -35,7 +35,7 @@ static void draw_title();
 static void draw_xs();
 
 WINDOW *grid, *timer, *stats, *title;
-int paused=0;
+int paused=0, difficulty=0;
 static int colors=0;
 static int row,col;
 
@@ -126,10 +126,10 @@ static void draw_stats()
    left = 1;
    box(stats, 0, 0);
    mvwaddstr(stats, 1, 1, "Mode: Campaign");
-   mvwaddstr(stats, 4, 1, "Difficulty: 10/10");
+   mvwaddstr(stats, 2, 1, "Level: 1");
+   mvwprintw(stats, 4, 1, "Difficulty: %d%%", difficulty);
    mvwprintw(stats, 5, 1, "Numbers:    %2d/81", grid_filled());
    mvwprintw(stats, 6 ,1, "Remaining:  %2d left", 81-grid_filled());
-   mvwprintw(stats, 7, 1, "Valid: %s", (grid_valid() ? "Yes":"No"));
    mvwaddstr(stats, 9,1, "Time Taken: 3m 24s");
    mvwhline(stats, 10, 1, ACS_HLINE, 23);
    mvwaddstr(stats, 11,1, " Score:    34327");
@@ -164,7 +164,7 @@ int main(void)
    clear();
    draw_xs();
    draw_title();
-   generate(30);
+   generate();
    draw_grid();
    start_timer(20, 00);
    draw_stats();
@@ -212,6 +212,12 @@ int main(void)
          case KEY_DC:
             gaddch('0');
             draw_stats();
+            doupdate();
+            break;
+         case 'r':
+            generate();
+            draw_stats();
+            draw_grid();
             doupdate();
             break;
          default:

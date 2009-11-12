@@ -31,7 +31,7 @@ extern int grid_filled(void);
 extern void draw_grid_contents(void);
 
 extern bool grid_valid(void);
-extern void generate(int num);
+extern void generate(void);
 
 #endif
 

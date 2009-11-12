@@ -21,6 +21,7 @@ depend:
 	@makedepend -Y  -- $(CFLAGS) -- *.c  2>/dev/null
 # DO NOT DELETE
 
-grid.o: nsuds.h grid.h
+gen.o: grid.h
+grid.o: nsuds.h gen.h grid.h
 nsuds.o: nsuds.h timer.h grid.h
 timer.o: nsuds.h timer.h

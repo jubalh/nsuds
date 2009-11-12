@@ -23,11 +23,12 @@
 #include <time.h>
 
 #include "nsuds.h"
+#include "gen.h"
 #include "grid.h"
 
 static void gaddimch(int y, int x, char ch);
 
-static char grid_data[9][9]; /* grid_data[y/row][x/col] */
+char grid_data[9][9]; /* grid_data[y/row][x/col] */
 static int curx=0,cury=0;    /* Current (selected) grid coords */
 static bool initialized=0;   /* Is grid initialized? */
 
@@ -167,27 +168,14 @@ void draw_grid_contents(void)
    wnoutrefresh(grid);
 }
 
-/* Poorly generate a puzzle, for testing */
-void generate(int num)
+/* Generate a puzzle */
+void generate(void)
 {
-   int i;
-   int findx, findy;
-   srand(time(NULL));
-   for (i=0; i < num; i++) {
-      /* Find random empty square */
-      while (1) {
-         findy = rand()%9;
-         findx = rand()%9;
-
-         if (!grid_data[findy][findx]) {
-            gaddimch(findy, findx, '1' + (rand()%8) );
-            if (!grid_valid()) {
-               gaddimch(findy, findx, '0');
-               continue;
-            }
-            break;
-         }
-      }
-   }
+   int diff;
+   diff = do_generate();
+   diff -= 5000;
+   if (diff < 1) diff=1;
+   if (diff > 10000) diff=10000;
+   difficulty = diff / 100;
 }
 

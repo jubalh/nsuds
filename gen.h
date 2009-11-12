@@ -17,11 +17,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
-#ifndef _NSUDS_NSUDS_H
-#define _NSUDS_NSUDS_H
+#ifndef _NSUDS_GEN_H
+#define _NSUDS_GEN_H
 
-extern WINDOW *grid, *timer, *stats, *title;
-extern int paused, difficulty;
+extern int do_generate(void);
 
 #endif
 
