@@ -37,6 +37,7 @@ static void draw_all(void);
 
 WINDOW *grid, *timer, *stats, *title;
 int paused=0, difficulty=0;
+bool campaign=0;
 static int colors=0;
 static int row,col;
 
@@ -125,8 +126,8 @@ static void draw_stats(void)
 
    left = 1;
    box(stats, 0, 0);
-   mvwaddstr(stats, 1, 1, "Mode: Campaign");
-   mvwaddstr(stats, 2, 1, "Level: 1");
+   mvwprintw(stats, 1, 1, "Mode: %s", campaign?"Campaign":"Free Play");
+   if (campaign) mvwaddstr(stats, 2, 1, "Level: 1");
    mvwprintw(stats, 4, 1, "Difficulty: %d%%", difficulty);
    mvwprintw(stats, 5, 1, "Numbers:    %2d/81", grid_filled());
    mvwprintw(stats, 6 ,1, "Remaining:  %2d left", 81-grid_filled());
@@ -221,11 +222,19 @@ int main(void)
             draw_stats();
             doupdate();
             break;
-         case 'r':
+         /* New game, in freeplay */
+         case 'n':
+            if (campaign) break;
             generate();
             start_timer(20, 0);
-            draw_all();
+            draw_grid();
+            draw_stats();
             break;
+         case 'm':
+            campaign=!campaign;
+            start_timer(20, 0);
+            draw_grid();
+            draw_stats();
          case KEY_RESIZE:
             getmaxyx(stdscr, row, col);
             draw_all();

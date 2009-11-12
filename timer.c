@@ -81,6 +81,7 @@ void catch_alarm(int sig)
    }
 
    draw_timer();
+   doupdate();
 }
 
 #define time2strs(line) digits2str(line, 1), digits2str(line, 2), \
@@ -119,7 +120,7 @@ void draw_timer()
    mvwprintw(timer, 3, left, "%s%s . %s%s", time2strs(2));
    mvwprintw(timer, 4, left, "%s%s . %s%s", time2strs(3));
 
-   wrefresh(timer);
-   refresh();
+   wnoutrefresh(timer);
+   wnoutrefresh(stdscr); /* Move cursor back */
 }
 
