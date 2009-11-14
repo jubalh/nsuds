@@ -19,6 +19,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <time.h>
 #include <ncurses.h>
@@ -51,6 +52,7 @@ static void init_ncurses(void)
       init_pair(1, COLOR_CYAN, COLOR_BLACK);  /* Filled numbers */
       init_pair(2, COLOR_WHITE, COLOR_RED);   /* G/O Screen */
       init_pair(3, COLOR_WHITE, COLOR_GREEN); /* Win Screen */
+      init_pair(4, COLOR_WHITE, COLOR_BLUE);  /* Confirm dialog */
    }
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
@@ -171,6 +173,75 @@ static void draw_all(void)
    doupdate();
 }
 
+/* Launch a dialog that asks OK/Cancel for a question,
+ * pausing the game while it waits for input */
+bool launch_confirm(char *question)
+{
+   int c;
+   bool status=false;
+   WINDOW *confirm = newwin(row * 0.4, col * 0.7, row * 0.3, col * 0.15);
+
+   alarm(0); /* Cancel alarm */
+   /* Pause */
+   paused=1;
+   draw_grid();
+   doupdate();
+   curs_set(!paused);
+
+   /* Draw dialog */
+   wbkgd(confirm, COLOR_PAIR(4));
+   box(confirm, 0, 0);
+   mvwaddstr(confirm, 0, col * 0.35 - (strlen("Confirm..") / 2), "Confirm");
+   mvwaddstr(confirm, 2, col * 0.35 - (strlen(question) / 2), question);
+   wattrset(confirm, A_REVERSE);
+   mvwaddstr(confirm, (row * 0.4) - 3, col * 0.35, " Cancel ");
+   wattroff(confirm, A_REVERSE);
+   mvwaddstr(confirm, (row * 0.4) - 3, col * 0.35 - 9, "   OK   ");
+   wrefresh(confirm);
+   overwrite(confirm, stats);
+   while ((c = getch())!=ERR) {
+      switch (c) {
+         case KEY_RESIZE:
+            werase(confirm);
+            wnoutrefresh(confirm);
+            delwin(confirm);
+            getmaxyx(stdscr, row, col);
+            draw_all();
+            return launch_confirm(question);
+         case KEY_LEFT:
+         case KEY_RIGHT:
+            wattrset(confirm, A_REVERSE);	
+            if (!status) {
+               mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
+               wattroff(confirm, A_REVERSE);
+               mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
+            } else {
+               mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
+               wattroff(confirm, A_REVERSE);
+               mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
+            }
+            status = !status;
+            wrefresh(confirm);
+            break;				
+         /* Enter pressed */
+         case 10:
+            wbkgd(confirm, COLOR_PAIR(0));
+            werase(confirm);
+            wnoutrefresh(confirm);
+            delwin(confirm);
+            paused=0;
+            curs_set(!paused);
+            draw_all();
+            catch_alarm(0);
+            return status;
+         default:
+            break;
+      }
+   }
+   return 0;
+}
+
+
 /* Draw game over screen */
 void game_over(void)
 {
@@ -274,10 +345,13 @@ int main(void)
             doupdate();
             break;
          case 'q':
-            werase(grid);
-            delwin(grid);
-            endwin();
-            goto done;
+            if (launch_confirm("Really quit?")) {
+               werase(grid);
+               delwin(grid);
+               endwin();
+               goto done;
+            }
+            break;
          case 'p':
             paused=!paused;
             draw_grid();

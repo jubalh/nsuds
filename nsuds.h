@@ -25,6 +25,7 @@ extern int paused, difficulty;
 extern int score;
 extern void game_over(void);
 extern void game_win(void);
+extern bool launch_confirm(char *question);
 
 #endif
 
