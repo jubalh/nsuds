@@ -21,15 +21,23 @@
 #ifndef _NSUDS_TIMER_H
 #define _NSUDS_TIMER_H
 
-struct countdown {
-   int mins;
-   int secs;
+/* Level timer */
+struct ltimer {
+   short mins;
+   short secs;
+};
+
+/* Game timer */
+struct gtimer {
+   short mins;
+   short hours;
 };
 
 extern void draw_timer();
 extern void catch_alarm(int sig);
 extern void start_timer(int mins, int secs);
-extern struct countdown cdown;
+extern struct ltimer cdown, ltime;
+extern struct gtimer gtime;
 
 #endif
 

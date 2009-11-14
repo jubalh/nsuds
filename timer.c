@@ -37,14 +37,18 @@ static char *timer_digits[3][10] = {
    { "|__|","   |","|__ "," __|","   |"," __|","|__|","   |","|__|"," __|"}
 };
 static char *empty="   ";
-struct countdown cdown;
+struct ltimer cdown, ltime={0,0};
+struct gtimer gtime={0,0};
 
 void start_timer(int mins, int secs)
 {
    struct sigaction new;
 
+   /* Setup countdown */
    cdown.mins = mins;
    cdown.secs = secs;
+   /* Reset level timer */
+   ltime.mins = ltime.secs = 0;
 
    /* Set up signal handler */
    new.sa_handler = catch_alarm;
@@ -69,11 +73,28 @@ void catch_alarm(int sig)
    alarm(1);
    if (paused) return;
 
+   /* Decrement level timer */
    if (cdown.secs > 0) {
       cdown.secs--;
    } else {
       cdown.mins--;
       cdown.secs=59;
+   }
+
+   /* Increment total level and game time */
+   if (ltime.secs < 59) {
+      ltime.secs++;
+   } else {
+      ltime.mins++;
+      ltime.secs=0;
+      /* A minute has passed in level time,
+       * so also update game time */
+      if (gtime.mins < 59) {
+         gtime.mins++;
+      } else {
+         gtime.hours++;
+         gtime.mins=0;
+      }
    }
 
    /* If timer reaches 0 */
@@ -84,6 +105,7 @@ void catch_alarm(int sig)
    }
 
    draw_timer();
+   draw_stats();
    doupdate();
 }
 

@@ -31,7 +31,6 @@
 static void init_ncurses(void);
 static void init_windows(void);
 static void draw_grid(void);
-static void draw_stats(void);
 static void draw_title(void);
 static void draw_xs(void);
 static void draw_all(void);
@@ -124,7 +123,7 @@ static void draw_grid(void)
 }
 
 
-static void draw_stats(void)
+void draw_stats(void)
 {
    int left;
    werase(stats);
@@ -136,8 +135,8 @@ static void draw_stats(void)
    mvwprintw(stats, 4, 1, "Difficulty: %d%%", difficulty);
    mvwprintw(stats, 5, 1, "Numbers:    %2d/81", grid_filled());
    mvwprintw(stats, 6 ,1, "Remaining:  %2d left", 81-grid_filled());
-   mvwaddstr(stats, 8,1, "Time Taken: 3m 24s");
-   mvwaddstr(stats, 9,1, "Game total: 0h 3m");
+   mvwprintw(stats, 8,1, "Time Taken: %dm %2ds", ltime.mins, ltime.secs);
+   mvwprintw(stats, 9,1, "Game total: %dh %2dm", gtime.hours, ltime.mins);
    mvwhline(stats, 10, 1, ACS_HLINE, 23);
    mvwprintw(stats, 11,1, " Score:   %d", score);
 
@@ -267,6 +266,7 @@ void game_over(void)
 
    /* Start a new game */
    score = 0;
+   gtime.hours = gtime.mins = 0;
    generate();
    start_timer(20, 0);
    paused = !paused;
