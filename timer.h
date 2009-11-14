@@ -21,9 +21,15 @@
 #ifndef _NSUDS_TIMER_H
 #define _NSUDS_TIMER_H
 
+struct countdown {
+   int mins;
+   int secs;
+};
+
 extern void draw_timer();
 extern void catch_alarm(int sig);
 extern void start_timer(int mins, int secs);
+extern struct countdown cdown;
 
 #endif
 

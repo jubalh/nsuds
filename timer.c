@@ -37,11 +37,7 @@ static char *timer_digits[3][10] = {
    { "|__|","   |","|__ "," __|","   |"," __|","|__|","   |","|__|"," __|"}
 };
 static char *empty="   ";
-
-static struct {
-   int mins;
-   int secs;
-} cdown; /* cdown */
+struct countdown cdown;
 
 void start_timer(int mins, int secs)
 {

@@ -84,6 +84,10 @@ void gaddch(char ch)
    gmove(cury,curx);
    grid_data[cury][curx]= ch-'0';
    draw_grid_contents();
+
+   /* Check if compelted */
+   if (grid_filled() == 81 && grid_valid())
+      game_win();
 }
 
 

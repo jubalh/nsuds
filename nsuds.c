@@ -38,6 +38,7 @@ static void draw_all(void);
 WINDOW *grid, *timer, *stats, *title;
 int paused=0, difficulty=0;
 bool campaign=0;
+int score=0;
 static int colors=0;
 static int row,col;
 
@@ -47,8 +48,9 @@ static void init_ncurses(void)
    initscr(); /* Enter curses */
    if (has_colors()) {
       start_color(); 
-      init_pair(1, COLOR_CYAN, COLOR_BLACK);
-      init_pair(2, COLOR_WHITE, COLOR_RED);
+      init_pair(1, COLOR_CYAN, COLOR_BLACK);  /* Filled numbers */
+      init_pair(2, COLOR_WHITE, COLOR_RED);   /* G/O Screen */
+      init_pair(3, COLOR_WHITE, COLOR_GREEN); /* Win Screen */
    }
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
@@ -132,9 +134,10 @@ static void draw_stats(void)
    mvwprintw(stats, 4, 1, "Difficulty: %d%%", difficulty);
    mvwprintw(stats, 5, 1, "Numbers:    %2d/81", grid_filled());
    mvwprintw(stats, 6 ,1, "Remaining:  %2d left", 81-grid_filled());
-   mvwaddstr(stats, 9,1, "Time Taken: 3m 24s");
+   mvwaddstr(stats, 8,1, "Time Taken: 3m 24s");
+   mvwaddstr(stats, 9,1, "Game total: 0h 3m");
    mvwhline(stats, 10, 1, ACS_HLINE, 23);
-   mvwaddstr(stats, 11,1, " Score:    34327");
+   mvwprintw(stats, 11,1, " Score:   %d", score);
 
    wnoutrefresh(stats);
    movec(CUR);
@@ -176,7 +179,7 @@ void game_over(void)
    /* Pause clock */
    paused = 1;
    /* Draw game over windown */
-   go = newwin(8, 44, 5, 12);
+   go = newwin(10, 44, 5, 12);
    wattrset(go, COLOR_PAIR(2));
    wbkgd(go, COLOR_PAIR(2));
    werase(go);
@@ -184,7 +187,43 @@ void game_over(void)
    mvwprintw(go, 2, 1, "You failed to complete the puzzle in time. "
       "Keep practicing, to improve your skills, and don't forget "
       "to use 'p' to pause the game.");
-   mvwprintw(go, 6, 5, "Press any key to start a new game");
+   mvwprintw(go, 6, 10, "Total score: %d", score);
+   mvwprintw(go, 8, 5, "Press any key to start a new game");
+   wrefresh(go);
+
+   /* Wait for input */
+   while ((c = getch()) == ERR) ;
+
+   /* Start a new game */
+   score = 0;
+   generate();
+   start_timer(20, 0);
+   paused = !paused;
+   draw_all();
+}
+
+/* Draw level win screen */
+void game_win(void)
+{
+   int c;
+   WINDOW *go;
+   /* Pause clock */
+   paused = 1;
+   /* Draw level win  window */
+   go = newwin(12, 44, 5, 12);
+   wattrset(go, COLOR_PAIR(3));
+   wbkgd(go, COLOR_PAIR(3));
+   werase(go);
+   mvwprintw(go, 0, 15, "Congratulations");
+   mvwprintw(go, 2, 1, "You successfully completed the puzzle! "
+      "You finished the game with %d minutes and %d seconds remaining.",
+     cdown.mins, cdown.secs );
+   mvwprintw(go, 6, 7, "Level Score = %d", 
+      (cdown.mins * 60 + cdown.secs) * (1+difficulty/50));
+   score += (cdown.mins * 60 + cdown.secs) * (1+difficulty/100);
+   mvwprintw(go, 7, 7, "Total Score = %d", score);
+
+   mvwprintw(go, 9, 5, "Press any key to start a new game");
    wrefresh(go);
 
    /* Wait for input */
