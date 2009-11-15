@@ -1,0 +1,6 @@
+This file contains a non-definitive list of user-visible changes. 
+See ChangeLog for a more detailed log of changes, geared toward developers
+
+Changes in 0.1B
+----------------
+- Initial beta release. Playable sudoku with freeplay mode

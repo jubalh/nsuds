@@ -34,6 +34,7 @@ static void draw_grid(void);
 static void draw_title(void);
 static void draw_xs(void);
 static void draw_all(void);
+static bool launch_confirm(char *question);
 
 WINDOW *grid, *timer, *stats, *title;
 int paused=0, difficulty=0;
@@ -174,7 +175,7 @@ static void draw_all(void)
 
 /* Launch a dialog that asks OK/Cancel for a question,
  * pausing the game while it waits for input */
-bool launch_confirm(char *question)
+static bool launch_confirm(char *question)
 {
    int c;
    bool status=false;
@@ -373,7 +374,7 @@ int main(void)
             draw_grid();
             draw_stats();
             break;
-         case 'm':
+         /*case 'm':*/
             campaign=!campaign;
             start_timer(20, 0);
             draw_grid();

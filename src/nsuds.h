@@ -17,20 +17,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
+#ifndef _NSUDS_NSUDS_H
+#define _NSUDS_NSUDS_H
 
-#ifndef _NSUDS_GRID_H
-#define _NSUDS_GRID_H
-
-enum {NONE=0, LEFT, RIGHT, UP, DOWN, CUR};
-#define abs(x) ((x>0)?x:-x)
-
-extern void movec(int dir);
-extern void gaddch(char ch);
-extern int grid_filled(void);
-extern void draw_grid_contents(void);
-
-extern bool grid_valid(void);
-extern void generate(void);
+extern WINDOW *grid, *timer, *stats, *title;
+extern int paused, difficulty;
+extern int score;
+extern void game_over(void);
+extern void game_win(void);
+extern void draw_stats(void);
 
 #endif
 

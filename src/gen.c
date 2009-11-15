@@ -43,7 +43,7 @@ static int Rows[325], Cols[730], Row[325][10], Col[730][5], Ur[730], Uc[325],
     V[325], W[325];
 static int P[88], A[88], C[88], I[88], Two[888];
 static int w, f, s1, m0, c1, c2, r1, l, i1, m1, m2, a, p, i, j, k, r, c, d, n =
-729, m = 324, x, y, s, j;
+729, m = 324, x, y, s;
 static int q7, part, nt, rate, nodes, seed, solutions, min, clues;
 static char L[11] = "0123456789";
 
