@@ -3,6 +3,7 @@ nsuds - The Ncurses Sudoku System
 . Version: nsuds-0.1B (Beta release)
 . Written by Vincent Launchbury
 . See AUTHORS for a complete list of contributors
+. Report bugs to: <vincent@doublecreations.com>
 
 
 INTRODUCTION
@@ -30,7 +31,7 @@ compiling yourself.
 
 To extract the source code, fire up a terminal, cd into your download 
 directory and type the following commands:
-   $tar xzf nsuds-0.1B-src.tar.gz
+   $tar xzf nsuds-0.1B.tar.gz
    $cd nsuds-0.1B
 
 Then, to compile and install, run the following commands:
