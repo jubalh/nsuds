@@ -1,5 +1,68 @@
-nsuds is currently under development. Which means:
-   - It doesn't yet work
-   - Some things are implemented poorly
-   - You probably don't want to use/contribute yet
+nsuds - The Ncurses Sudoku System
+*********************************
+. Version: nsuds-0.1B (Beta release)
+. Written by Vincent Launchbury
+. See AUTHORS for a complete list of contributors
+
+
+INTRODUCTION
+============
+The nsuds project is a text graphical sudoku game that uses the ncurses display library. The point of the project is to provide a portable implementation with the minimum possible dependencies. 
+
+ADDITIONAL DOCUMENTATION
+========================
+AUTHORS           - A list of authors and contributors
+COPYING           - License for this software (GPL V2)
+ChangeLog         - A complete changelog, for developers
+INSTALL           - Detailed generic install instructions
+NEWS              - A basic changelog, for users
+
+Project Website : Not yet up
+Sourceforge site: http://www.sourceforge.net/projects/nsuds/
+Git Repository  : http://nsuds.git.sourceforge.net/git/gitweb.cgi?p=nsuds/nsuds  
+
+
+COMPILING AND INSTALLING ON *NIX
+================================
+Packages for *NIX aren't currently provided. You could always ask your distros 
+development team to add matrixgl to their repositories, if you don't like 
+compiling yourself. 
+
+To extract the source code, fire up a terminal, cd into your download 
+directory and type the following commands:
+   $tar xzf nsuds-0.1B-src.tar.gz
+   $cd nsuds
+
+Then, to compile and install, run the following commands:
+   $./configure
+   $make
+   (Then, as root)
+   #make install
+
+You can then run nsuds from any terminal.
+
+
+REMOVING NSUDS
+==============
+To remove nsuds, cd to the source directory and type the following as root:
+#make uninstall
+Which will remove any added files. 
+
+
+IN-GAME KEYS
+============
+q       - Quit
+n       - New Game
+p       - Pause Game
+1-9     - Enter number in selected square
+wasd   \  
+hjkl    - Move between squares 
+Arrows /
+
+SUPPORTED OPERATING SYSTEMS
+===========================
+matrixgl is currently in beta, but it has been confirmed to work on the following platforms:
+   . Linux: Gentoo
+   . Linux: Ubuntu
+
 
