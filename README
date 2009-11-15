@@ -31,7 +31,7 @@ compiling yourself.
 To extract the source code, fire up a terminal, cd into your download 
 directory and type the following commands:
    $tar xzf nsuds-0.1B-src.tar.gz
-   $cd nsuds
+   $cd nsuds-0.1B
 
 Then, to compile and install, run the following commands:
    $./configure
