@@ -34,14 +34,16 @@ static void draw_grid(void);
 static void draw_title(void);
 static void draw_xs(void);
 static void draw_all(void);
+static void draw_fbar(void);
 static bool launch_confirm(char *question);
 
-WINDOW *grid, *timer, *stats, *title;
+WINDOW *grid, *timer, *stats, *title, *fbar;
 int paused=0, difficulty=0;
 bool campaign=0;
 int score=0;
+int fbar_time = 0;   /* Seconds to keep fbar up */
 static int colors=0;
-static int row,col;
+int row,col;
 
 /* Set up decent defaults */
 static void init_ncurses(void)
@@ -53,6 +55,7 @@ static void init_ncurses(void)
       init_pair(2, COLOR_WHITE, COLOR_RED);   /* G/O Screen */
       init_pair(3, COLOR_WHITE, COLOR_GREEN); /* Win Screen */
       init_pair(4, COLOR_WHITE, COLOR_BLUE);  /* Confirm dialog */
+      init_pair(5, COLOR_BLACK, COLOR_WHITE); /* Function bar */
    }
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
@@ -74,6 +77,7 @@ static void init_windows(void)
    grid=newwin(19, 37, 2, 28);
    timer = newwin(6, 25, 2, 1);
    stats = newwin(13, 25, 8, 1);
+   fbar = newwin(1, col, row-1, 0);
 }
 
 
@@ -150,6 +154,47 @@ static void draw_title(void)
    werase(title);
    mvwaddstr(title, 0, 5, "Welcome to nsuds: The Ncurses Sudoku System");
    wnoutrefresh(title);
+}
+
+/* Add highlighted string */
+#define waddhlstr(w, str)         \
+   do {                           \
+      wattrset(w, COLOR_PAIR(1)); \
+      waddstr(w, str);            \
+      wattrset(w, 0);             \
+   } while(0)
+
+/* Draw function bar at bottom of screen
+ * Always on the last line, full width */
+static void draw_fbar(void)
+{
+   werase(fbar);
+   wmove(fbar, 0, 0);
+   /* New game */
+   waddch(fbar, 'N' | COLOR_PAIR(1));
+   waddstr(fbar, "ew ");
+   /* Pause */
+   waddch(fbar, 'P' | COLOR_PAIR(1));
+   waddstr(fbar, "ause ");
+   /* Quit */
+   waddch(fbar, 'Q' | COLOR_PAIR(1));
+   waddstr(fbar, "uit | ");
+
+   /* 1-9 add number */
+   waddstr(fbar, "Add:");
+   waddhlstr(fbar, "1-9  ");
+
+   /* DEL/C remove number */
+   waddstr(fbar, "Del:");
+   waddhlstr(fbar, "DEL/C  ");
+
+   /* Move */
+   waddstr(fbar, "Move:");
+   waddhlstr(fbar, "Arrows/WASD/HJKL ");
+   wnoutrefresh(fbar);
+
+   /* Restore Cursor*/
+   movec(CUR);
 }
 
 static void draw_xs(void)
@@ -321,30 +366,41 @@ int main(void)
    
    while ((c = getch())) {
       switch (c) {
+         case ERR:
+            break;
          case KEY_LEFT:
+         case 'H':
          case 'h':
+         case 'A':
          case 'a':
             movec(LEFT);
             doupdate();
             break;
          case KEY_RIGHT:
+         case 'L':
          case 'l':
+         case 'D':
          case 'd':
             movec(RIGHT);
             doupdate();
             break;
          case KEY_UP:
+         case 'K':
          case 'k':
+         case 'W':
          case 'w':
             movec(UP);
             doupdate();
             break;
          case KEY_DOWN:
+         case 'J':
          case 'j':
+         case 'S':
          case 's':
             movec(DOWN);
             doupdate();
             break;
+         case 'Q':
          case 'q':
             if (launch_confirm("Really quit?")) {
                werase(grid);
@@ -353,12 +409,14 @@ int main(void)
                goto done;
             }
             break;
+         case 'P':
          case 'p':
             paused=!paused;
             draw_grid();
             doupdate();
             curs_set(!paused);
             break;
+         case 'C':
          case 'c':
          case KEY_DC:
             gaddch('0');
@@ -367,27 +425,38 @@ int main(void)
             doupdate();
             break;
          /* New game, in freeplay */
+         case 'N':
          case 'n':
             if (campaign) break;
-            generate();
-            start_timer(20, 0);
-            draw_grid();
-            draw_stats();
+            if (launch_confirm("End current game and start a fresh?")) {
+               generate();
+               start_timer(20, 0);
+               draw_grid();
+               draw_stats();
+            }
             break;
-         /*case 'm':*/
+#if 0
+         case 'm':
             campaign=!campaign;
             start_timer(20, 0);
             draw_grid();
             draw_stats();
+#endif
          case KEY_RESIZE:
             getmaxyx(stdscr, row, col);
             draw_all();
             break;
          default:
+            /* Handle number input */
             if (c>='1' && c<='9') {
                gaddch(c);
                draw_stats();
                doupdate();
+            /* Key unknown, show function bar */
+            } else if (!fbar_time) {
+               draw_fbar();
+               doupdate();
+               fbar_time = 5;
             }
             break;
       }

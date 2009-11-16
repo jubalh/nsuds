@@ -40,6 +40,8 @@ static char *empty="   ";
 struct ltimer cdown, ltime={0,0};
 struct gtimer gtime={0,0};
 
+/* Start a new timer for a level,
+ * cancels any old timers */
 void start_timer(int mins, int secs)
 {
    struct sigaction new;
@@ -68,9 +70,21 @@ void start_timer(int mins, int secs)
    alarm(1);
 }
 
+/* Called every second when in game (unless paused).
+ * Update game timers, and handle the fbar timeout */
 void catch_alarm(int sig)
 {
    alarm(1);
+
+   /* If function bar is shown, countdown it's timer
+    * and erase when it expires */
+   if (fbar_time && !(--fbar_time)) {
+      werase(fbar);
+      mvwhline(fbar, 0, 0, ACS_CKBOARD, col);
+      wrefresh(fbar);
+   }
+
+   /* Don't countdown if paused */
    if (paused) return;
 
    /* Decrement level timer */
@@ -109,6 +123,8 @@ void catch_alarm(int sig)
    doupdate();
 }
 
+/* Print each line of the large font timer
+ * based on the cdown timer */
 #define time2strs(line) digits2str(line, 1), digits2str(line, 2), \
    digits2str(line, 3), digits2str(line, 4)
 
@@ -132,6 +148,7 @@ static char *digits2str(int line, int dig) {
 }
 
 
+/* Draw timer window, with updated timers */
 void draw_timer()
 {
    int left;

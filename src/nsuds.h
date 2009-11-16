@@ -20,9 +20,11 @@
 #ifndef _NSUDS_NSUDS_H
 #define _NSUDS_NSUDS_H
 
-extern WINDOW *grid, *timer, *stats, *title;
+extern WINDOW *grid, *timer, *stats, *title, *fbar;
 extern int paused, difficulty;
 extern int score;
+extern int fbar_time;
+extern int row,col;
 extern void game_over(void);
 extern void game_win(void);
 extern void draw_stats(void);
