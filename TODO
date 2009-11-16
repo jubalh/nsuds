@@ -1,5 +1,7 @@
 - Initial menu for freeplay/campaign
 - Menu for freeplay difficulty (timer 30mins -> 5mins)
+   - Also, edit gen.h so that it keeps the solution, so that
+   a puzzle can be made easier by filling in more boxes (i.e not minimal)
 - Level/Game win screen
    - Proceed to next game in campaign
       - Timer -= 2mins each time (20,18,16,14,12,10,8,6)
@@ -17,4 +19,9 @@
       - Points += Level*100 + 10*floor((secs left) * (1 + Level / 3) * rand(1..1.05));
       - Game complete bonus (lvl 30): 100000
 - Mouse support
-- F# stlye bottom key bar (i.e [P_Pause] [N_New Game]... etc)
+- High score list (single user only)
+- Handle resize properly so that
+   - Detects if win is too small, shows error and pauses
+   - Resizes fbar properly
+- Use getopt for --version --help and game mode/time options
+- Add man file

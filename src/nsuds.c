@@ -51,11 +51,10 @@ static void init_ncurses(void)
    initscr(); /* Enter curses */
    if (has_colors()) {
       start_color(); 
-      init_pair(1, COLOR_CYAN, COLOR_BLACK);  /* Filled numbers */
+      init_pair(1, COLOR_CYAN, COLOR_BLACK);  /* Filled numbers/Fbar */
       init_pair(2, COLOR_WHITE, COLOR_RED);   /* G/O Screen */
       init_pair(3, COLOR_WHITE, COLOR_GREEN); /* Win Screen */
       init_pair(4, COLOR_WHITE, COLOR_BLUE);  /* Confirm dialog */
-      init_pair(5, COLOR_BLACK, COLOR_WHITE); /* Function bar */
    }
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
@@ -449,9 +448,11 @@ int main(void)
          default:
             /* Handle number input */
             if (c>='1' && c<='9') {
-               gaddch(c);
-               draw_stats();
-               doupdate();
+               if (!paused) {
+                  gaddch(c);
+                  draw_stats();
+                  doupdate();
+               }
             /* Key unknown, show function bar */
             } else if (!fbar_time) {
                draw_fbar();
