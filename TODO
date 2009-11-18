@@ -23,5 +23,4 @@
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses
    - Resizes fbar properly
-- Use getopt for --version --help and game mode/time options
 - Add man file

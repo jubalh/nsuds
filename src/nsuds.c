@@ -23,7 +23,9 @@
 #include <string.h>
 #include <time.h>
 #include <ncurses.h>
+#include <getopt.h>
 
+#include "config.h"
 #include "nsuds.h"
 #include "timer.h"
 #include "grid.h"
@@ -353,16 +355,49 @@ void game_win(void)
 }
 
 
-int main(void)
+int main(int argc, char **argv)
 {
    int c;
+   int opt, opti;
+   static struct option long_opts[] =
+   {
+      {"help",      no_argument,       0, 'h'},
+      {"version",   no_argument,       0, 'v'},
+      {0, 0, 0, 0}
+   };
 
+   /* Parse arguments */
+   while ((opt = getopt_long_only(argc, argv, "hv", long_opts, &opti))) {
+      if (opt == EOF) break;
+      switch (opt) {
+         case 'h':
+           fputs("Usage: nsuds [OPTIONS]...\n\
+Nsuds: The Ncurses Sudoku System\n\
+   -h --help      Show this help screen\n\
+   -v --version   Print version info\n\
+Report bugs to <" PACKAGE_BUGREPORT ">\n\
+Home Page: http://www.sourceforge.net/projects/nsuds/\n",
+             stdout);
+            exit(EXIT_SUCCESS);
+         case 'v':
+            fputs("nsuds version " VERSION "\n\
+Copyright (C) Vincent Launchbury 2008,2009.\n\
+License GPLv2+: GNU GPL version 2 or later.\n\
+This is free software, you are free to modify and redistribute it.\n\n\
+Send bug reports to <" PACKAGE_BUGREPORT ">\n",
+               stdout);
+            exit(EXIT_SUCCESS);
+      }
+   }
+
+   /* Setup ncurses and windows */
    init_ncurses();
    init_windows();
    generate();
    start_timer(20, 0);
    draw_all();
    
+   /* Main input loop */
    while ((c = getch())) {
       switch (c) {
          case ERR:
