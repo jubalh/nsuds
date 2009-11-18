@@ -19,7 +19,7 @@
 
 AC_PREREQ([2.63])
 t://nsuds.git.sourceforge.net/gitroot/nsuds/nsuds
-AC_INIT([nsuds], [0.1B], [vincent@doublecreations.com])
+AC_INIT([nsuds], [0.2B], [vincent@doublecreations.com])
 AC_CONFIG_AUX_DIR([build])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/nsuds.c])
@@ -40,6 +40,27 @@ AC_HEADER_STDC
 AC_CHECK_LIB([ncurses], [wbkgd],,)
 AC_CHECK_HEADERS(ncurses.h,,
               [echo "Error: ncurses headers not found. You may need to install an ncurses development package.";exit 1])
+
+# Find man dirs better than automake does.
+# (Using the default man functionality
+#  doesn't work on some distros I've tested,
+#  so we have to find it manually)
+MAN1_DIR=0
+test "$silent" != yes && echo -n "checking for man1 directory... "
+for dir in /usr/share/man/man1 \
+   /usr/local/share/man/man1 \
+   /usr/local/man/man1 \
+   /usr/man/man1 \
+   /usr/contrib/man/man1; do
+   test -d $dir && MAN1_DIR=$dir && break
+done
+if test -n $MAN1_DIR; then
+   test "$silent" != yes && echo "$MAN1_DIR"
+else
+   test "$silent" != yes && echo "no. Using /usr/share/man/man1"
+   MAN1_DIR = "/usr/share/man/man1"
+fi
+AC_SUBST([MAN1_DIR])
 
 AC_OUTPUT
 

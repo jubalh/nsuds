@@ -23,4 +23,3 @@
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses
    - Resizes fbar properly
-- Add man file

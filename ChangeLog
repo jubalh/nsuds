@@ -1,6 +1,8 @@
 nsuds-v0.2B (not yet released)
 -----------
 . If an unknown key is pressed, a key hint line is shown
+. Added a man page
+. Added --version and --help options
 
 nsuds-v0.1B (2009/11/14)
 -----------
