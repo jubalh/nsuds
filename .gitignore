@@ -1,0 +1,18 @@
+# Ignore autotools generated files
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/*
+build/*
+config.*
+configure
+src/.deps/
+src/stamp-h1
+
+# Ignore any binaries
+src/nsuds
+*.o
+
+# And any other tool generated files
+tags
+gmon.out
