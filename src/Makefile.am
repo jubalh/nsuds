@@ -13,3 +13,6 @@ nsuds_LDFLAGS = -lncurses
 # So we find it ourselves instead
 ourman1dir = @MAN1_DIR@
 ourman1_DATA = nsuds.1
+
+# Make sure manpage is in 'make dist' tarball
+dist_data_DATA = nsuds.1
