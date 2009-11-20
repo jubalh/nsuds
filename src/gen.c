@@ -36,10 +36,8 @@
 
 #include "grid.h"
 
-/* Random number generator */
-#define MWC ((zr = 36969 * (zr & 65535) + (zr >> 16)) ^ (wr = 18000 * (wr & 65535)+(wr >> 16)))
-static unsigned zr = 362436069, wr = 521288629;
-
+/* Random number in the range [a,b] */
+#define rrand(a,b) (int) ( ( (double)((double)rand() /RAND_MAX) * (b-a) ) + a)
 
 static short Rows[325], Row[325][10], Col[730][5], Ur[730], Uc[325], V[325], W[325];
 static short P[88], A[88], C[88], I[88];
@@ -60,11 +58,6 @@ void do_generate(void)
    gettimeofday(&tm, NULL);
    srand(tm.tv_usec);
 
-   /* Seed MWC rand-generator */
-   seed = 0.11 /*rand()*/*4149024;
-   zr ^= seed;
-   wr += seed;
-
    i = 0;
    for (x = 1; x <= 9; x++) {
       for (y = 1; y <= 9; y++) {
@@ -78,8 +71,8 @@ void do_generate(void)
       }
    }
 
-   for (x = 1; x <= m; x++)
-      Rows[x] = 0;
+   for (i = 1; i <= m; i++)
+      Rows[i] = 0;
 
    for (s = 1; s <= n; s++) {
       for (y = 1; y <= 4; y++) {
@@ -97,19 +90,12 @@ void do_generate(void)
       do {
          /* Choose a random unfilled square */
          do {
-            do {
-               x = (MWC >> 8) & 127;
-            } while (x > 80);
-            x++;
-         }
-         while (A[x]);
+            x = rrand(1, 81);
+            fprintf(stderr, "%d ", x);
+         } while (A[x]);
 
          /* Fill with random number */
-         do {
-            s = (MWC >> 9) & 15;
-         } while (s > 8);
-         s++;
-         A[x] = s;
+         A[x] = rrand(1, 9);
 
          valid = solve();
          /* If it makes the puzzle unsolvible, 
@@ -124,10 +110,7 @@ void do_generate(void)
    /* Now we have a unique-solution sudoku, remove 
     * clues to make it minimal */
    for (i = 1; i <= 81; i++) {
-      do
-         x = (MWC >> 8) & 127;
-      while (x >= i);
-      x++;
+      x = rrand(1, i);
       P[i] = P[x];
       P[x] = i;
    }
@@ -214,9 +197,7 @@ m2:
                }
             }
          }
-         do
-            c2 = MWC & 254;
-         while (c2 >= w);
+         c2 = rrand(1,w-1);
          C[i] = W[c2 + 1];
       }
 keepgoing:
