@@ -175,11 +175,6 @@ void draw_grid_contents(void)
 /* Generate a puzzle */
 void generate(void)
 {
-   int diff;
-   diff = do_generate();
-   diff -= 5000;
-   if (diff < 1) diff=1;
-   if (diff > 10000) diff=10000;
-   difficulty = diff / 100;
+   do_generate();
 }
 

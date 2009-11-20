@@ -138,7 +138,7 @@ void draw_stats(void)
    box(stats, 0, 0);
    mvwprintw(stats, 1, 1, "Mode: %s", campaign?"Campaign":"Free Play");
    if (campaign) mvwaddstr(stats, 2, 1, "Level: 1");
-   mvwprintw(stats, 4, 1, "Difficulty: %d%%", difficulty);
+   mvwprintw(stats, 4, 1, "Difficulty: %s", "Medium");
    mvwprintw(stats, 5, 1, "Numbers:    %2d/81", grid_filled());
    mvwprintw(stats, 6 ,1, "Remaining:  %2d left", 81-grid_filled());
    mvwprintw(stats, 8,1, "Time Taken: %dm %2ds", ltime.mins, ltime.secs);
