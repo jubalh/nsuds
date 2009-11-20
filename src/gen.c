@@ -37,12 +37,13 @@
 #include "grid.h"
 
 /* Random number in the range [a,b] */
-#define rrand(a,b) (int) ( ( (double)((double)rand() /RAND_MAX) * (b-a) ) + a)
+#define rrand(a,b) (int)(((double)((double)rand() /RAND_MAX) * (b-a) ) + a)
 
-static short Rows[325], Row[325][10], Col[730][5], Ur[730], Uc[325], V[325], W[325];
-static short P[88], A[88], C[88], I[88];
-static int w, m0, c1, c2, r1, m1, n=729, m=324;
-static int seed, solutions, min, clues;
+static short Rows[325], Row[325][10], Col[730][5], Urow[730], Ucol[325], V[325], W[325];
+static short C[82], I[82];
+static short grid[82];   /* The puzzle grid itself */
+static int w, m0, c1, c2, r1, m1;
+static int solutions, min, clues;
 
 extern char grid_data[9][9];
 static int solve();
@@ -50,19 +51,18 @@ static int solve();
 /* Generate a puzzle, put the result in grid_data */
 void do_generate(void)
 {
+   int i,j,x,y,s; /* Temps */
    struct timeval tm;
-   int i,j,k;
-   int x,y,s;     /* Temps */
+   short rorder[82]; /* The numbers 1-81 in random order */
 
    /* Seed rand() */
    gettimeofday(&tm, NULL);
    srand(tm.tv_usec);
 
-   i = 0;
+   i = 1;
    for (x = 1; x <= 9; x++) {
       for (y = 1; y <= 9; y++) {
-         for (s = 1; s <= 9; s++) {
-            i++;
+         for (s = 1; s <= 9; s++, i++) {
             Col[i][1] = (x - 1) * 9 + y;
             Col[i][2] = (3*((x-1)/3)+(y-1)/3)*9+s+81;
             Col[i][3] = (x - 1) * 9 + s + 81 * 2;
@@ -71,36 +71,33 @@ void do_generate(void)
       }
    }
 
-   for (i = 1; i <= m; i++)
+   for (i = 1; i <= 324; i++)
       Rows[i] = 0;
-
-   for (s = 1; s <= n; s++) {
-      for (y = 1; y <= 4; y++) {
-         x = Col[s][y];
+   for (i = 1; i <= 729; i++) {
+      for (j = 1; j <= 4; j++) {
+         x = Col[i][j];
          Rows[x]++;
-         Row[x][Rows[x]] = s;
+         Row[x][Rows[x]] = i;
       }
    }
 
    /* Add random clues until the puzzle has a unique solution. */
    do {
-      int valid; /* Validity of puzzle (# solutions) */
-      for (i = 1; i <= 81; i++)
-         A[i] = 0;
+      int valid, square;
+      for (i = 1; i <= 81; i++) grid[i] = 0;
       do {
          /* Choose a random unfilled square */
          do {
-            x = rrand(1, 81);
-            fprintf(stderr, "%d ", x);
-         } while (A[x]);
+            square = rrand(1, 81);
+         } while (grid[square]);
 
          /* Fill with random number */
-         A[x] = rrand(1, 9);
+         grid[square] = rrand(1, 9);
 
          valid = solve();
          /* If it makes the puzzle unsolvible, 
           * remove the invalid clue and try again */
-         if (!valid) A[x] = 0;
+         if (!valid) grid[square] = 0;
       } while (valid != 1);
 
       /* Keep adding until the solution is unique */
@@ -108,26 +105,33 @@ void do_generate(void)
 
 
    /* Now we have a unique-solution sudoku, remove 
-    * clues to make it minimal */
+    * clues to make it minimal. First, set up a 
+    * list of the numbers 1-81 in random order.
+    * Otherwise, the majority of numbers will 
+    * always be near the beginning. */
    for (i = 1; i <= 81; i++) {
-      x = rrand(1, i);
-      P[i] = P[x];
-      P[x] = i;
-   }
-   for (x = 1; x <= 81; x++) {
-      y = A[P[x]];
-      if (!y)		/* don't solve if board is zero */
-         continue;
-      A[P[x]] = 0;
-      if (solve() > 1)
-         A[P[x]] = y;
+      j = rrand(1, i);
+      rorder[i] = rorder[j];
+      rorder[j] = i;
    }
 
-   /* Transfer grid to grid_data  */
+   /* Try, in above random order, to remove each 
+    * number, so that the puzzle will become minimal.*/
+   for (i = 1; i <= 81; i++) {
+      int old = grid[rorder[i]];
+      if (!old) continue; /* Number is already empty */
+
+      /* Try blanking out the number */
+      grid[rorder[i]] = 0;
+
+      /* If it makes the puzzle invalid, restore */
+      if (solve() != 1) grid[rorder[i]] = old;
+   }
+
+   /* Transfer grid to grid_data in grid.c */
    for (i = 0; i < 9; i++) {
       for (j = 0; j < 9; j++) {
-         /* Generated numbers are stored negative */
-         grid_data[i][j] = - A[i * 9 + j + 1];
+         grid_data[i][j] = - grid[i * 9 + j + 1];
       }
    }
 }
@@ -138,30 +142,30 @@ static int solve()
 {
    int t1,t2,t3;
    int i,j,k;
-   for (i = 0; i <= n; i++)
-      Ur[i] = 0;
-   for (i = 0; i <= m; i++)
-      Uc[i] = 0;
+   for (i = 0; i <= 729; i++)
+      Urow[i] = 0;
+   for (i = 0; i <= 324; i++)
+      Ucol[i] = 0;
    clues = 0;
    for (i = 1; i <= 81; i++) {
-      if (A[i]) {
+      if (grid[i]) {
          clues++;
-         t3 = (i - 1) * 9 + A[i];
+         t3 = (i - 1) * 9 + grid[i];
          for (j = 1; j <= 4; j++) {
             t1 = Col[t3][j];
-            if (Uc[t1])
+            if (Ucol[t1])
                return 0;
-            Uc[t1]++;
+            Ucol[t1]++;
             for (k = 1; k <= 9; k++) {
-               Ur[Row[t1][k]]++;
+               Urow[Row[t1][k]]++;
             }
          }
       }
    }
-   for (t2 = 1; t2 <= m; t2++) {
+   for (t2 = 1; t2 <= 324; t2++) {
       V[t2] = 0;
       for (t3 = 1; t3 <= 9; t3++)
-         if (Ur[Row[t2][t3]] == 0)
+         if (Urow[Row[t2][t3]] == 0)
             V[t2]++;
    }
 
@@ -173,14 +177,14 @@ static int solve()
 m2:
    i++;
    I[i] = 0;
-   min = n + 1;
+   min = 729 + 1;
    if ((i <= 81) && !m0) {
       if (m1) {
          C[i] = m1;
       } else {
          w = 0;
-         for (t2 = 1; t2 <= m; t2++) {
-            if (!Uc[t2]) {
+         for (t2 = 1; t2 <= 324; t2++) {
+            if (!Ucol[t2]) {
                if (V[t2] < 2) {
                   C[i] = t2;
                   goto keepgoing;
@@ -206,7 +210,7 @@ keepgoing:
       if (I[i] <= 9) {
 
          t3 = Row[t2][I[i]];
-         if (Ur[t3])
+         if (Urow[t3])
             goto keepgoing;
 
          m0 = 0;
@@ -215,20 +219,20 @@ keepgoing:
 
          for (j = 1; j <= 4; j++) {
             c1 = Col[t3][j];
-            Uc[c1]++;
+            Ucol[c1]++;
          }
          for (j = 1; j <= 4; j++) {
             c1 = Col[t3][j];
             for (k = 1; k <= 9; k++) {
                r1 = Row[c1][k];
-               Ur[r1]++;
-               if (Ur[r1] == 1) {
+               Urow[r1]++;
+               if (Urow[r1] == 1) {
                   for (t1 = 1; t1 <= 4; t1++) {
                      c2 = Col[r1][t1];
                      V[c2]--;
-                     if ((Uc[c2] + V[c2]) < 1)
+                     if ((Ucol[c2] + V[c2]) < 1)
                         m0 = c2;
-                     if ((Uc[c2] == 0) && (V[c2] < 2))
+                     if ((Ucol[c2] == 0) && (V[c2] < 2))
                         m1 = c2;
                   }
                }
@@ -249,11 +253,11 @@ keepgoing:
       return solutions;
    for (j = 1; j <= 4; j++) {
       c1 = Col[t3][j];
-      Uc[c1]--;
+      Ucol[c1]--;
       for (k = 1; k <= 9; k++) {
          r1 = Row[c1][k];
-         Ur[r1]--;
-         if (Ur[r1] == 0) {
+         Urow[r1]--;
+         if (Urow[r1] == 0) {
             for (t1 = 1; t1 <= 4; t1++) {
                c2 = Col[r1][t1];
                V[c2]++;
