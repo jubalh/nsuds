@@ -128,30 +128,15 @@ void catch_alarm(int sig)
    doupdate();
 }
 
-/* Print each line of the large font timer
- * based on the cdown timer */
-#define time2strs(line) digits2str(line, 1), digits2str(line, 2), \
-   digits2str(line, 3), digits2str(line, 4)
 
-static char *digits2str(int line, int dig) {
-   /* dig = 1..4 (MM:SS or 12:34) */
-   switch (dig) {
-      case 1:
-         if (cdown.mins / 10) 
-            return timer_digits[line-1][cdown.mins / 10];
-         else return empty;
-         break;
-      case 2:
-         return timer_digits[line-1][cdown.mins % 10];
-      case 3:
-         return timer_digits[line-1][cdown.secs / 10];
-      case 4:
-         return timer_digits[line-1][cdown.secs % 10];
-      default:
-         return empty;
-   }
-}
-
+/* Get each line of timer digits in ascii font */
+#define time2strs(line) t2s(line-1, cdown.mins, cdown.secs)
+/* Shorthand */
+#define TD timer_digits
+/* If time < 10 mins, first 0 digit isn't shown */
+#define FTD(l, m) m>10 ? TD[l][m/10] : empty
+/* t2s(line, mins, seconds): Get ascii strings from time */
+#define t2s(l,m,s) FTD(l, m), TD[l][m%10], TD[l][s/10], TD[l][s%10]
 
 /* Draw timer window, with updated timers */
 void draw_timer()
