@@ -1,4 +1,15 @@
-nsuds-v0.2B (not yet released)
+nsuds-v0.3B (2009/11/23)
+-----------
+. Cleaned up gen.c, specifically the generate function
+. Removed MWC generator, using rand() based one now
+. Fixed timer glitch
+. Added functionality to generate puzzle with at least
+x numbers filled in for all x in [0,81]
+. Optimized cursor movement
+. Converted time2strs to macros for efficiency reasons
+. Fixed a resize problem with the fbar
+
+nsuds-v0.2B (2009/11/18)
 -----------
 . If an unknown key is pressed, a key hint line is shown
 . Added a man page

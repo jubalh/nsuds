@@ -1,6 +1,6 @@
 nsuds - The Ncurses Sudoku System
 *********************************
-. Version: nsuds-0.2B (Beta release)
+. Version: nsuds-0.3B (Beta release)
 . Written by Vincent Launchbury
 . See AUTHORS for a complete list of contributors
 . Report bugs to: <vincent@doublecreations.com>
@@ -26,7 +26,7 @@ Git Repository  : http://nsuds.git.sourceforge.net/git/gitweb.cgi?p=nsuds/nsuds
 COMPILING AND INSTALLING ON *NIX
 ================================
 Packages for *NIX aren't currently provided. You could always ask your distros 
-development team to add matrixgl to their repositories, if you don't like 
+development team to add nsuds to their repositories, if you don't like 
 compiling yourself. 
 
 To extract the source code, fire up a terminal, cd into your download 
@@ -56,13 +56,14 @@ q       - Quit
 n       - New Game
 p       - Pause Game
 1-9     - Enter number in selected square
+DEL/c   - Delete number (can't delete pre-inserted numbers)
 wasd   \  
 hjkl    - Move between squares 
 Arrows /
 
 SUPPORTED OPERATING SYSTEMS
 ===========================
-matrixgl is currently in beta, but it has been confirmed to work on the following platforms:
+nsuds is currently in beta, but it has been confirmed to work on the following platforms:
    . Linux: Gentoo
    . Linux: Ubuntu
 
