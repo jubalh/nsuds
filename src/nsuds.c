@@ -475,6 +475,9 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
 #endif
          case KEY_RESIZE:
             getmaxyx(stdscr, row, col);
+            fbar_time=0;
+            delwin(fbar);
+            fbar = newwin(1, col, row-1, 0);
             draw_all();
             break;
          default:

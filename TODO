@@ -4,10 +4,10 @@ NSUDS PLAN
    > Quickplay
       - Desc: Play a quick game
       - Select difficulty (Easy, Med, Hard, Pro, Insane)
-         - Easy   = 25 min timer, ~50 nodes
-         - Med    = 22 min timer, ~40 nodes
-         - Hard   = 20 min timer, ~35 nodes
-         - Pro    = 15 min timer, ~30 nodes
+         - Easy   = 20 min timer, ~35 nodes
+         - Med    = 18 min timer, ~30 nodes
+         - Hard   = 16 min timer, ~28 nodes
+         - Pro    = 14 min timer, ~26 nodes
          - Insane = 10 min timer, ~25 nodes (minimal solution puzzle)
       - Show min/node info at bottom of menu for selected item
       - At game over show g/o screen with try-again/change-diff selections
@@ -16,11 +16,11 @@ NSUDS PLAN
    > Campaign
       - Desc: Play through increasing difficult levels for a high score
       - Select Difficulty (Easy, Med, Hard, Pro, Insane)
-         - Easy   = 25..20    mins, 50..45  nodes (5 levels)
-         - Med    = 22.5..20  mins, 40..35  nodes (5 levels  +  2 extra on 20m,35n)
-         - Hard   = 20..15    mins, 40..30  nodes (10 levels +  5 extra on 15m,30n)
-         - Pro    = 15..10    mins, 30..~25 nodes (10 levels + 10 extra on 10m,25n)
-         - Insane = 10..5     mins,     ~25 nodes (10 levels + 15 extra on  5m,25n)
+         - Easy   = 20..17.5  mins, 35..30  nodes (5 levels)
+         - Med    = 17.5..15  mins, 30..28  nodes (5 levels  +  2 extra on 15m,28n)
+         - Hard   = 15..12    mins, 28..26  nodes (10 levels +  5 extra on 10m,26n)
+         - Pro    = 12..9     mins, 26..~25 nodes (10 levels + 10 extra on  9m,25n)
+         - Insane = 9..4      mins,     ~25 nodes (10 levels + 15 extra on  4m,25n)
       - Game over shows score + high scores, then goes back to main menu
       - Level win shows current score, goes to next level
       - Completion bonuses for beating all base-levels/extra-levels
@@ -36,4 +36,3 @@ NSUDS TODO
 - Mouse support
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses
-   - Resizes fbar properly
