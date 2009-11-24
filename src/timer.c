@@ -38,7 +38,7 @@ static char *timer_digits[3][10] = {
 };
 static char *empty="   ";
 struct ltimer cdown, ltime={0,0};
-struct gtimer gtime={0,0};
+struct gtimer gtime={0,0, 0};
 
 /* Start a new timer for a level,
  * cancels any old timers */
@@ -95,20 +95,23 @@ void catch_alarm(int sig)
       cdown.secs=59;
    }
 
-   /* Increment total level and game time */
+   /* Increment level time */
    if (ltime.secs < 59) {
       ltime.secs++;
    } else {
       ltime.mins++;
       ltime.secs=0;
-      /* A minute has passed in level time,
-       * so also update game time */
-      if (gtime.mins < 59) {
-         gtime.mins++;
-      } else {
-         gtime.hours++;
-         gtime.mins=0;
-      }
+   }
+
+   /* Increment total game time */
+   if (gtime.secs < 59) {
+      gtime.secs++;
+   } else if (gtime.mins < 59) {
+      gtime.mins++;
+      gtime.secs=0;
+   } else {
+      gtime.mins = gtime.secs = 0;
+      gtime.hours++;
    }
 
    /* If timer reaches 0 */

@@ -39,47 +39,23 @@
 /* Random number in the range [a,b] */
 #define rrand(a,b) (int)(((double)((double)rand() /RAND_MAX) * (b-a) ) + a)
 
-static short Rows[325], Row[325][10], Col[730][5], Urow[730], Ucol[325], V[325], W[325];
-static short C[82], I[82];
-static short grid[82];   /* The puzzle grid itself */
-static int w, m0, c1, c2, r1, m1;
-static int solutions, min, clues;
+/* The puzzle grid itself */
+static short grid[82];   
 
+/* Headers */
 extern char grid_data[9][9];
 static int solve();
 
 /* Generate a puzzle, put the result in grid_data */
 void do_generate(void)
 {
-   int i,j,x,y,s; /* Temps */
+   int i,j;
    struct timeval tm;
    short rorder[82]; /* The numbers 1-81 in random order */
 
    /* Seed rand() */
    gettimeofday(&tm, NULL);
    srand(tm.tv_usec);
-
-   i = 1;
-   for (x = 1; x <= 9; x++) {
-      for (y = 1; y <= 9; y++) {
-         for (s = 1; s <= 9; s++, i++) {
-            Col[i][1] = (x - 1) * 9 + y;
-            Col[i][2] = (3*((x-1)/3)+(y-1)/3)*9+s+81;
-            Col[i][3] = (x - 1) * 9 + s + 81 * 2;
-            Col[i][4] = (y - 1) * 9 + s + 81 * 3;
-         }
-      }
-   }
-
-   for (i = 1; i <= 324; i++)
-      Rows[i] = 0;
-   for (i = 1; i <= 729; i++) {
-      for (j = 1; j <= 4; j++) {
-         x = Col[i][j];
-         Rows[x]++;
-         Row[x][Rows[x]] = i;
-      }
-   }
 
    /* Add random clues until the puzzle has a unique solution. */
    do {
@@ -137,11 +113,47 @@ void do_generate(void)
 }
 
 
-/*returns 0 (no solution), 1 (unique sol.), 2 (more than one sol.) */
+/* Check how many solutions the puzzle has.
+ *  Returns:
+ *    0 - no solution (invalid puzzle)
+ *    1 - unique solution
+ *    2 - more than one solution (invalid puzzle)
+ *
+ *  Needs a major cleanup. Fast, but HORRIBLE code.
+ */
 static int solve()			
 {
+   short Rows[325], Row[325][10], Col[730][5], Urow[730], Ucol[325], V[325], W[325];
+   short C[82], I[82];
+   int w, m0, c1, c2, r1, m1;
+   int solutions, min, clues;
    int t1,t2,t3;
    int i,j,k;
+   int x,y,s;
+
+   /* Set up requisites */
+   i = 1;
+   for (x = 1; x <= 9; x++) {
+      for (y = 1; y <= 9; y++) {
+         for (s = 1; s <= 9; s++, i++) {
+            Col[i][1] = (x - 1) * 9 + y;
+            Col[i][2] = (3*((x-1)/3)+(y-1)/3)*9+s+81;
+            Col[i][3] = (x - 1) * 9 + s + 81 * 2;
+            Col[i][4] = (y - 1) * 9 + s + 81 * 3;
+         }
+      }
+   }
+   for (i = 1; i <= 324; i++)
+      Rows[i] = 0;
+   for (i = 1; i <= 729; i++) {
+      for (j = 1; j <= 4; j++) {
+         x = Col[i][j];
+         Rows[x]++;
+         Row[x][Rows[x]] = i;
+      }
+   }
+
+
    for (i = 0; i <= 729; i++)
       Urow[i] = 0;
    for (i = 0; i <= 324; i++)

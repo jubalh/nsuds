@@ -29,6 +29,7 @@ struct ltimer {
 
 /* Game timer */
 struct gtimer {
+   short secs;
    short mins;
    short hours;
 };
