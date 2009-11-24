@@ -21,7 +21,7 @@
 #ifndef _NSUDS_GRID_H
 #define _NSUDS_GRID_H
 
-enum {NONE=0, LEFT, RIGHT, UP, DOWN, CUR};
+enum {CUR, LEFT, RIGHT, UP, DOWN};
 #define abs(x) (((x)>0)?(x):-(x))
 
 extern void movec(int dir);

@@ -50,7 +50,7 @@ static int solve();
  * Have atleast [filled] squares filled in. */
 void do_generate(int filled)
 {
-   int i,j;
+   int i,j, valid;
    struct timeval tm;
    short rorder[82]; /* The numbers 1-81 in random order */
 
@@ -70,13 +70,14 @@ void do_generate(int filled)
       /* Fill with random number */
       grid[square] = rrand(1, 9);
 
+      valid = solve();
       /* If it makes the puzzle unsolvible, 
        * remove the invalid clue and try again */
-      if (solve()==0) grid[square] = 0;
+      if (valid==0) grid[square] = 0;
 
       /* Continue until there are atleast
        * [filled] clues, and a unique solution */
-   } while (clues < filled || solve() != 1);
+   } while (clues < filled || valid != 1);
 
 
    /* Now we have a unique-solution sudoku, remove 

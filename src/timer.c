@@ -28,6 +28,7 @@
 
 #include "nsuds.h"
 #include "timer.h"
+#include "grid.h"
 
 
 /* "Font" for numbers taken from htop, by Hisham Muhammad */
@@ -123,6 +124,7 @@ void catch_alarm(int sig)
 
    draw_timer();
    draw_stats();
+   movec(CUR);
    doupdate();
 }
 
@@ -166,6 +168,5 @@ void draw_timer()
    mvwprintw(timer, 4, left, "%s%s . %s%s", time2strs(3));
 
    wnoutrefresh(timer);
-   wnoutrefresh(stdscr); /* Move cursor back */
 }
 

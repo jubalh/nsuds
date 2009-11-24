@@ -125,7 +125,6 @@ static void draw_grid(void)
 
    wnoutrefresh(grid);
    draw_grid_contents();
-   movec(CUR);
 }
 
 
@@ -147,7 +146,6 @@ void draw_stats(void)
    mvwprintw(stats, 11,1, " Score:   %d", score);
 
    wnoutrefresh(stats);
-   movec(CUR);
 }
 
 static void draw_title(void)
@@ -194,8 +192,6 @@ static void draw_fbar(void)
    waddhlstr(fbar, "Arrows/WASD/HJKL ");
    wnoutrefresh(fbar);
 
-   /* Restore Cursor*/
-   movec(CUR);
 }
 
 static void draw_xs(void)
@@ -279,6 +275,7 @@ static bool launch_confirm(char *question)
             curs_set(!paused);
             draw_all();
             catch_alarm(0);
+            fbar_time=0;
             return status;
          default:
             break;
@@ -408,7 +405,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case 'A':
          case 'a':
             movec(LEFT);
-            doupdate();
             break;
          case KEY_RIGHT:
          case 'L':
@@ -416,7 +412,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case 'D':
          case 'd':
             movec(RIGHT);
-            doupdate();
             break;
          case KEY_UP:
          case 'K':
@@ -424,7 +419,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case 'W':
          case 'w':
             movec(UP);
-            doupdate();
             break;
          case KEY_DOWN:
          case 'J':
@@ -432,7 +426,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case 'S':
          case 's':
             movec(DOWN);
-            doupdate();
             break;
          case 'Q':
          case 'q':
@@ -449,6 +442,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             draw_grid();
             doupdate();
             curs_set(!paused);
+            movec(CUR);
             break;
          case 'C':
          case 'c':
@@ -457,6 +451,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             draw_grid();
             draw_stats();
             doupdate();
+            movec(CUR);
             break;
          /* New game, in freeplay */
          case 'N':
@@ -489,11 +484,13 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
                   gaddch(c);
                   draw_stats();
                   doupdate();
+                  movec(CUR);
                }
             /* Key unknown, show function bar */
             } else if (!fbar_time) {
                draw_fbar();
                doupdate();
+               movec(CUR);
                fbar_time = 5;
             }
             break;
