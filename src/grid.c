@@ -175,6 +175,6 @@ void draw_grid_contents(void)
 /* Generate a puzzle */
 void generate(void)
 {
-   do_generate();
+   do_generate(35);
 }
 

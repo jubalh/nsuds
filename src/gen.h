@@ -20,7 +20,7 @@
 #ifndef _NSUDS_GEN_H
 #define _NSUDS_GEN_H
 
-extern void do_generate(void);
+extern void do_generate(int filled);
 
 #endif
 

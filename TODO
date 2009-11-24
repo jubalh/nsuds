@@ -33,8 +33,6 @@ NSUDS PLAN
    - All difficulties shown on same screen (no other options)
 NSUDS TODO
 ==========
-- Edit gen.h so that it keeps the solution, so that
-   a puzzle can be made easier by filling in more boxes (i.e not minimal)
 - Mouse support
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses

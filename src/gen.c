@@ -39,15 +39,16 @@
 /* Random number in the range [a,b] */
 #define rrand(a,b) (int)(((double)((double)rand() /RAND_MAX) * (b-a) ) + a)
 
-/* The puzzle grid itself */
-static short grid[82];   
+static short grid[82];  /* The puzzle grid itself */
+static int clues=0;     /* Number of clues in puzzle */
 
 /* Headers */
 extern char grid_data[9][9];
 static int solve();
 
-/* Generate a puzzle, put the result in grid_data */
-void do_generate(void)
+/* Generate a puzzle, put the result in grid_data.
+ * Have atleast [filled] squares filled in. */
+void do_generate(int filled)
 {
    int i,j;
    struct timeval tm;
@@ -57,27 +58,25 @@ void do_generate(void)
    gettimeofday(&tm, NULL);
    srand(tm.tv_usec);
 
+   for (i = 1; i <= 81; i++) grid[i] = 0; /* Reset grid */
    /* Add random clues until the puzzle has a unique solution. */
    do {
-      int valid, square;
-      for (i = 1; i <= 81; i++) grid[i] = 0;
+      int square;
+      /* Choose a random unfilled square */
       do {
-         /* Choose a random unfilled square */
-         do {
-            square = rrand(1, 81);
-         } while (grid[square]);
+         square = rrand(1, 81);
+      } while (grid[square]);
 
-         /* Fill with random number */
-         grid[square] = rrand(1, 9);
+      /* Fill with random number */
+      grid[square] = rrand(1, 9);
 
-         valid = solve();
-         /* If it makes the puzzle unsolvible, 
-          * remove the invalid clue and try again */
-         if (!valid) grid[square] = 0;
-      } while (valid != 1);
+      /* If it makes the puzzle unsolvible, 
+       * remove the invalid clue and try again */
+      if (solve()==0) grid[square] = 0;
 
-      /* Keep adding until the solution is unique */
-   } while (solve() != 1);
+      /* Continue until there are atleast
+       * [filled] clues, and a unique solution */
+   } while (clues < filled || solve() != 1);
 
 
    /* Now we have a unique-solution sudoku, remove 
@@ -92,9 +91,11 @@ void do_generate(void)
    }
 
    /* Try, in above random order, to remove each 
-    * number, so that the puzzle will become minimal.*/
+    * number, so that the puzzle will become minimal,
+    * OR have atleast [filled] numbers. */
    for (i = 1; i <= 81; i++) {
       int old = grid[rorder[i]];
+      if (clues <= filled) break; /* Don't go below filled */
       if (!old) continue; /* Number is already empty */
 
       /* Try blanking out the number */
@@ -126,7 +127,7 @@ static int solve()
    short Rows[325], Row[325][10], Col[730][5], Urow[730], Ucol[325], V[325], W[325];
    short C[82], I[82];
    int w, m0, c1, c2, r1, m1;
-   int solutions, min, clues;
+   int solutions, min;
    int t1,t2,t3;
    int i,j,k;
    int x,y,s;
