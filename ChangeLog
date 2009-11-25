@@ -1,3 +1,7 @@
+nsuds-v0.4B (not yet released)
+-----------
+. Added mouse support, for moving to a grid square
+
 nsuds-v0.3B (2009/11/23)
 -----------
 . Cleaned up gen.c, specifically the generate function

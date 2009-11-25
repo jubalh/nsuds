@@ -36,9 +36,12 @@ static bool initialized=0;   /* Is grid initialized? */
 /* Get screen coords from grid coords */
 #define gy2scr(y) (3  + (y * 2))
 #define gx2scr(x) (30 + (x * 4))
-/* Get grid window coords from  grid coords */
+/* Get grid window coords from grid coords */
 #define gy2win(y) (1 + (y * 2))
 #define gx2win(x) (2 + (x * 4))
+/* Get grid coords from screen coords (for mouse events) */
+#define scry2g(y) ((y - 3) / 2)
+#define scrx2g(x) ((x - 30) / 4)
 /* Move grid cursor to grid coord */
 #define gmove(y, x) wmove(grid, gy2win(y), gx2win(x))
 /* Move screen cursor to grid coord */
@@ -66,6 +69,26 @@ void movec(int dir)
          break;
    }
 }
+
+/* Move to specified screen location, if user
+ * clicked on a valid grid square */
+void movec_mouse(int x, int y)
+{
+   int gx, gy;
+   /* Get grid coords from screen coords.
+    * If we didn't add 1 to x, clicking on the left part of (2,1)
+    * would move to (1,1), because of horizontal padding. */
+   gx = scrx2g(x+1);
+   gy = scry2g(y);
+   /* If user clicked on a valid square, move to it */
+   if (gx >= 0 && gx < 9 &&
+       gy >= 0 && gy < 9) {
+          cury = gy;
+          curx = gx;
+          smove(cury,curx);
+   }
+}
+
 
 /* Add an immutable char to the grid */
 static void gaddimch(int y, int x, char ch)

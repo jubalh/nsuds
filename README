@@ -8,7 +8,9 @@ nsuds - The Ncurses Sudoku System
 
 INTRODUCTION
 ============
-The nsuds project is a text graphical sudoku game that uses the ncurses display library. The point of the project is to provide a portable implementation with the minimum possible dependencies. 
+The nsuds project is a text graphical sudoku game that uses the ncurses display
+library. The point of the project is to provide a portable implementation with
+the minimum possible dependencies. 
 
 ADDITIONAL DOCUMENTATION
 ========================
@@ -25,14 +27,14 @@ Git Repository  : http://nsuds.git.sourceforge.net/git/gitweb.cgi?p=nsuds/nsuds
 
 COMPILING AND INSTALLING ON *NIX
 ================================
-Packages for *NIX aren't currently provided. You could always ask your distros 
-development team to add nsuds to their repositories, if you don't like 
-compiling yourself. 
+Packages for *NIX aren't currently provided. You could always ask your distros
+development team to add nsuds to their repositories, if you don't like compiling
+yourself. 
 
-To extract the source code, fire up a terminal, cd into your download 
-directory and type the following commands:
-   $tar xzf nsuds-0.1B.tar.gz
-   $cd nsuds-0.1B
+To extract the source code, fire up a terminal, cd into your download directory
+and type the following commands:
+   $tar xzf nsuds-0.3B.tar.gz
+   $cd nsuds-0.3B
 
 Then, to compile and install, run the following commands:
    $./configure
@@ -41,6 +43,11 @@ Then, to compile and install, run the following commands:
    #make install
 
 You can then run nsuds from any terminal.
+
+(Note: If you downloaded a git snapshot, you'll have to run '$autoreconf -i'
+before running ./configure. You'll need autotools to do this, specifically the
+autoconf, automake and libtool packages. If you downloaded a regular release,
+this doesn't apply to you.)
 
 
 REMOVING NSUDS
@@ -58,13 +65,14 @@ p       - Pause Game
 1-9     - Enter number in selected square
 DEL/c   - Delete number (can't delete pre-inserted numbers)
 wasd   \  
-hjkl    - Move between squares 
-Arrows /
+hjkl    \ - Move between squares 
+Arrows  /
+Click  /
 
 SUPPORTED OPERATING SYSTEMS
 ===========================
-nsuds is currently in beta, but it has been confirmed to work on the following platforms:
+nsuds is currently in beta, but it has been confirmed to work on the following
+platforms:
    . Linux: Gentoo
    . Linux: Ubuntu
-
 

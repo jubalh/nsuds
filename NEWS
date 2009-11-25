@@ -1,6 +1,11 @@
 This file contains a non-definitive list of user-visible changes. 
 See ChangeLog for a more detailed log of changes, geared toward developers
 
+Changes in 0.4B
+---------------
+- Added mouse support, so you can click on a grid square to 
+select it
+
 Changes in 0.3B
 ---------------
 - Fixed an issue where the key hint bar isn't resized when

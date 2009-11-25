@@ -40,6 +40,7 @@ static void draw_fbar(void);
 static bool launch_confirm(char *question);
 
 WINDOW *grid, *timer, *stats, *title, *fbar;
+static MEVENT mouse_e;
 int paused=0, difficulty=0;
 bool campaign=0;
 int score=0;
@@ -61,6 +62,7 @@ static void init_ncurses(void)
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
    keypad(stdscr, TRUE); /* Catch special keys */
+   mousemask(BUTTON1_CLICKED, NULL); /* Catch left click */
    getmaxyx(stdscr, row, col);
    /* It seems that there's a bug in ncurses where
     * anything written to the virtual screen before 
@@ -181,15 +183,15 @@ static void draw_fbar(void)
 
    /* 1-9 add number */
    waddstr(fbar, "Add:");
-   waddhlstr(fbar, "1-9  ");
+   waddhlstr(fbar, "1-9 ");
 
    /* DEL/C remove number */
    waddstr(fbar, "Del:");
-   waddhlstr(fbar, "DEL/C  ");
+   waddhlstr(fbar, "DEL/C ");
 
    /* Move */
    waddstr(fbar, "Move:");
-   waddhlstr(fbar, "Arrows/WASD/HJKL ");
+   waddhlstr(fbar, "Arrows/WASD/HJKL/Click");
    wnoutrefresh(fbar);
 
 }
@@ -473,6 +475,15 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             draw_grid();
             draw_stats();
 #endif
+         /* Catch mouse events */
+         case KEY_MOUSE:
+            if (getmouse(&mouse_e) == OK) {
+               /* Left click selects square */
+               if (mouse_e.bstate & BUTTON1_CLICKED) {
+                  movec_mouse(mouse_e.x, mouse_e.y);
+               }
+            }
+            break;
          case KEY_RESIZE:
             getmaxyx(stdscr, row, col);
             fbar_time=0;
