@@ -1,6 +1,7 @@
 nsuds-v0.4B (not yet released)
 -----------
 . Added mouse support, for moving to a grid square
+. Fixed error in rrand
 
 nsuds-v0.3B (2009/11/23)
 -----------
