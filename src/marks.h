@@ -18,20 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
 
-#ifndef _NSUDS_GRID_H
-#define _NSUDS_GRID_H
-
-enum {CUR, LEFT, RIGHT, UP, DOWN};
-#define abs(x) (((x)>0)?(x):-(x))
-extern int curx,cury;    /* Current (selected) grid coords */
-
-extern void movec(int dir);
-extern void movec_mouse(int x, int y);
-extern void gaddch(char ch);
-extern int grid_filled(void);
-extern void draw_grid_contents(void);
-
-extern void generate(void);
-
-#endif
-
+extern void mark_square(void);
+extern void marks_show(void);
+extern void marks_clear(void);

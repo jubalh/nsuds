@@ -1,37 +1,18 @@
-NSUDS PLAN
+NSUDS TODO
 ==========
-- Initial menu for freeplay/campaign
-   > Quickplay
-      - Desc: Play a quick game
-      - Select difficulty (Easy, Med, Hard, Pro, Insane)
-         - Easy   = 20 min timer, ~35 nodes
-         - Med    = 18 min timer, ~30 nodes
-         - Hard   = 16 min timer, ~28 nodes
-         - Pro    = 14 min timer, ~26 nodes
-         - Insane = 10 min timer, ~25 nodes (minimal solution puzzle)
-      - Show min/node info at bottom of menu for selected item
-      - At game over show g/o screen with try-again/change-diff selections
-      - At win show score, based on gen.c diff + time left, then play-again/change-diff
-      - Don't reset game-total after g/o, just have it as total time played
-   > Campaign
-      - Desc: Play through increasing difficult levels for a high score
-      - Select Difficulty (Easy, Med, Hard, Pro, Insane)
-         - Easy   = 20..17.5  mins, 35..30  nodes (5 levels)
-         - Med    = 17.5..15  mins, 30..28  nodes (5 levels  +  2 extra on 15m,28n)
-         - Hard   = 15..12    mins, 28..26  nodes (10 levels +  5 extra on 10m,26n)
-         - Pro    = 12..9     mins, 26..~25 nodes (10 levels + 10 extra on  9m,25n)
-         - Insane = 9..4      mins,     ~25 nodes (10 levels + 15 extra on  4m,25n)
-      - Game over shows score + high scores, then goes back to main menu
-      - Level win shows current score, goes to next level
-      - Completion bonuses for beating all base-levels/extra-levels
-      - Before hard is beat, pro shows greyed out
-      - When pro is beat, the previously unshown insane comes up.
-      - Note that no levels are hidden on quickplay
+- Saves on quit, resumes game afterwards
+- Difficulty
+   - Based on # filled-in and time
 - High scores
    - Currently only per-user (not all users)
    - Can enter name if you get on the table
-   - All difficulties shown on same screen (no other options)
-NSUDS TODO
-==========
+   - Only 1 list for all difficulties (but shows difficulty played
+   for each score)
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses
+- Perhaps some sort of pencil-marking system. Basically, each
+square will be able to be marked with numbers 1 through 9. Then,
+all squares with number n will be able to be highlighted
+   - m + # = Mark square in set #
+   - r + # = Reveal set #
+   - c + # = Clear set #

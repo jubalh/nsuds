@@ -28,10 +28,11 @@
 
 static void gaddimch(int y, int x, char ch);
 static void init_grid(void);
+static bool grid_valid(void);
 
 char grid_data[9][9]={{0}}; /* grid_data[y/row][x/col] */
-static int curx=0,cury=0;    /* Current (selected) grid coords */
-static bool initialized=0;   /* Is grid initialized? */
+int curx=0,cury=0;          /* Current (selected) grid coords */
+static bool initialized=0;  /* Is grid initialized? */
 
 /* Get screen coords from grid coords */
 #define gy2scr(y) (3  + (y * 2))
@@ -116,7 +117,7 @@ void gaddch(char ch)
 
 /* Check if a full or partially filled
  * sudoku grid is valid or not */
-bool grid_valid(void)
+static bool grid_valid(void)
 {
    int i,j,k;
    char rowf[9], colf[9];

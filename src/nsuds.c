@@ -29,6 +29,7 @@
 #include "nsuds.h"
 #include "timer.h"
 #include "grid.h"
+#include "marks.h"
 
 static void init_ncurses(void);
 static void init_windows(void);
@@ -187,7 +188,7 @@ static void draw_fbar(void)
 
    /* DEL/C remove number */
    waddstr(fbar, "Del:");
-   waddhlstr(fbar, "DEL/C ");
+   waddhlstr(fbar, "DEL/X ");
 
    /* Move */
    waddstr(fbar, "Move:");
@@ -446,8 +447,8 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             curs_set(!paused);
             movec(CUR);
             break;
-         case 'C':
-         case 'c':
+         case 'X':
+         case 'x':
          case KEY_DC:
             gaddch('0');
             draw_grid();
@@ -468,13 +469,19 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
                draw_stats();
             }
             break;
-#if 0
+
+         /* Marking Tools */
          case 'm':
-            campaign=!campaign;
-            start_timer(20, 0);
-            draw_grid();
-            draw_stats();
-#endif
+            mark_square();
+            break;
+         case 'r':
+            marks_show();
+            break;
+         case 'c':
+            marks_clear();
+            break;
+
+
          /* Catch mouse events */
          case KEY_MOUSE:
             if (getmouse(&mouse_e) == OK) {
