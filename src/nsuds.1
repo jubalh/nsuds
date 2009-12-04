@@ -1,14 +1,21 @@
-.TH NSUDS "1" "November 23rd, 2009" "nsuds 0.3B" "Nsuds - The Ncurses Sudoku System"
+.TH NSUDS "1" "December 4th, 2009" "nsuds 0.3B" "Nsuds - The Ncurses Sudoku System"
 
 .SH NAME
 Nsuds - The Ncurses Sudoku System
 .SH SYNOPSIS
-.B ncurses [\fI-hv\fR]
+.B ncurses [\fI-hvcC\fR]
 .SH DESCRIPTION
-Nsuds is a text-graphical sudoku game with free-play and campaign mode.
+Nsuds is a text-graphical sudoku game with pencil-marking support.
 .P
 Mandatory arguments to long options are mandatory for short options too.
 .TP 5
+-c --color[=WHEN]
+Control when to use colors. WHEN may be `never', `auto' or `always'. Defaults
+to `auto'.
+.TP
+-C --no-color
+Synonym for --color=never.
+.TP
 -h --help
 Display a help message and exit.
 .TP
