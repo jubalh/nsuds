@@ -24,11 +24,9 @@
 #include "marks.h"
 #include "grid.h"
 
-#if 0
-/* Spare matrix of marks (9x81) */
-static int *mark_rows;  /* Row of each mark (number 1-9)*/
-static int *mark_cols;  /* Column of each mark (square 1-81)*/
-#endif
+/* TODO: Perhaps use a sparse matrix */
+bool marks[9][9][9] = {{{0}}};
+short show=0;
 
 /* Headers */
 static int ask_int(char *question);
@@ -38,40 +36,53 @@ static int ask_int(char *question);
  * a possible candidate */
 void mark_square(void)
 {
-   int sq;
-   sq = ask_int("Mark square with which number?");
-   
-   if (!sq) return;
+   int num;
+   num = ask_int("Mark square with which number?");
+   if (!num) return;
+   marks[cury][curx][num]=1;
+
+   if (show==num) draw_grid();
 }
 
 
 /* Show all marks for a number. Basically shows
  * all the squares that the user has marked as
  * candidates for that number. */
-/* TODO: Already filled in squares should be 
- * highlighted too.
- * */
 void marks_show(void)
 {
-   int sq;
-   sq = ask_int("Reveal squares marked with which number?");
+   int num;
+   num = ask_int("Reveal squares marked with which number?");
 
-   if (!sq) return;
-   /* 
-    * if (!sq) hightlight none
-    * if (sq)  hightlight(sq)
-    */
+   show=num;
+   draw_grid();
 }
 
 
 /* Clear all marks for a number. */
-void marks_clear(void)
+void marks_clear(enum clear_type type)
 {
-   int sq;
-   sq = ask_int("Clear marks for which number?");
+   int num;
+   int i, j;
 
-   if (!sq) return;
+   switch (type) {
+      default:
+      case SINGLE:
+         num = ask_int("Clear which mark from this square?");
+         if (!num) return;
+         marks[cury][curx][num]=0;
+         break;
+      case ALL:
+         num = ask_int("Clear all marks for which number?");
+         if (!num) return;
 
+         for (i=0; i<9; i++) {
+            for (j=0; j<9; j++) {
+               marks[i][j][num]=0;
+            }
+         }
+         break;
+   }
+   if (show==num) draw_grid();
 }
 
 

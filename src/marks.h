@@ -17,7 +17,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
+#ifndef _NSUDS_MARKS_H
+#define _NSUDS_MARKS_H
+
+extern bool marks[9][9][9];
+extern short show;
+enum clear_type {SINGLE, ALL};
 
 extern void mark_square(void);
 extern void marks_show(void);
-extern void marks_clear(void);
+extern void marks_clear(enum clear_type type);
+
+#endif
+

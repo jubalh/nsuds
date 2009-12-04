@@ -33,7 +33,6 @@
 
 static void init_ncurses(void);
 static void init_windows(void);
-static void draw_grid(void);
 static void draw_title(void);
 static void draw_xs(void);
 static void draw_all(void);
@@ -46,7 +45,7 @@ int paused=0, difficulty=0;
 bool campaign=0;
 int score=0;
 int fbar_time = 0;   /* Seconds to keep fbar up */
-static int colors=0;
+int use_colors=0;
 int row,col;
 
 /* Set up decent defaults */
@@ -54,11 +53,15 @@ static void init_ncurses(void)
 {
    initscr(); /* Enter curses */
    if (has_colors()) {
+      use_colors=1;
       start_color(); 
       init_pair(1, COLOR_CYAN, COLOR_BLACK);  /* Filled numbers/Fbar */
       init_pair(2, COLOR_WHITE, COLOR_RED);   /* G/O Screen */
       init_pair(3, COLOR_WHITE, COLOR_GREEN); /* Win Screen */
       init_pair(4, COLOR_WHITE, COLOR_BLUE);  /* Confirm dialog */
+      /* Highlighting */
+      init_pair(5, COLOR_BLACK, COLOR_YELLOW); /* Highlighted square */
+      init_pair(6, COLOR_WHITE, COLOR_YELLOW); 
    }
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
@@ -85,7 +88,7 @@ static void init_windows(void)
 }
 
 
-static void draw_grid(void)
+void draw_grid(void)
 {
    int i, j;
    int left;
@@ -158,13 +161,16 @@ static void draw_title(void)
    wnoutrefresh(title);
 }
 
-/* Add highlighted string */
-#define waddhlstr(w, str)         \
-   do {                           \
-      wattrset(w, COLOR_PAIR(1)); \
-      waddstr(w, str);            \
-      wattrset(w, 0);             \
+/* Add highlighted string, using color if supported */
+#define waddhlstr(w, str)                                   \
+   do {                                                     \
+      wattrset(w, (use_colors?COLOR_PAIR(1):A_UNDERLINE));  \
+      waddstr(w, str);                                      \
+      wattrset(w, 0);                                       \
    } while(0)
+
+/* Add highlighted character, using color if supported */
+#define waddhlch(w,c) waddch(w, c | (use_colors?COLOR_PAIR(1):A_UNDERLINE))
 
 /* Draw function bar at bottom of screen
  * Always on the last line, full width */
@@ -173,25 +179,25 @@ static void draw_fbar(void)
    werase(fbar);
    wmove(fbar, 0, 0);
    /* New game */
-   waddch(fbar, 'N' | COLOR_PAIR(1));
+   waddhlch(fbar, 'N');
    waddstr(fbar, "ew ");
    /* Pause */
-   waddch(fbar, 'P' | COLOR_PAIR(1));
+   waddhlch(fbar, 'P');
    waddstr(fbar, "ause ");
    /* Quit */
-   waddch(fbar, 'Q' | COLOR_PAIR(1));
+   waddhlch(fbar, 'Q');
    waddstr(fbar, "uit | ");
 
    /* 1-9 add number */
    waddstr(fbar, "Add:");
-   waddhlstr(fbar, "1-9 ");
+   waddhlstr(fbar, "1-9");
 
    /* DEL/C remove number */
-   waddstr(fbar, "Del:");
-   waddhlstr(fbar, "DEL/X ");
+   waddstr(fbar, " Del:");
+   waddhlstr(fbar, "DEL/X");
 
    /* Move */
-   waddstr(fbar, "Move:");
+   waddstr(fbar, " Move:");
    waddhlstr(fbar, "Arrows/WASD/HJKL/Click");
    wnoutrefresh(fbar);
 
@@ -478,9 +484,11 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             marks_show();
             break;
          case 'c':
-            marks_clear();
+            marks_clear(SINGLE);
             break;
-
+         case 'C':
+            marks_clear(ALL);
+            break;
 
          /* Catch mouse events */
          case KEY_MOUSE:

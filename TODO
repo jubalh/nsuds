@@ -10,9 +10,12 @@ NSUDS TODO
    for each score)
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses
-- Perhaps some sort of pencil-marking system. Basically, each
-square will be able to be marked with numbers 1 through 9. Then,
-all squares with number n will be able to be highlighted
-   - m + # = Mark square in set #
-   - r + # = Reveal set #
-   - c + # = Clear set #
+
+- ask_int should hide fbar
+- need help info for marks
+- add option for no color
+- Use accessors for data
+- Enum COLOR_PAIRS
+- Make HOME/END go to the beggining and end of row
+- Make PGUP/PGDN go to the top/bottom of col
+

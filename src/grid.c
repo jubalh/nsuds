@@ -25,6 +25,7 @@
 #include "nsuds.h"
 #include "gen.h"
 #include "grid.h"
+#include "marks.h"
 
 static void gaddimch(int y, int x, char ch);
 static void init_grid(void);
@@ -183,12 +184,30 @@ void draw_grid_contents(void)
    for (i=0; i<9; i++) {
       for (j=0; j<9; j++) {
          gmove(i, j);
-         if (grid_data[i][j] != 0) {
-            if (grid_data[i][j] > 0 && has_colors()) {
+         /* If number is filled in */
+         if (grid_data[i][j]) {
+            /* Square value is the same as the marks we're showing, automark it  */
+            if (show && abs(grid_data[i][j]) == show) {
+               if (use_colors) {
+                  waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(5) | A_UNDERLINE);
+               } else {
+                  waddch(grid, (abs(grid_data[i][j]) + '0') | A_REVERSE | A_UNDERLINE);
+               }
+            /* Square value was input by user, show in cyan */
+            } else if (grid_data[i][j] > 0 && has_colors()) {
                waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(1));
+            /* Square value is part of the generated puzzle */
             } else {
                waddch(grid, abs(grid_data[i][j]) + '0');
             }
+         /* Square is unfilled, check for marks */
+         } else if (show && marks[i][j][show]) {
+            if (use_colors) {
+               waddch(grid, (show + '0') | COLOR_PAIR(5));
+            } else {
+               waddch(grid, (show + '0') | A_REVERSE);
+            }
+            waddch(grid, '?');
          }
       }
    }

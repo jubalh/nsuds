@@ -25,9 +25,11 @@ extern int paused, difficulty;
 extern int score;
 extern int fbar_time;
 extern int row,col;
+extern int use_colors;
 extern void game_over(void);
 extern void game_win(void);
 extern void draw_stats(void);
+extern void draw_grid(void);
 
 #endif
 
