@@ -63,11 +63,30 @@ q       - Quit
 n       - New Game
 p       - Pause Game
 1-9     - Enter number in selected square
-DEL/c   - Delete number (can't delete pre-inserted numbers)
+DEL/x   - Delete number (can't delete pre-inserted numbers)
 wasd   \  
 hjkl    \ - Move between squares 
 Arrows  /
 Click  /
+(Below, the # character stands for a number in the range 1-9)
+m + #   - Mark the current square with the number #
+c + #   - Clear mark number # from the current square
+C + #   - Clear all marks with number #, from all squares
+r + #   - Reveal (highlight) all marks with the number #
+R + #   - Same as above, but allows upto 3 numbers to be highlighted at the
+         same time
+r + 0   - Remove all highlighting
+
+MARKS
+=====
+Marking squares in nsuds is similar to how you would put pencil marks on a real
+sudoku. When you mark a square with 1, you are saying that 1 may belong in that
+square, but it doesn't input the number in the square.  However, when you
+reveal sqaures marked with 1, it will highlight all the squares that you
+thought may contain a 1, and temporarily show a 1 in those squares. Squares
+that actually do contain a 1 will also be highlighted, but they will be
+underlined to distinguish them from marks. 
+
 
 SUPPORTED OPERATING SYSTEMS
 ===========================

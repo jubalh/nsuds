@@ -1,5 +1,8 @@
 nsuds-v0.4B (not yet released)
 -----------
+. Added marks system (similar to pencil marks)
+. Added better support for terms without color
+. Added --color and --no-color options
 . Added mouse support, for moving to a grid square
 . Fixed error in rrand
 

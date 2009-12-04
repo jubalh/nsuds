@@ -23,9 +23,10 @@
 extern bool marks[9][9][9];
 extern short show;
 enum clear_type {SINGLE, ALL};
+enum show_type {ONE, MULTIPLE};
 
 extern void mark_square(void);
-extern void marks_show(void);
+extern void marks_show(enum show_type type);
 extern void marks_clear(enum clear_type type);
 
 #endif

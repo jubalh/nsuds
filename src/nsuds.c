@@ -510,7 +510,10 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             mark_square();
             break;
          case 'r':
-            marks_show();
+            marks_show(ONE);
+            break;
+         case 'R':
+            marks_show(MULTIPLE);
             break;
          case 'c':
             marks_clear(SINGLE);
