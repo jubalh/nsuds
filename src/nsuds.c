@@ -45,14 +45,15 @@ int paused=0, difficulty=0;
 bool campaign=0;
 int score=0;
 int fbar_time = 0;   /* Seconds to keep fbar up */
+enum {NEVER, AUTO, ALWAYS} colors_when=AUTO;
 int use_colors=0;
 int row,col;
 
 /* Set up decent defaults */
-static void init_ncurses(void)
+static void init_ncurses()
 {
    initscr(); /* Enter curses */
-   if (has_colors()) {
+   if ((colors_when == AUTO && has_colors()) || colors_when==ALWAYS) {
       use_colors=1;
       start_color(); 
       init_pair(1, COLOR_CYAN, COLOR_BLACK);  /* Filled numbers/Fbar */
@@ -367,20 +368,39 @@ int main(int argc, char **argv)
    int opt, opti;
    static struct option long_opts[] =
    {
+      {"color",     optional_argument, 0, 'c'},
+      {"no-color",  no_argument,       0, 'C'},
       {"help",      no_argument,       0, 'h'},
       {"version",   no_argument,       0, 'v'},
       {0, 0, 0, 0}
    };
 
    /* Parse arguments */
-   while ((opt = getopt_long_only(argc, argv, "hv", long_opts, &opti))) {
+   while ((opt = getopt_long_only(argc, argv, "hvc::C", long_opts, &opti))) {
       if (opt == EOF) break;
       switch (opt) {
+         case 'c':
+            if (!optarg) break; /* AUTO is default */
+            if (!strcmp(optarg, "never") || !strcmp(optarg, "no")) {
+               colors_when = NEVER;
+            } else if (!strcmp(optarg, "always") || !strcmp(optarg, "yes")) {
+               colors_when=ALWAYS;
+            } else {
+               fprintf(stderr, "Error: Invalid option to --color, `%s'\n", optarg);
+               exit(EXIT_FAILURE);
+            }
+            break;
+         case 'C':
+            colors_when = NEVER;
+            break;
          case 'h':
            fputs("Usage: nsuds [OPTIONS]...\n\
 Nsuds: The Ncurses Sudoku System\n\
-   -h --help      Show this help screen\n\
-   -v --version   Print version info\n\
+   -c --color[=WHEN] Control when to use colors. WHEN may be `never', `auto'\n\
+                       or `always'. Defaults to `auto' \n\
+   -C --no-color     Synonym for --color=never\n\
+   -h --help         Show this help screen\n\
+   -v --version      Print version info\n\
 Report bugs to <" PACKAGE_BUGREPORT ">\n\
 Home Page: http://www.sourceforge.net/projects/nsuds/\n",
              stdout);
