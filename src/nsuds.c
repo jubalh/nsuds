@@ -204,6 +204,15 @@ static void draw_fbar(void)
 
 }
 
+void hide_fbar(void)
+{
+   fbar_time=0;
+   werase(fbar);
+   mvwhline(fbar, 0, 0, ACS_CKBOARD, col);
+   wrefresh(fbar);
+}
+
+
 static void draw_xs(void)
 {
    int i;

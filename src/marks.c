@@ -93,6 +93,7 @@ static int ask_int(char *question)
    int c;
    /* Print question on bottom line */
    move(row-1, 0);
+   hide_fbar();
    printw("%s (1-9)", question);
    movec(CUR);
 

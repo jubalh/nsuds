@@ -80,9 +80,7 @@ void catch_alarm(int sig)
    /* If function bar is shown, countdown it's timer
     * and erase when it expires */
    if (fbar_time && !(--fbar_time)) {
-      werase(fbar);
-      mvwhline(fbar, 0, 0, ACS_CKBOARD, col);
-      wrefresh(fbar);
+      hide_fbar();
    }
 
    /* Don't countdown if paused */

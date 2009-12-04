@@ -30,6 +30,7 @@ extern void game_over(void);
 extern void game_win(void);
 extern void draw_stats(void);
 extern void draw_grid(void);
+extern void hide_fbar(void);
 
 #endif
 
