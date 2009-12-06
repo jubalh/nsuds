@@ -396,7 +396,8 @@ int main(int argc, char **argv)
             } else if (!strcmp(optarg, "always") || !strcmp(optarg, "yes")) {
                colors_when=ALWAYS;
             } else {
-               fprintf(stderr, "Error: Invalid option to --color, `%s'\n", optarg);
+               fprintf(stderr, "Error: Invalid option to --color, `%s'\n",
+                  optarg);
                exit(EXIT_FAILURE);
             }
             break;

@@ -166,6 +166,7 @@ static bool grid_valid(void)
    return 1;
 }
 
+/* Return how many squares in the grid are filled, for stats window. */
 int grid_filled(void)
 {
    int i, j, ret=0;
@@ -175,6 +176,8 @@ int grid_filled(void)
    return ret;
 }
 
+/* Draw the contents of the grid, which includes handling the highlighting of
+ * selected marks, as well as color. */
 void draw_grid_contents(void)
 {
    int i, j;
@@ -192,9 +195,11 @@ void draw_grid_contents(void)
             /* If grid is filled in, and equals showmarks[0] */
             if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[0]) {
                if (use_colors) {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(6) | A_UNDERLINE);
+                  waddch(grid, (abs(grid_data[i][j]) + '0') 
+                     | COLOR_PAIR(6) | A_UNDERLINE);
                } else {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') | A_REVERSE | A_UNDERLINE);
+                  waddch(grid, (abs(grid_data[i][j]) + '0') 
+                     | A_REVERSE | A_UNDERLINE);
                }
             /* If grid is empty, but mark showmarks[0] is set */
             } else if (!grid_data[i][j] && marks[i][j][showmarks[0]]) {
@@ -213,13 +218,17 @@ void draw_grid_contents(void)
             /* If grid is filled in and equals showmarks[1] */
             if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[1]) {
                if (use_colors) {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(5) | A_UNDERLINE);
+                  waddch(grid, (abs(grid_data[i][j]) + '0') 
+                     | COLOR_PAIR(5) | A_UNDERLINE);
                } else {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') | A_REVERSE | A_UNDERLINE);
+                  waddch(grid, (abs(grid_data[i][j]) + '0') 
+                     | A_REVERSE | A_UNDERLINE);
                }
-            /* Grid is filled, but isn't a mark, just show value */
+            /* Grid is filled, but isn't a mark. Just show the value,
+             * unless it's shown in the first or third spaces */
             } else if (grid_data[i][j] && (!showmarks[0] || 
-                 (abs(grid_data[i][j]) != showmarks[0] && abs(grid_data[i][j]) != showmarks[2]))) {
+                 (abs(grid_data[i][j]) != showmarks[0] 
+                   && abs(grid_data[i][j]) != showmarks[2]))) {
                /* Square value was input by user, show in cyan */
                if (grid_data[i][j] > 0 && has_colors()) {
                   waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(1));
@@ -234,7 +243,8 @@ void draw_grid_contents(void)
                } else {
                   waddch(grid, (showmarks[1] + '0') | A_REVERSE);
                }
-              /* If we're only showing one set of marks, output a question mark */
+              /* If we're only showing one set of marks, output a question
+               * mark beside them */
                if (!showmarks[0]) waddch(grid, '?');
                /* Otherwise print a blank space */
                } else waddch(grid, ' ');
@@ -258,9 +268,11 @@ void draw_grid_contents(void)
             /* If grid is filled in, and equals showmarks[2] */
             if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[2]) {
                   if (use_colors) {
-                     waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(7) | A_UNDERLINE);
+                     waddch(grid, (abs(grid_data[i][j]) + '0') 
+                        | COLOR_PAIR(7) | A_UNDERLINE);
                   } else {
-                     waddch(grid, (abs(grid_data[i][j]) + '0') | A_REVERSE | A_UNDERLINE);
+                     waddch(grid, (abs(grid_data[i][j]) + '0') 
+                        | A_REVERSE | A_UNDERLINE);
                   }
             /* If grid is empty, but mark showmarks[2] is set */
             } else if (!grid_data[i][j] && marks[i][j][showmarks[2]]) {

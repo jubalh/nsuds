@@ -37,7 +37,7 @@
 #include "grid.h"
 
 /* Random number in the range [a,b] */
-#define rrand(a,b) (int)(((double)rand()/((double)RAND_MAX + 1) * (b-a + 1)) + a)
+#define rrand(a,b) (int)(((double)rand()/((double)RAND_MAX + 1)*(b-a + 1)) + a)
 
 static short grid[82];  /* The puzzle grid itself */
 static int clues=0;     /* Number of clues in puzzle */
@@ -125,7 +125,8 @@ void do_generate(int filled)
  */
 static int solve()			
 {
-   short Rows[325], Row[325][10], Col[730][5], Urow[730], Ucol[325], V[325], W[325];
+   short Rows[325], Row[325][10], Col[730][5];
+   short Urow[730], Ucol[325], V[325], W[325];
    short C[82], I[82];
    int w, m0, c1, c2, r1, m1;
    int solutions, min;
