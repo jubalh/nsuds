@@ -21,7 +21,7 @@
 #define _NSUDS_MARKS_H
 
 extern bool marks[9][9][9];
-extern short show;
+short showmarks[3];
 enum clear_type {SINGLE, ALL};
 enum show_type {ONE, MULTIPLE};
 

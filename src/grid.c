@@ -46,6 +46,8 @@ static bool initialized=0;  /* Is grid initialized? */
 #define scrx2g(x) ((x - 30) / 4)
 /* Move grid cursor to grid coord */
 #define gmove(y, x) wmove(grid, gy2win(y), gx2win(x))
+/* Move grid cursor to left of grid coord */
+#define gmovel(y, x) wmove(grid, gy2win(y), gx2win(x)-1)
 /* Move screen cursor to grid coord */
 #define smove(y, x) move(gy2scr(y), gx2scr(x))
 
@@ -108,7 +110,7 @@ void gaddch(char ch)
    if (grid_data[cury][curx]<0) return;
    gmove(cury,curx);
    grid_data[cury][curx]= ch-'0';
-   draw_grid_contents();
+   draw_grid();
 
    /* Check if compelted */
    if (grid_filled() == 81 && grid_valid())
@@ -183,32 +185,94 @@ void draw_grid_contents(void)
    /* Draw grid contents */
    for (i=0; i<9; i++) {
       for (j=0; j<9; j++) {
-         gmove(i, j);
-         /* If number is filled in */
-         if (grid_data[i][j]) {
-            /* Square value is the same as the marks we're showing, automark it  */
-            if (show && abs(grid_data[i][j]) == show) {
+         gmovel(i, j);
+
+         /* If we're showing marks in the first space */
+         if (showmarks[0]) {
+            /* If grid is filled in, and equals showmarks[0] */
+            if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[0]) {
+               if (use_colors) {
+                  waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(6) | A_UNDERLINE);
+               } else {
+                  waddch(grid, (abs(grid_data[i][j]) + '0') | A_REVERSE | A_UNDERLINE);
+               }
+            /* If grid is empty, but mark showmarks[0] is set */
+            } else if (!grid_data[i][j] && marks[i][j][showmarks[0]]) {
+               if (use_colors) {
+                  waddch(grid, (showmarks[0] + '0') | COLOR_PAIR(6));
+               } else {
+                  waddch(grid, (showmarks[0] + '0') | A_REVERSE);
+               }
+            /* Otherwise print a blank space */
+            } else waddch(grid, ' ');
+         } else waddch(grid, ' ');
+
+
+         /* If we're showing a mark in the second space */
+         if (showmarks[1]) {
+            /* If grid is filled in and equals showmarks[1] */
+            if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[1]) {
                if (use_colors) {
                   waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(5) | A_UNDERLINE);
                } else {
                   waddch(grid, (abs(grid_data[i][j]) + '0') | A_REVERSE | A_UNDERLINE);
                }
-            /* Square value was input by user, show in cyan */
-            } else if (grid_data[i][j] > 0 && has_colors()) {
-               waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(1));
-            /* Square value is part of the generated puzzle */
-            } else {
-               waddch(grid, abs(grid_data[i][j]) + '0');
-            }
-         /* Square is unfilled, check for marks */
-         } else if (show && marks[i][j][show]) {
-            if (use_colors) {
-               waddch(grid, (show + '0') | COLOR_PAIR(5));
-            } else {
-               waddch(grid, (show + '0') | A_REVERSE);
-            }
-            waddch(grid, '?');
+            /* Grid is filled, but isn't a mark, just show value */
+            } else if (grid_data[i][j] && (!showmarks[0] || 
+                 (abs(grid_data[i][j]) != showmarks[0] && abs(grid_data[i][j]) != showmarks[2]))) {
+               /* Square value was input by user, show in cyan */
+               if (grid_data[i][j] > 0 && has_colors()) {
+                  waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(1));
+               /* Square value is part of the generated puzzle */
+               } else {
+                  waddch(grid, abs(grid_data[i][j]) + '0');
+               }
+            /* If grid is empty, but mark showmarks[1] is set */
+            } else if (!grid_data[i][j] && marks[i][j][showmarks[1]]) {
+               if (use_colors) {
+                  waddch(grid, (showmarks[1] + '0') | COLOR_PAIR(5));
+               } else {
+                  waddch(grid, (showmarks[1] + '0') | A_REVERSE);
+               }
+              /* If we're only showing one set of marks, output a question mark */
+               if (!showmarks[0]) waddch(grid, '?');
+               /* Otherwise print a blank space */
+               } else waddch(grid, ' ');
+         /* If we're not showing marks, show contents of the square, if any */
+         } else if (!showmarks[0]) {
+            if (grid_data[i][j]) {
+               /* Square value was input by user, show in cyan */
+               if (grid_data[i][j] > 0 && has_colors()) {
+                  waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(1));
+                  /* Square value is part of the generated puzzle */
+               } else {
+                  waddch(grid, abs(grid_data[i][j]) + '0');
+               }
+               /* Square is empty */
+            } else waddch(grid, ' ');
          }
+
+         
+         /* If we're showing marks in the third space */
+         if (showmarks[2]) {
+            /* If grid is filled in, and equals showmarks[2] */
+            if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[2]) {
+                  if (use_colors) {
+                     waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(7) | A_UNDERLINE);
+                  } else {
+                     waddch(grid, (abs(grid_data[i][j]) + '0') | A_REVERSE | A_UNDERLINE);
+                  }
+            /* If grid is empty, but mark showmarks[2] is set */
+            } else if (!grid_data[i][j] && marks[i][j][showmarks[2]]) {
+               if (use_colors) {
+                  waddch(grid, (showmarks[2] + '0') | COLOR_PAIR(7));
+               } else {
+                  waddch(grid, (showmarks[2] + '0') | A_REVERSE);
+               }
+            /* Otherwise print nothing */
+            }
+         }
+
       }
    }
 

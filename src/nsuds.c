@@ -62,7 +62,8 @@ static void init_ncurses()
       init_pair(4, COLOR_WHITE, COLOR_BLUE);  /* Confirm dialog */
       /* Highlighting */
       init_pair(5, COLOR_BLACK, COLOR_YELLOW); /* Highlighted square */
-      init_pair(6, COLOR_WHITE, COLOR_YELLOW); 
+      init_pair(6, COLOR_BLACK, COLOR_GREEN);  
+      init_pair(7, COLOR_BLACK, COLOR_BLUE);
    }
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */

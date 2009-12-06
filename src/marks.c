@@ -27,8 +27,7 @@
 
 /* TODO: Perhaps use a sparse matrix */
 bool marks[9][9][9] = {{{0}}};
-short show=0;
-short showmult[3]={0};
+short showmarks[3]={0};
 
 /* Headers */
 static int ask_int(char *question, ...);
@@ -43,7 +42,10 @@ void mark_square(void)
    if (!num) return;
    marks[cury][curx][num]=1;
 
-   if (show==num) draw_grid();
+   if (showmarks[0] == num 
+      || showmarks[1]==num 
+      || showmarks[2]) 
+      draw_grid();
 }
 
 
@@ -58,36 +60,40 @@ void marks_show(enum show_type type)
       default:
       case ONE:
          num = ask_int("Reveal squares marked with which number? (1-9)");
-         show=num;
+         showmarks[1]=num;
+         showmarks[0]=showmarks[2]=0;
          draw_grid();
          break;
       case MULTIPLE:
          num = ask_int("Reveal squares marked with which numbers? (1-9)");
          if (!num) {
-            showmult[0]=showmult[1]=showmult[2]=0;
-            break;
+            showmarks[0]=showmarks[1]=showmarks[2]=0;
+            goto done;
          }
-         showmult[0]=num;
+         showmarks[0]=num;
 
 second:
          num = ask_int("%d and..? (1-9, Enter for just `%d')", 
-             showmult[0], showmult[0]);
+             showmarks[0], showmarks[0]);
          if (!num) {
-            showmult[1]=showmult[2]=0;
-            break;
+            showmarks[1] = showmarks[0];
+            showmarks[0]=showmarks[2]=0;
+            goto done;
          }
-         if (num==showmult[0]) goto second;
-         showmult[1]=num;
+         if (num==showmarks[0]) goto second;
+         showmarks[1]=num;
 
 third:
          num = ask_int("%d,%d and..? (1-9, Enter for just `%d,%d')", 
-             showmult[0], showmult[1], showmult[0], showmult[1]);
+             showmarks[0], showmarks[1], showmarks[0], showmarks[1]);
          if (!num) {
-            showmult[2]=0;
-            break;
+            showmarks[2]=0;
+            goto done;
          }
-         if (num == showmult[0] || num == showmult[1]) goto third;
-         showmult[2]=num;
+         if (num == showmarks[0] || num == showmarks[1]) goto third;
+         showmarks[2]=num;
+done:
+         draw_grid();
    }
 }
 
@@ -116,7 +122,10 @@ void marks_clear(enum clear_type type)
          }
          break;
    }
-   if (show==num) draw_grid();
+   if (showmarks[0] == num 
+      || showmarks[1]==num 
+      || showmarks[2]) 
+      draw_grid();
 }
 
 
