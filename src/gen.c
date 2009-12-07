@@ -27,10 +27,15 @@
  * modifications are licensed under the GNU General Public
  * License version 2, or (at your option) any later version.
  */
+#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#if STDC_HEADERS || HAVE_STRING_H
+   #include <string.h>
+#else /* Old system with only <strings.h> */
+   #include <strings.h>
+#endif
 #include <stdbool.h>
 #include <sys/time.h>
 

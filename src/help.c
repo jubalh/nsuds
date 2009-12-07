@@ -17,8 +17,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
+#include "config.h"
+
 #include <stdio.h>
-#include <string.h>
+#if STDC_HEADERS || HAVE_STRING_H
+   #include <string.h>
+#else /* Old system with only <strings.h> */
+   #include <strings.h>
+#endif
 #include <stdlib.h>
 #include <ncurses.h>
 #include <math.h>

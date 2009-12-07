@@ -23,4 +23,5 @@ NSUDS TODO
 part of the lines for formatting characters.
 - sys/queue.h needs to be included locally for portability, if we 
 use SAFE variants
+- Allow use of regular curses
 
