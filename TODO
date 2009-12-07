@@ -18,4 +18,5 @@ NSUDS TODO
 - Make new game/level clear marks
 - Expand help system
 - On startup, print 'press ? at any time for help' or something
+- If helpfiles dir doesn't exist, it segfaults for some reason..
 
