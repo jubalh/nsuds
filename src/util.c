@@ -27,7 +27,9 @@
 
 #include "util.h"
 
-/* malloc w/ error checking  */
+/* malloc w/ error checking.
+ * Note: Try to avoid using tmalloc(NULL), some older
+ * systems don't support it. */
 void *tmalloc(size_t n)
 {
    void *p = malloc(n);
@@ -39,7 +41,9 @@ void *tmalloc(size_t n)
    return p;
 }
 
-/* realloc w/ error checking */
+/* realloc w/ error checking 
+ * Note: Try to avoid using trealloc(NULL, size), some older
+ * systems don't support it. */
 void *trealloc(void *p, size_t n)
 {
    p = realloc(p, n);
