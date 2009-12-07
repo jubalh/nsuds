@@ -30,12 +30,16 @@
 #include "timer.h"
 #include "grid.h"
 #include "marks.h"
+#include "help.h"
+
+/* FIXME: Let autotools do this, set to /usr/share/doc/nsuds-VERSION/ 
+ * or something. */
+#define HELPDIR "./helpfiles/"
 
 static void init_ncurses(void);
 static void init_windows(void);
 static void draw_title(void);
 static void draw_xs(void);
-static void draw_all(void);
 static void draw_fbar(void);
 static bool launch_confirm(char *question);
 
@@ -64,6 +68,7 @@ static void init_ncurses()
       init_pair(5, COLOR_BLACK, COLOR_YELLOW); /* Highlighted square */
       init_pair(6, COLOR_BLACK, COLOR_GREEN);  
       init_pair(7, COLOR_BLACK, COLOR_BLUE);
+      init_pair(8, COLOR_RED, COLOR_BLACK); 
    }
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
@@ -223,7 +228,7 @@ static void draw_xs(void)
    wnoutrefresh(stdscr);
 }
 
-static void draw_all(void)
+void draw_all(void)
 {
    clear();
    draw_xs();
@@ -475,6 +480,19 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
                endwin();
                goto done;
             }
+            break;
+
+         /* Help */
+         case '?':
+            if (!paused)  {
+               paused=1;
+               draw_grid();
+               doupdate();
+               curs_set(!paused);
+               movec(CUR);
+            }
+            launch_file(HELPDIR "main", "Help with nsuds");
+            draw_all();
             break;
          case 'P':
          case 'p':

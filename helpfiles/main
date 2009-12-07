@@ -1,0 +1,64 @@
+{nsuds 0.4.1 - Copyright (C) 2009 Vincent Launchbury}
+{Released under the GNU GPL}
+%Report bugs to <vincent@doublecreations.com>%
+
+The nsuds project is a text graphical sudoku game that uses the ncurses display library. The point of the project is to provide a portable implementation with the minimum possible dependencies. 
+
+_BASIC KEYS_:
+{N}
+{n}        Start a new game, abandoning the current
+         one. If the current score is a high score,
+         it will be entered.
+
+{p}
+{P}        Pause or unpause the game. Pausing the game
+         will cause the grid contents to be hidden.
+
+{q}
+{Q}        Quit nsuds. A dialog will popup for you to 
+         confirm the action.
+
+{1}-{9}      Input a number in the current square. You 
+         cannot overwrite a number that was part of
+         the original generated puzzle.
+
+{DEL}
+{x}
+{X}        Delete an input number from the current
+         square. You cannot erase a number that was
+         part of the original generated puzzle.
+
+{Arrows}
+{WASD}
+{HJKL}
+{Click}    Move the cursor to a different square in the
+         grid. Note that mouse support in a tty
+         requires gpm.
+
+
+_MARKS_:
+Marking squares in nsuds is similar to how you would put pencil marks on a real sudoku. When you mark a square with 1, you are saying that 1 may belong in that square, but it doesn't input the number in the square.  However, when you reveal sqaures marked with 1, it will highlight all the squares that you thought may contain a 1, and temporarily show a 1 in those squares. Squares that actually do contain a 1 will also be highlighted, but they will be underlined to distinguish them from marks. 
+
+{m} + {#}
+{M} + {#}    Mark the current square with {#}. That is,
+         set mark {#} for the current square to true.
+
+{c} + {#}    Clear mark {#} from the current square. 
+         That is, set mark {#} for the current square to
+         false.
+
+{C} + {#}    Clear all mark {#}'s from all squares. That
+         is, for all squares, set mark {#} to false.
+
+{r} + {#}    Reveal (highlight) all sqaures that are
+         marked with {#}. That is, highlight all squares
+         for which mark {#} is set to true.
+
+{R} + {#} [+ {#} [+ {#}]] + {Enter}
+         Reveal (highlight) upto 3 marks within a
+         square. Similar to {r} + {#}, but 3 numbers
+         can be shown at once.
+
+_CREDITS_
+Help file written by Vincent Launchbury.
+Last updated: December 6th, 2009.

@@ -17,21 +17,32 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
-#ifndef _NSUDS_NSUDS_H
-#define _NSUDS_NSUDS_H
 
-extern WINDOW *grid, *timer, *stats, *title, *fbar;
-extern int paused, difficulty;
-extern int score;
-extern int fbar_time;
-extern int row,col;
-extern int use_colors;
-extern void game_over(void);
-extern void game_win(void);
-extern void draw_stats(void);
-extern void draw_grid(void);
-extern void draw_all(void);
-extern void hide_fbar(void);
+/* util.c
+ * ------
+ * General functions that should be used throughout nsuds */
+#include <stdio.h>
+#include <stdlib.h>
 
-#endif
+/* malloc w/ error checking  */
+void *tmalloc(size_t n)
+{
+   void *p = malloc(n);
+   if (!p && n != 0) {
+      fprintf(stderr, "Error: Out of memory!\n");
+      exit(EXIT_FAILURE);
+   }
+   return p;
+}
+
+/* realloc w/ error checking */
+void *trealloc(void *p, size_t n)
+{
+   p = realloc(p, n);
+   if (!p && n != 0) {
+      fprintf(stderr, "Error: Out of memory!\n");
+      exit(EXIT_FAILURE);
+   }
+   return p;
+}
 

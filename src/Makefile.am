@@ -2,10 +2,10 @@
 bexecdir = /usr/bin
 bexec_PROGRAMS = nsuds
 
-nsuds_SOURCES = gen.c nsuds.c timer.c grid.c marks.c
-noinst_HEADERS = gen.h nsuds.h timer.h grid.h marks.h
-nsuds_CFLAGS = -pedantic -ansi -Wall -W 
-nsuds_LDFLAGS = -lncurses
+nsuds_SOURCES = gen.c nsuds.c timer.c grid.c marks.c help.c util.c
+noinst_HEADERS = gen.h nsuds.h timer.h grid.h marks.h help.h util.h
+nsuds_CFLAGS = -pedantic -ansi -Wall -W
+nsuds_LDFLAGS = -lncurses -lm
  
 # Doesn't work on some distros I tested.
 #man_MANS = nsuds.1
