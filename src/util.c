@@ -23,12 +23,16 @@
  * General functions that should be used throughout nsuds */
 #include <stdio.h>
 #include <stdlib.h>
+#include <ncurses.h>
+
+#include "util.h"
 
 /* malloc w/ error checking  */
 void *tmalloc(size_t n)
 {
    void *p = malloc(n);
    if (!p && n != 0) {
+      endwin();
       fprintf(stderr, "Error: Out of memory!\n");
       exit(EXIT_FAILURE);
    }
@@ -40,6 +44,7 @@ void *trealloc(void *p, size_t n)
 {
    p = realloc(p, n);
    if (!p && n != 0) {
+      endwin();
       fprintf(stderr, "Error: Out of memory!\n");
       exit(EXIT_FAILURE);
    }
