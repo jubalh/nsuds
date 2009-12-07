@@ -19,7 +19,7 @@
 
 AC_PREREQ([2.63])
 t://nsuds.git.sourceforge.net/gitroot/nsuds/nsuds
-AC_INIT([nsuds], [0.3B], [vincent@doublecreations.com])
+AC_INIT([nsuds], [0.4B], [vincent@doublecreations.com])
 AC_CONFIG_AUX_DIR([build])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/nsuds.c])

@@ -1,10 +1,19 @@
 nsuds - The Ncurses Sudoku System
 *********************************
-. Version: nsuds-0.3B (Beta release)
+. Version: nsuds-0.4B (Beta release)
 . Written by Vincent Launchbury
 . See AUTHORS for a complete list of contributors
 . Report bugs to: <vincent@doublecreations.com>
 
+!!NOTE!!
+This is beta software. It is being actively developed, but it is currently
+unfinished and unstable, and is not meant for general use. As an example, the
+help system will only function if the program is invoked as ./src/nsuds from
+the source code directory. And the game itself is too easy with no difficulty
+settings as of yet. 
+
+Which means, if you're not developing, you probably don't want to run it yet.
+!!NOTE!!
 
 INTRODUCTION
 ============
@@ -59,6 +68,8 @@ Which will remove any added files.
 
 IN-GAME KEYS
 ============
+Press '?' in-game for more detailed help.
+
 q       - Quit
 n       - New Game
 p       - Pause Game
@@ -76,6 +87,8 @@ r + #   - Reveal (highlight) all marks with the number #
 R + #   - Same as above, but allows upto 3 numbers to be highlighted at the
          same time
 r + 0   - Remove all highlighting
+
+Press '?' in-game for more detailed help.
 
 MARKS
 =====

@@ -5,6 +5,7 @@ Changes in 0.4B
 ---------------
 - Added mouse support, so you can click on a grid square to select it
 - Added pencil marking system, to help solve puzzles
+- Added a help system, accessible via the '?' key
 - Added better support for terminals without color support
 - Added the --color and --no-color options
 
