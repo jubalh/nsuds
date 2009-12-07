@@ -27,13 +27,10 @@
 #include "grid.h"
 #include "marks.h"
 
-static void gaddimch(int y, int x, char ch);
-static void init_grid(void);
 static bool grid_valid(void);
 
 char grid_data[9][9]={{0}}; /* grid_data[y/row][x/col] */
 int curx=0,cury=0;          /* Current (selected) grid coords */
-static bool initialized=0;  /* Is grid initialized? */
 
 /* Get screen coords from grid coords */
 #define gy2scr(y) (3  + (y * 2))
@@ -93,15 +90,6 @@ void movec_mouse(int x, int y)
    }
 }
 
-
-/* Add an immutable char to the grid */
-static void gaddimch(int y, int x, char ch)
-{
-   gmove(y, x);
-   if (ch == '0') waddch(grid, ' ');
-   else waddch(grid, ch);
-   grid_data[y][x] = -(ch-'0');
-}
 
 /* Add a mutable char to the current grid location */
 void gaddch(char ch)
