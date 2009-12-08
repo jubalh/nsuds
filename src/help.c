@@ -26,7 +26,11 @@
    #include <strings.h>
 #endif
 #include <stdlib.h>
-#include <ncurses.h>
+#ifdef HAVE_NCURSES_H
+   #include <ncurses.h>
+#else 
+   #include <curses.h>
+#endif
 #include <math.h>
 #include <sys/stat.h>
 #include <sys/queue.h>

@@ -28,7 +28,11 @@
    #include <strings.h>
 #endif
 #include <time.h>
-#include <ncurses.h>
+#ifdef HAVE_NCURSES_H
+   #include <ncurses.h>
+#else 
+   #include <curses.h>
+#endif
 #include <getopt.h>
 
 #include "config.h"

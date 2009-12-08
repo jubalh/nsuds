@@ -19,7 +19,11 @@
  */
 #include "config.h"
 
-#include <ncurses.h>
+#ifdef HAVE_NCURSES_H
+   #include <ncurses.h>
+#else 
+   #include <curses.h>
+#endif
 #if STDC_HEADERS || HAVE_STRING_H
    #include <string.h>
 #else /* Old system with only <strings.h> */

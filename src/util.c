@@ -23,7 +23,11 @@
  * General functions that should be used throughout nsuds */
 #include <stdio.h>
 #include <stdlib.h>
-#include <ncurses.h>
+#ifdef HAVE_NCURSES_H
+   #include <ncurses.h>
+#else 
+   #include <curses.h>
+#endif
 
 #include "util.h"
 
