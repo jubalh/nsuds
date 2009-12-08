@@ -21,7 +21,7 @@
 #ifndef _NSUDS_GRID_H
 #define _NSUDS_GRID_H
 
-enum {CUR, LEFT, RIGHT, UP, DOWN};
+enum {CUR, LEFT, RIGHT, UP, DOWN, END, HOME, TOP, BOTTOM};
 #define abs(x) (((x)>0)?(x):-(x))
 extern int curx,cury;    /* Current (selected) grid coords */
 

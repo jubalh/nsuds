@@ -35,6 +35,12 @@ _BASIC KEYS_:
          grid. Note that mouse support in a tty
          requires gpm.
 
+{Home}
+{End}
+{Page UP/DOWN}
+         Move the cursor to the beginning or end of the
+         current row or column.
+
 
 _MARKS_:
 Marking squares in nsuds is similar to how you would put pencil marks on a real sudoku. When you mark a square with 1, you are saying that 1 may belong in that square, but it doesn't input the number in the square.  However, when you reveal sqaures marked with 1, it will highlight all the squares that you thought may contain a 1, and temporarily show a 1 in those squares. Squares that actually do contain a 1 will also be highlighted, but they will be underlined to distinguish them from marks. 

@@ -75,6 +75,22 @@ void movec(int dir)
       case RIGHT:
          if (curx < 8) smove(cury, ++curx);
          break;
+      case TOP:
+         cury=0;
+         smove(cury, curx);
+         break;
+      case BOTTOM:
+         cury=8;
+         smove(cury, curx);
+         break;
+      case HOME:
+         curx=0;
+         smove(cury, curx);
+         break;
+      case END:
+         curx=8;
+         smove(cury, curx);
+         break;
       case CUR:
          smove(cury, curx);
          break;

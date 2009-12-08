@@ -337,9 +337,18 @@ void launch_file(char *fname, char *title)
             draw_scroller(s);
             break;
          case KEY_UP:
+         case 'K':
+         case 'k':
+         case 'W':
+         case 'w':
             scroller_scroll(s, SCROLL_UP);
             break;
          case KEY_DOWN:
+         case 'J':
+         case 'j':
+         case 'S':
+         case 's':
+         case 32: /* 32 = space */
             scroller_scroll(s, SCROLL_DOWN);
             break;
          case KEY_PPAGE:

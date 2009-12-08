@@ -482,6 +482,18 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case 's':
             movec(DOWN);
             break;
+         case KEY_HOME:
+            movec(HOME);
+            break;
+         case KEY_END:
+            movec(END);
+            break;
+         case KEY_NPAGE:
+            movec(BOTTOM);
+            break;
+         case KEY_PPAGE:
+            movec(TOP);
+            break;
          case 'Q':
          case 'q':
             if (launch_confirm("Really quit?")) {

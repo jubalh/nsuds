@@ -13,8 +13,6 @@ NSUDS TODO
 
 - Use accessors for data
 - Enum COLOR_PAIRS
-- Make HOME/END go to the beggining and end of row
-- Make PGUP/PGDN go to the top/bottom of col
 - Make new game/level clear marks
 - Expand help system
 - On startup, print 'press ? at any time for help' or something
