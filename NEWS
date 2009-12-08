@@ -1,6 +1,12 @@
 This file contains a non-definitive list of user-visible changes. 
 See ChangeLog for a more detailed log of changes, geared toward developers
 
+Changes in 0.5B
+---------------
+- Added support for using the curses library if ncurses isn't available
+- If nsuds runs out of memory, it will now make sure the terminal is left in a
+clean state.
+
 Changes in 0.4B
 ---------------
 - Added mouse support, so you can click on a grid square to select it

@@ -17,9 +17,10 @@ Which means, if you're not developing, you probably don't want to run it yet.
 
 INTRODUCTION
 ============
-The nsuds project is a text graphical sudoku game that uses the ncurses display
-library. The point of the project is to provide a portable implementation with
-the minimum possible dependencies. 
+The nsuds project is a text graphical sudoku game with pencil-marking support.
+The point of the project is to provide a portable implementation of sudoku with
+the minimum possible dependencies. The only library dependency is ncurses,
+although regular curses should surfice in it's place.
 
 ADDITIONAL DOCUMENTATION
 ========================
