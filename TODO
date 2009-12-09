@@ -11,13 +11,21 @@ NSUDS TODO
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses
 
-- Use accessors for data
-- Enum COLOR_PAIRS
-- Make new game/level clear marks
+- Use accessors for data?
+- Enum COLOR_PAIRS (and check we don't exceed the max)
 - Expand help system
 - On startup, print 'press ? at any time for help' or something
 - If helpfiles dir doesn't exist, it segfaults for some reason..
-- When printing overflows, we need to check the initial unprinted
-part of the lines for formatting characters.
 - sys/queue.h needs to be included locally for portability, if we 
 use SAFE variants
+
+In help system:
+---
+- Implement nicer looking scroll bar like vims CTRL-X mode
+- Implement a hyperlink system <Title|file> which goes to the line 
+containing _TITLE_ in helpfiles/file
+- Parse helpfile, storing lines stripped of formatting,
+with format attributes for each character instead.
+- Keep history of pages visited.
+- Maybe add setting to enable/disable smooth scrolling (perhaps w/ getopt?)
+- Could then be used as a general help system for other projects

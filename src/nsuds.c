@@ -52,6 +52,7 @@ static void draw_title(void);
 static void draw_xs(void);
 static void draw_fbar(void);
 static bool launch_confirm(char *question);
+static void new_level(void);
 
 WINDOW *grid, *timer, *stats, *title, *fbar;
 static MEVENT mouse_e;
@@ -343,13 +344,11 @@ void game_over(void)
    /* Wait for input */
    while ((c = getch()) == ERR) ;
 
-   /* Start a new game */
+   /* Reset score and timers */
    score = 0;
    gtime.hours = gtime.mins = 0;
-   generate();
-   start_timer(20, 0);
-   paused = !paused;
-   draw_all();
+
+   new_level();
 }
 
 /* Draw level win screen */
@@ -379,10 +378,22 @@ void game_win(void)
    /* Wait for input */
    while ((c = getch()) == ERR) ;
 
+   new_level();
+}
+
+/* Start a new level */
+static void new_level(void) 
+{
+   int i;
+
+   /* Clear all marks */
+   for (i=0; i<729; i++) *(&marks[0][0][0] + i) = 0;
+   for (i=0;i<3;i++) showmarks[i]=0;
+
    /* Start a new game */
    generate();
    start_timer(20, 0);
-   paused = !paused;
+   paused = 0;
    draw_all();
 }
 
@@ -538,12 +549,11 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case 'n':
             if (campaign) break;
             if (launch_confirm("End current game and start a fresh?")) {
+               /* Reset score and timers */
                score = 0;
                gtime.hours = gtime.mins = 0;
-               generate();
-               start_timer(20, 0);
-               draw_grid();
-               draw_stats();
+
+               new_level();
             }
             break;
 
