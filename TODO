@@ -24,8 +24,6 @@ In help system:
 - Implement nicer looking scroll bar like vims CTRL-X mode
 - Implement a hyperlink system <Title|file> which goes to the line 
 containing _TITLE_ in helpfiles/file
-- Parse helpfile, storing lines stripped of formatting,
-with format attributes for each character instead.
 - Keep history of pages visited.
 - Maybe add setting to enable/disable smooth scrolling (perhaps w/ getopt?)
 - Could then be used as a general help system for other projects

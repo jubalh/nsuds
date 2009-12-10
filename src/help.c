@@ -81,7 +81,6 @@ static void draw_scroller(Scroller *s)
    int i, j; 
    struct scrl_line *l;
    int dlines=0;                     /* Number of lines displayed */
-   int in_ul=0, in_cyan=0, in_red=0; /* States for character attributes */
 
    /* Erase and reborder */
    werase(s->window);
@@ -100,36 +99,9 @@ static void draw_scroller(Scroller *s)
          if (!dlines && i < s->overview) continue;  /* Skip overflowed lines */
          
          wmove(s->window, ++dlines, 1);
-         /* Print each character, parsing style info */
-         for (j=start; j < strlen(l->line)
-           && j < s->width-2 + start; j++) {
-            switch (l->line[j]) {
-               /* _Underlined text_  normal */
-               case '_':
-                  in_ul=!in_ul;
-                  break;
-               /* { Cyan text } normal */
-               case '{':
-                  in_cyan=1;
-                  break;
-               case '}':
-                  in_cyan=0;
-                  break;
-               /* %Red text% normal */
-               case '%':
-                  in_red = !in_red;
-                  break;
-               default:
-                  if (in_ul) {
-                     waddch(s->window, l->line[j] | A_UNDERLINE);
-                  } else if (in_cyan) {
-                     waddch(s->window, l->line[j] | COLOR_PAIR(1));
-                  } else if (in_red) {
-                     waddch(s->window, l->line[j] | COLOR_PAIR(8) | A_BOLD);
-                  } else {
-                     waddch(s->window, l->line[j]);
-                  }
-            }
+         /* Print each character, adding formatting info */
+         for (j=start; j < strlen(l->line) && j < s->width-2 + start; j++) {
+                     waddch(s->window, l->line[j] | l->fmask[j]);
          }
          if (dlines >= s->height-2) goto done;
       }
@@ -184,21 +156,70 @@ static void scroller_resize(Scroller *s, int height, int width,
 static void scroller_write(Scroller *s, char *msg)
 {
    struct scrl_line *nline;
+   char *c;
+   int len=0, i=0;
+   bool in_ul=0, in_cyan=0, in_red=0; /* Formatting attributes */
    
    /* FIXME: Perhaps store strlen(line) in scrl_line, which
     * would save a lot of wasted cpu time. 
     */
 
-   /* Remove first item if buffer is full */
-   if (s->size >= BUF_SIZE) {
-      if (s->cur==TAILQ_FIRST(&s->buffer)) s->cur = TAILQ_NEXT(s->cur,entries);
-      TAILQ_REMOVE(&s->buffer, TAILQ_FIRST(&s->buffer), entries); 
-   } else s->size++;  /* If nothing is removed, the #lines is increased */
+   s->size++;
+   /* Calculate the length minus formattting chars */
+   for (c=msg; *c; c++) {
+      switch (*c) {
+         case '_':
+         case '{':
+         case '}':
+         case '%':
+            break;
+         default:
+            len++;
+            break;
+      }
+   }
 
+   /* Allocate memory */
    nline = tmalloc(sizeof(*nline));
-   nline->line = tmalloc(strlen(msg)+1);
-   strcpy(nline->line, msg);
-   nline->lines = ceil(strlen(msg) / (double)(s->width - 2));
+   nline->line = tmalloc(len + 1);
+   nline->fmask = tmalloc(sizeof(attr_t) * (len + 1));
+
+   /* Parse out formatting characters, and copy over
+    * all other characters with formatting applied */
+   for (c=msg; *c; c++) {
+         switch (*c) {
+            /* _Underlined text_  normal */
+            case '_':
+               in_ul=!in_ul;
+               break;
+               /* { Cyan text } normal */
+            case '{':
+               in_cyan=1;
+               break;
+            case '}':
+               in_cyan=0;
+               break;
+               /* %Red text% normal */
+            case '%':
+               in_red = !in_red;
+               break;
+            default:
+               nline->line[i]=*c;
+               if (in_ul) {
+                  nline->fmask[i] = A_UNDERLINE;
+               } else if (in_cyan) {
+                  nline->fmask[i] = COLOR_PAIR(1);
+               } else if (in_red) {
+                  nline->fmask[i] = COLOR_PAIR(8) | A_BOLD;
+               } else {
+                  nline->fmask[i] = 0;
+               }
+               i++;
+               break;
+         }
+   }
+   nline->line[i]='\0';
+   nline->lines = ceil(len / (double)(s->width - 2));
    TAILQ_INSERT_TAIL(&s->buffer, nline, entries);
 
    if (!s->cur) s->cur=TAILQ_FIRST(&s->buffer);
@@ -270,6 +291,7 @@ static void free_scroller(Scroller *s)
 {
    while ((s->cur = TAILQ_FIRST(&s->buffer))) {
       free(s->cur->line);
+      free(s->cur->fmask);
       TAILQ_REMOVE(&s->buffer, s->cur, entries);
       free(s->cur);
    }

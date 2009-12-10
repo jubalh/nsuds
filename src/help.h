@@ -23,10 +23,10 @@
 
 enum {SCROLL_UP, SCROLL_DOWN, SCROLL_TOP, SCROLL_BASE};
 enum {SCRL_RFRESH};
-#define BUF_SIZE 500
 
 struct scrl_line {
    char *line;
+   attr_t *fmask; /* Format mask */
    int lines;
    TAILQ_ENTRY(scrl_line) entries;
 };
