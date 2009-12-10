@@ -46,7 +46,6 @@ typedef struct {
    TAILQ_HEAD(scrl_hn, scrl_line) buffer; /* List of lines */
 } Scroller;
 
-#define scroller_check_over(s) (void)scroller_can_down(s)
 extern  void launch_file(char *fname, char *title);
 
 #endif

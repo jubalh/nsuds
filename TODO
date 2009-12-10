@@ -15,7 +15,6 @@ NSUDS TODO
 - Enum COLOR_PAIRS (and check we don't exceed the max)
 - Expand help system
 - On startup, print 'press ? at any time for help' or something
-- If helpfiles dir doesn't exist, it segfaults for some reason..
 - sys/queue.h needs to be included locally for portability, if we 
 use SAFE variants
 

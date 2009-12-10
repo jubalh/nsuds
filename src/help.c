@@ -49,6 +49,7 @@ static void scroller_resize(Scroller *s, int height, int width,
 static void scroller_write(Scroller *s, char *msg);
 static void scroller_scroll(Scroller *s, int dir);
 static bool scroller_can_down(Scroller *s);
+static void scroller_check_over(Scroller *s);
 static void free_scroller(Scroller *s);
 static void scroller_set(Scroller *s, int flag, int val);
 
@@ -126,9 +127,21 @@ static bool scroller_can_down(Scroller *s)
       total += a->lines;
       if (total >= s->height-2) return true;
    }
-   /* Fix overflow incase invoked as macro scroller_check_over() */
-   if (total < s->height-1) scroller_scroll(s, SCROLL_BASE);
    return false;
+}
+
+/* Check if the scroller is scrolled too far due to a 
+ * window resize. If so, fix it */
+static void scroller_check_over(Scroller *s)
+{
+   struct scrl_line *a;
+   int total= - s->overview-1;
+   for (a=s->cur; a; a=TAILQ_NEXT(a, entries)) {
+      total += a->lines;
+      if (total >= s->height-2) return;
+   }
+   /* Scroll to the bottom to fix issue */
+   if (total < s->height-1) scroller_scroll(s, SCROLL_BASE);
 }
 
 
@@ -314,7 +327,11 @@ void launch_file(char *fname, char *title)
    
    /* Read in the file */
    fd=fopen(fname, "r");
-   if (fd != NULL) {
+   if (fd==NULL) {
+      /* Perhaps they're not installed properly */
+      scroller_write(s, "Error: Can't access help files!");
+      scroller_write(s, "Are you sure they are installed correctly?");
+   } else {
       struct stat f;
       if (stat(fname, &f) == -1) 
          scroller_write(s, "Error: Can't stat helpfile");
@@ -333,17 +350,10 @@ void launch_file(char *fname, char *title)
          free(buffer);
       }
       fclose(fd);
-   } else {
-      /* Perhaps they're not installed properly */
-      scroller_write(s, "Error: Can't access help files");
-      scroller_write(s, strerror(errno));
    }
 
    /* Allow draws again */
    scroller_set(s, SCRL_RFRESH, 1);
-   scroller_scroll(s, SCROLL_TOP);
-   draw_scroller(s);
-
 
    /* Place over everything */
    overwrite(s->window, grid);
