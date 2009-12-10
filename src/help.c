@@ -61,6 +61,7 @@ static Scroller *scroller_new(int height, int width, int starty,
    new->height = height;
    new->width = width;
    new->rfresh=1;
+   new->smooth=0;
    new->size = 0;
    new->overview=0;
    new->cur=NULL;
@@ -100,7 +101,7 @@ static void draw_scroller(Scroller *s)
          
          wmove(s->window, ++dlines, 1);
          /* Print each character, adding formatting info */
-         for (j=start; j < strlen(l->line) && j < s->width-2 + start; j++) {
+         for (j=start; j < l->len && j < s->width-2 + start; j++) {
                      waddch(s->window, l->line[j] | l->fmask[j]);
          }
          if (dlines >= s->height-2) goto done;
@@ -138,7 +139,7 @@ static void scroller_resize(Scroller *s, int height, int width,
    struct scrl_line *l;
    /* Recalculate the number of overflowing lines */
    for (l=TAILQ_FIRST(&s->buffer); l; l=TAILQ_NEXT(l, entries)) {
-      l->lines = ceil(strlen(l->line) / (double)(width - 2));
+      l->lines = ceil(l->len / (double)(width - 2));
    }
 
    /* Create a new window */
@@ -220,6 +221,7 @@ static void scroller_write(Scroller *s, char *msg)
    }
    nline->line[i]='\0';
    nline->lines = ceil(len / (double)(s->width - 2));
+   nline->len = len;
    TAILQ_INSERT_TAIL(&s->buffer, nline, entries);
 
    if (!s->cur) s->cur=TAILQ_FIRST(&s->buffer);
@@ -236,10 +238,7 @@ static void scroller_write(Scroller *s, char *msg)
 static void scroller_scroll(Scroller *s, int dir)
 {
    /* Buffer is empty */
-   if (!s->cur) {
-      s->cur = TAILQ_FIRST(&s->buffer);
-      return;
-   }
+   if (!s->cur) return;
 
    switch (dir) {
       case SCROLL_DOWN:
@@ -282,7 +281,7 @@ static void scroller_scroll(Scroller *s, int dir)
             s->overview=0;
          }
    }
-   draw_scroller(s);
+   if (s->rfresh || s->smooth) draw_scroller(s);
 }
 
 
@@ -374,10 +373,14 @@ void launch_file(char *fname, char *title)
             scroller_scroll(s, SCROLL_DOWN);
             break;
          case KEY_PPAGE:
+            scroller_set(s, SCRL_RFRESH, 0);
             for (i=0;i<6;i++) scroller_scroll(s, SCROLL_UP);
+            scroller_set(s, SCRL_RFRESH, 1);
             break;
          case KEY_NPAGE:
+            scroller_set(s, SCRL_RFRESH, 0);
             for (i=0;i<6;i++) scroller_scroll(s, SCROLL_DOWN);
+            scroller_set(s, SCRL_RFRESH, 1);
             break;
          case KEY_HOME:
             scroller_scroll(s, SCROLL_TOP);
@@ -403,6 +406,7 @@ static void scroller_set(Scroller *s, int flag, int val)
    switch (flag) {
       case SCRL_RFRESH:
          s->rfresh=val;
+         if (val) draw_scroller(s);
          break;
       default:
          break;

@@ -25,5 +25,5 @@ In help system:
 - Implement a hyperlink system <Title|file> which goes to the line 
 containing _TITLE_ in helpfiles/file
 - Keep history of pages visited.
-- Maybe add setting to enable/disable smooth scrolling (perhaps w/ getopt?)
+- Maybe add setting to enable smooth scrolling (perhaps w/ getopt too?)
 - Could then be used as a general help system for other projects

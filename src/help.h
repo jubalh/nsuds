@@ -28,6 +28,7 @@ struct scrl_line {
    char *line;
    attr_t *fmask; /* Format mask */
    int lines;
+   short len;
    TAILQ_ENTRY(scrl_line) entries;
 };
 
@@ -35,7 +36,8 @@ struct scrl_line {
 typedef struct {
    WINDOW *window;            /* Ncurses Window */
    char *title;               /* Optional title */
-   int rfresh;                /* Refresh or not */
+   bool rfresh;               /* Refresh or not */
+   bool smooth;               /* Smooth scrolling */
    int height;	               /* Height of window */
    int width;	               /* Width of window */
    int size;		            /* # of lines in buffer (pos) */
