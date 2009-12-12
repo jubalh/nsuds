@@ -65,6 +65,8 @@ static Scroller *scroller_new(int height, int width, int starty,
    new->smooth=0;
    new->size = 0;
    new->overview=0;
+   new->tlines=0;
+   new->cur_sl=0;
    new->cur=NULL;
    if (title) {
       new->title = tmalloc(strlen(title) + 1);
@@ -82,7 +84,11 @@ static void draw_scroller(Scroller *s)
 {
    int i, j; 
    struct scrl_line *l;
-   int dlines=0;                     /* Number of lines displayed */
+   int dlines=0;                 /* Number of lines displayed */
+
+   int screen_space=s->height-2; /* Space for scrollbar to go */
+   int sbar_height=0;            /* Height scrollbar should be */
+   int sbar_start=0;             /* Where scrollbar should start */
 
    /* Erase and reborder */
    werase(s->window);
@@ -105,16 +111,30 @@ static void draw_scroller(Scroller *s)
          for (j=start; j < l->len && j < s->width-2 + start; j++) {
                      waddch(s->window, l->line[j] | l->fmask[j]);
          }
-         if (dlines >= s->height-2) goto done;
+         if (dlines >= s->height-2) goto scrollbar;
       }
    }
-done:
 
-   /* Print scroll indicators */
-   if (scroller_can_down(s)) mvwaddch(s->window, s->height-2, s->width-1, 'v'); 
-   if (s->overview>0 || (s->cur && TAILQ_PREV(s->cur, scrl_hn, entries)))
-      mvwaddch(s->window, 1, s->width-1, '^');
+scrollbar:
 
+   /* Print a rather ugly scrollbar. Idealy it would take advantage of 256
+    * color capabilities, but it requires ncurses to have the support
+    * compiled in, and I'm not sure how widespread that is.. */
+   if (s->tlines >= screen_space) {
+      /* Start of scrollbar */
+      sbar_start  = ((double)(s->cur_sl+1) / s->tlines) * screen_space;
+      sbar_start = clamp(sbar_start, 0, screen_space-1);
+      /* And it's height */
+      sbar_height = (int)(((double)screen_space / s->tlines) * screen_space);
+      sbar_height = clamp(sbar_height, 1, screen_space - sbar_start);
+
+      for (i=0; i<sbar_height;i++) {
+         mvwaddch(s->window, sbar_start + i + 1, s->width-1, 
+            ACS_DIAMOND| COLOR_PAIR(10));
+      }
+   }
+
+   /* And output it */
    wrefresh(s->window);
 }
 
@@ -150,9 +170,11 @@ static void scroller_resize(Scroller *s, int height, int width,
             int starty, int startx)
 {
    struct scrl_line *l;
+   s->tlines=0;
    /* Recalculate the number of overflowing lines */
    for (l=TAILQ_FIRST(&s->buffer); l; l=TAILQ_NEXT(l, entries)) {
       l->lines = ceil(l->len / (double)(width - 2));
+      s->tlines += l->lines;
    }
 
    /* Create a new window */
@@ -174,10 +196,6 @@ static void scroller_write(Scroller *s, char *msg)
    int len=0, i=0;
    bool in_ul=0, in_cyan=0, in_red=0; /* Formatting attributes */
    
-   /* FIXME: Perhaps store strlen(line) in scrl_line, which
-    * would save a lot of wasted cpu time. 
-    */
-
    s->size++;
    /* Calculate the length minus formattting chars */
    for (c=msg; *c; c++) {
@@ -234,6 +252,7 @@ static void scroller_write(Scroller *s, char *msg)
    }
    nline->line[i]='\0';
    nline->lines = ceil(len / (double)(s->width - 2));
+   s->tlines += nline->lines;
    nline->len = len;
    TAILQ_INSERT_TAIL(&s->buffer, nline, entries);
 
@@ -262,26 +281,33 @@ static void scroller_scroll(Scroller *s, int dir)
             s->cur = TAILQ_NEXT(s->cur, entries);
             s->overview=0;
          }
+         s->cur_sl++;
          break;
       case SCROLL_UP:
-         if (s->overview>0) s->overview--;
-         else if (TAILQ_PREV(s->cur, scrl_hn, entries)) {
+         if (s->overview>0) {
+            s->overview--;
+            s->cur_sl--;
+         } else if (TAILQ_PREV(s->cur, scrl_hn, entries)) {
             s->cur = TAILQ_PREV(s->cur, scrl_hn, entries);
             if (s->cur->lines>1) s->overview = s->cur->lines -1;
+            s->cur_sl--;
          }
          break;
       /* Scroll to the top line */
       case SCROLL_TOP:
          s->cur = TAILQ_FIRST(&s->buffer);
          s->overview=0;
+         s->cur_sl=0;
          break;
       /* Scroll to the bottom line */
       case SCROLL_BASE:
          {
             int total=s->height-2;
             s->cur = TAILQ_LAST(&s->buffer, scrl_hn);
+            s->cur_sl = s->tlines;
             do {
                total-=s->cur->lines;
+               s->cur_sl -= s->cur->lines;
                if (total <= 0) {
                   s->overview=-total;
                   return;
@@ -292,6 +318,7 @@ static void scroller_scroll(Scroller *s, int dir)
             /* Not enough lines to fill the screen */
             s->cur = TAILQ_FIRST(&s->buffer);
             s->overview=0;
+            s->cur_sl=0;
          }
    }
    if (s->rfresh || s->smooth) draw_scroller(s);

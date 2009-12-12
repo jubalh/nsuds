@@ -6,6 +6,9 @@ Changes in 0.5B
 - Added support for using the curses library if ncurses isn't available
 - If nsuds runs out of memory, it will now make sure the terminal is left in a
 clean state.
+- Added some new movement keys (press '?' in-game for details)
+- Pencil-marks are cleared when a new level starts
+- Added a scroll bar the help windows
 
 Changes in 0.4B
 ---------------

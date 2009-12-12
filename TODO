@@ -20,7 +20,6 @@ use SAFE variants
 
 In help system:
 ---
-- Implement nicer looking scroll bar like vims CTRL-X mode
 - Implement a hyperlink system <Title|file> which goes to the line 
 containing _TITLE_ in helpfiles/file
 - Keep history of pages visited.

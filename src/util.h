@@ -23,5 +23,7 @@
 extern void *tmalloc(size_t n);
 extern void *trealloc(void *p, size_t n);
 
+#define clamp(x,low,high) (((x)>(high)) ? (high) : (((x)<(low)) ? (low) : (x)))
+
 #endif
 

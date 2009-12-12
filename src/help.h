@@ -25,24 +25,26 @@ enum {SCROLL_UP, SCROLL_DOWN, SCROLL_TOP, SCROLL_BASE};
 enum {SCRL_RFRESH};
 
 struct scrl_line {
-   char *line;
+   char *line;    /* Text of the line */
    attr_t *fmask; /* Format mask */
-   int lines;
-   short len;
+   int lines;     /* Number of screen lines each line will take up */
+   short len;     /* Length of line */
    TAILQ_ENTRY(scrl_line) entries;
 };
 
 /* Scrolling window */
 typedef struct {
-   WINDOW *window;            /* Ncurses Window */
-   char *title;               /* Optional title */
-   bool rfresh;               /* Refresh or not */
-   bool smooth;               /* Smooth scrolling */
-   int height;	               /* Height of window */
-   int width;	               /* Width of window */
-   int size;		            /* # of lines in buffer (pos) */
-   int overview;              /* Overflow offset for this->cur */
-   struct scrl_line *cur; /* First line shown in the scroller */
+   WINDOW *window;         /* Ncurses Window */
+   char *title;            /* Optional title */
+   bool rfresh;            /* Refresh or not */
+   bool smooth;            /* Smooth scrolling */
+   int height;	            /* Height of window */
+   int width;	            /* Width of window */
+   int size;		         /* # of lines in buffer (pos) */
+   int tlines;             /* Total screen lines */
+   int overview;           /* Overflow offset for this->cur */
+   int cur_sl;             /* Current screen line shown */
+   struct scrl_line *cur;  /* First line shown in the scroller */
    TAILQ_HEAD(scrl_hn, scrl_line) buffer; /* List of lines */
 } Scroller;
 
