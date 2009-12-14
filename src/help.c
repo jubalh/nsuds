@@ -125,12 +125,17 @@ scrollbar:
       sbar_start  = ((double)(s->cur_sl+1) / s->tlines) * screen_space;
       sbar_start = clamp(sbar_start, 0, screen_space-1);
       /* And it's height */
-      sbar_height = (int)(((double)screen_space / s->tlines) * screen_space);
-      sbar_height = clamp(sbar_height, 1, screen_space - sbar_start);
+      sbar_height = (((double)screen_space / s->tlines) * screen_space);
+      sbar_height = clamp(sbar_height, 1, screen_space - sbar_start + 1);
+
+      /* If we're at the bottom, the scrollbar might not be due to a rounding
+       * error. If it isn't, fix it. */
+      if (!scroller_can_down(s) && sbar_start + sbar_height < screen_space)
+         sbar_start++;
 
       for (i=0; i<sbar_height;i++) {
          mvwaddch(s->window, sbar_start + i + 1, s->width-1, 
-            ACS_DIAMOND| COLOR_PAIR(10));
+            ACS_DIAMOND | COLOR_PAIR(10));
       }
    }
 
