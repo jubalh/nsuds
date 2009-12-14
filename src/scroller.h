@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
-#ifndef _NSUDS_HELP_H
-#define _NSUDS_HELP_H
+#ifndef _NSUDS_SCROLLER_H
+#define _NSUDS_SCROLLER_H
 #include <sys/queue.h>
 
 enum {SCROLL_UP, SCROLL_DOWN, SCROLL_TOP, SCROLL_BASE};
@@ -48,7 +48,13 @@ typedef struct {
    TAILQ_HEAD(scrl_hn, scrl_line) buffer; /* List of lines */
 } Scroller;
 
-extern  void launch_file(char *fname, char *title);
+extern void launch_file(char *fname, char *title);
+extern Scroller *scroller_new(int height, int width, int starty, 
+                int startx, char *title);
+extern void scroller_set(Scroller *s, int flag, int val);
+extern void scroller_write(Scroller *s, char *msg);
+extern void scroller_input_loop(Scroller *s);
+extern void free_scroller(Scroller *s);
 
 #endif
 

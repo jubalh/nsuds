@@ -40,7 +40,7 @@
 #include "timer.h"
 #include "grid.h"
 #include "marks.h"
-#include "help.h"
+#include "scroller.h"
 
 /* FIXME: Let autotools do this, set to /usr/share/doc/nsuds-VERSION/ 
  * or something. */

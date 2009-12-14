@@ -17,6 +17,7 @@ NSUDS TODO
 - On startup, print 'press ? at any time for help' or something
 - sys/queue.h needs to be included locally for portability, if we 
 use SAFE variants
+- Handle signals
 
 In help system:
 ---

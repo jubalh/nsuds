@@ -2,8 +2,8 @@
 bexecdir = /usr/bin
 bexec_PROGRAMS = nsuds
 
-nsuds_SOURCES = gen.c nsuds.c timer.c grid.c marks.c help.c util.c
-noinst_HEADERS = gen.h nsuds.h timer.h grid.h marks.h help.h util.h
+nsuds_SOURCES = gen.c nsuds.c timer.c grid.c marks.c scroller.c util.c
+noinst_HEADERS = gen.h nsuds.h timer.h grid.h marks.h scroller.h util.h
 nsuds_CFLAGS = -pedantic -ansi -Wall -W
 nsuds_LDFLAGS = @CURSES_LIB@ -lm
  

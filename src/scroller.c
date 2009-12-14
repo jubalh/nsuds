@@ -38,23 +38,18 @@
 
 #include "nsuds.h"
 #include "util.h"
-#include "help.h"
+#include "scroller.h"
 
 /* Headers */
-static void draw_scroller(Scroller *s);
-static Scroller *scroller_new(int height, int width, int starty, 
-                int startx, char *title);
-static void scroller_resize(Scroller *s, int height, int width, 
-            int starty, int startx);
-static void scroller_write(Scroller *s, char *msg);
-static void scroller_scroll(Scroller *s, int dir);
 static bool scroller_can_down(Scroller *s);
 static void scroller_check_over(Scroller *s);
-static void free_scroller(Scroller *s);
-static void scroller_set(Scroller *s, int flag, int val);
+static void scroller_scroll(Scroller *s, int dir);
+static void scroller_resize(Scroller *s, int height, int width, 
+            int starty, int startx);
+static void draw_scroller(Scroller *s);
 
 /* Return a pointer to a new scroller, or scrollable text window */
-static Scroller *scroller_new(int height, int width, int starty, 
+Scroller *scroller_new(int height, int width, int starty, 
                 int startx, char *title)
 {
    Scroller *new = tmalloc(sizeof(Scroller));
@@ -194,7 +189,7 @@ static void scroller_resize(Scroller *s, int height, int width,
 }
 
 /* Add a line to a Scroller, and update the window accordingly. */
-static void scroller_write(Scroller *s, char *msg)
+void scroller_write(Scroller *s, char *msg)
 {
    struct scrl_line *nline;
    char *c;
@@ -242,15 +237,17 @@ static void scroller_write(Scroller *s, char *msg)
                break;
             default:
                nline->line[i]=*c;
-               if (in_ul) {
-                  nline->fmask[i] = A_UNDERLINE;
-               } else if (in_cyan) {
-                  nline->fmask[i] = COLOR_PAIR(1);
+               nline->fmask[i]=0;
+               /* Red OR cyan */
+               if (in_cyan) {
+                  nline->fmask[i] |= COLOR_PAIR(1);
                } else if (in_red) {
-                  nline->fmask[i] = COLOR_PAIR(8) | A_BOLD;
-               } else {
-                  nline->fmask[i] = 0;
+                  nline->fmask[i] |= COLOR_PAIR(8) | A_BOLD;
                }
+               /* Can be combined with underline */
+               if (in_ul) {
+                  nline->fmask[i] |= A_UNDERLINE;
+               } 
                i++;
                break;
          }
@@ -331,7 +328,7 @@ static void scroller_scroll(Scroller *s, int dir)
 
 
 /* Free memory from a scroller */
-static void free_scroller(Scroller *s)
+void free_scroller(Scroller *s)
 {
    while ((s->cur = TAILQ_FIRST(&s->buffer))) {
       free(s->cur->line);
@@ -349,7 +346,6 @@ static void free_scroller(Scroller *s)
 void launch_file(char *fname, char *title)
 {
    FILE *fd;
-   int c, i;
    Scroller *s;
 
    s = scroller_new(row * 0.9, col * 0.9, row * 0.05, col * 0.05, title);
@@ -384,12 +380,24 @@ void launch_file(char *fname, char *title)
       fclose(fd);
    }
 
-   /* Allow draws again */
+   /* Allow draws again (and draw) */
    scroller_set(s, SCRL_RFRESH, 1);
 
    /* Place over everything */
    overwrite(s->window, grid);
-   
+
+   /* Handle user input */
+   scroller_input_loop(s);
+
+   /* User has closed the scroller, free it */
+   free_scroller(s);
+}
+
+/* Handle input on a scroller, so user can scroll and then close it. Handles
+ * window resizes */
+void scroller_input_loop(Scroller *s)
+{
+   int c, i;
    /* Handle input (10=Enter) */
    while ((c=getch()) != 10) {
       switch (c) {
@@ -435,15 +443,13 @@ void launch_file(char *fname, char *title)
          case 'Q':
          case 'q':
          case 27: /* Escape */
-            goto done;
+            return;
       }
    }
-done:
-   free_scroller(s);
 }
 
 /* Set properties of a scroller */
-static void scroller_set(Scroller *s, int flag, int val)
+void scroller_set(Scroller *s, int flag, int val)
 {
    switch (flag) {
       case SCRL_RFRESH:
