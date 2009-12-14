@@ -1,28 +1,37 @@
 NSUDS TODO
 ==========
-- Saves on quit, resumes game afterwards
-- Difficulty
-   - Based on # filled-in and time
-- High scores
-   - Currently only per-user (not all users)
-   - Can enter name if you get on the table
-   - Only 1 list for all difficulties (but shows difficulty played
-   for each score)
+TIMELINE
+- Change level win/game over screens to use a scroller
+- Remove old colors used only for above screens
+- Write a menu module similar to the scroller interface
+- Use menu module to create a menu for difficulty
+- Use number of squares filled in and time to make the requested difficulty
+- Add save module so that a game can be continued later
+- Automatically save on quit, or fatal signal
+- Maintain a high score table, with an option to display them in main menu
+    - Per user, with name, date, difficulty and score stored
+    - Perhaps in human readable format so launch_file can be used.
+- In help system:
+   - Implement a hyperlink system <Title|file> which goes to the line 
+   containing _TITLE_ in helpfiles/file
+   - Alternatively, use a menu, in which each item launches the relevant
+     scroller.
+   - Maybe keep a history of pages visited, or atleast a way to get back to the
+     originally opened page.
+   - Maybe add setting to enable smooth scrolling (perhaps w/ getopt too?)
+   - Could then be used as a general help system for other ncurses projects
+   - Expand help system with useful help, such as how to actually play sudoku.
+
+LONG-TERM (probably never to be implemented)
+- Replace solve function in src/gen.c
+- Also implement Sudoku X and Jigsaw
+- Port to windows (extremely low priority)
+
+SMALL THINGS
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses
-
 - Use accessors for data?
 - Enum COLOR_PAIRS (and check we don't exceed the max)
-- Expand help system
-- On startup, print 'press ? at any time for help' or something
 - sys/queue.h needs to be included locally for portability, if we 
 use SAFE variants
 - Handle signals
-
-In help system:
----
-- Implement a hyperlink system <Title|file> which goes to the line 
-containing _TITLE_ in helpfiles/file
-- Keep history of pages visited.
-- Maybe add setting to enable smooth scrolling (perhaps w/ getopt too?)
-- Could then be used as a general help system for other projects
