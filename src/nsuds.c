@@ -527,6 +527,8 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
                movec(CUR);
             }
             launch_file(HELPDIR "main", "Help with nsuds");
+            paused=0;
+            curs_set(!paused);
             draw_all();
             break;
          case 'P':
