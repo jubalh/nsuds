@@ -1,7 +1,7 @@
 NSUDS TODO
 ==========
 TIMELINE
-- Change level win/game over screens to use a scroller
+- Keep track of prior level times/scores so we can show a score breakdown
 - Remove old colors used only for above screens
 - Write a menu module similar to the scroller interface
 - Use menu module to create a menu for difficulty

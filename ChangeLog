@@ -11,6 +11,12 @@ clean state.
 . Scrolling is now less CPU-intensive (no longer smooth scrolls)
 . Fixed scroller_can_down getting to an infinite loop with draw_scroller.
 . Replaced the scroll indicators in the help system with a scroll bar.
+. Game now unpauses when the help system is closed
+. Fixed glitch in scrollbar
+. Text attributes in scrollers are now no longer mutually exclusive.
+. Level win/game over screens now use a scroller, and display more
+information.
+
 
 nsuds-v0.4B (2009/12/06)
 -----------

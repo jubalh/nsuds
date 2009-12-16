@@ -35,11 +35,11 @@
 #endif
 #include <getopt.h>
 
-#include "config.h"
 #include "nsuds.h"
 #include "timer.h"
 #include "grid.h"
 #include "marks.h"
+#include "score.h"
 #include "scroller.h"
 
 /* FIXME: Let autotools do this, set to /usr/share/doc/nsuds-VERSION/ 
@@ -52,13 +52,11 @@ static void draw_title(void);
 static void draw_xs(void);
 static void draw_fbar(void);
 static bool launch_confirm(char *question);
-static void new_level(void);
 
 WINDOW *grid, *timer, *stats, *title, *fbar;
 static MEVENT mouse_e;
 int paused=0, difficulty=0;
 bool campaign=0;
-int score=0;
 int fbar_time = 0;   /* Seconds to keep fbar up */
 enum {NEVER, AUTO, ALWAYS} colors_when=AUTO;
 int use_colors=0;
@@ -322,69 +320,8 @@ static bool launch_confirm(char *question)
    return 0;
 }
 
-
-/* Draw game over screen */
-void game_over(void)
-{
-   int c;
-   WINDOW *go;
-   /* Pause clock */
-   paused = 1;
-   /* Draw game over windown */
-   go = newwin(10, 44, 5, 12);
-   wattrset(go, COLOR_PAIR(2));
-   wbkgd(go, COLOR_PAIR(2));
-   werase(go);
-   mvwprintw(go, 0, 15, "!GAME OVER!");
-   mvwprintw(go, 2, 1, "You failed to complete the puzzle in time. "
-      "Keep practicing, to improve your skills, and don't forget "
-      "to use 'p' to pause the game.");
-   mvwprintw(go, 6, 10, "Total score: %d", score);
-   mvwprintw(go, 8, 5, "Press any key to start a new game");
-   wrefresh(go);
-
-   /* Wait for input */
-   while ((c = getch()) == ERR) ;
-
-   /* Reset score and timers */
-   score = 0;
-   gtime.hours = gtime.mins = 0;
-
-   new_level();
-}
-
-/* Draw level win screen */
-void game_win(void)
-{
-   int c;
-   WINDOW *go;
-   /* Pause clock */
-   paused = 1;
-   /* Draw level win  window */
-   go = newwin(12, 44, 5, 12);
-   wattrset(go, COLOR_PAIR(3));
-   wbkgd(go, COLOR_PAIR(3));
-   werase(go);
-   mvwprintw(go, 0, 15, "Congratulations");
-   mvwprintw(go, 2, 1, "You successfully completed the puzzle! "
-      "You finished the game with %d minutes and %d seconds remaining.",
-     cdown.mins, cdown.secs );
-   mvwprintw(go, 6, 7, "Level Score = %d", 
-      (cdown.mins * 60 + cdown.secs) * (1+difficulty/50));
-   score += (cdown.mins * 60 + cdown.secs) * (1+difficulty/100);
-   mvwprintw(go, 7, 7, "Total Score = %d", score);
-
-   mvwprintw(go, 9, 5, "Press any key to start a new game");
-   wrefresh(go);
-
-   /* Wait for input */
-   while ((c = getch()) == ERR) ;
-
-   new_level();
-}
-
 /* Start a new level */
-static void new_level(void) 
+void new_level(void) 
 {
    int i;
 
@@ -396,6 +333,7 @@ static void new_level(void)
    generate();
    start_timer(20, 0);
    paused = 0;
+   curs_set(1);
    draw_all();
 }
 

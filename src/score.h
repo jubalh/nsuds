@@ -17,22 +17,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
-#ifndef _NSUDS_NSUDS_H
-#define _NSUDS_NSUDS_H
+#ifndef _NSUDS_SCORE_H
+#define _NSUDS_SCORE_H
+#include <sys/queue.h>
 
-extern WINDOW *grid, *timer, *stats, *title, *fbar;
-extern int paused, difficulty;
-extern int score;
-extern int fbar_time;
-extern int row,col;
-extern int use_colors;
-extern void game_over(void);
+/* Headers */
 extern void game_win(void);
-extern void draw_stats(void);
-extern void draw_grid(void);
-extern void draw_all(void);
-extern void hide_fbar(void);
-extern void new_level(void);
+extern void game_over(void);
+
+extern int score;
+extern int level;
+
+#if 0
+/* Stats for each level */
+struct level {
+   short level;
+   struct ltimer time;  
+   short score;
+   TAILQ_ENTRY(scrl_line) entries;
+};
+
+struct breakdown {
+   struct level *cur;  /* First line shown in the scroller */
+   TAILQ_HEAD(lhn, level) lbuffer; /* List of lines */
+} scores;
+#endif
 
 #endif
 

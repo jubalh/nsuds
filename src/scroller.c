@@ -115,7 +115,7 @@ scrollbar:
    /* Print a rather ugly scrollbar. Idealy it would take advantage of 256
     * color capabilities, but it requires ncurses to have the support
     * compiled in, and I'm not sure how widespread that is.. */
-   if (s->tlines >= screen_space) {
+   if (s->tlines - 1 >= screen_space) {
       /* Start of scrollbar */
       sbar_start  = ((double)(s->cur_sl+1) / s->tlines) * screen_space;
       sbar_start = clamp(sbar_start, 0, screen_space-1);
