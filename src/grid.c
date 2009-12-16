@@ -210,7 +210,7 @@ void draw_grid_contents(void)
             if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[0]) {
                if (use_colors) {
                   waddch(grid, (abs(grid_data[i][j]) + '0') 
-                     | COLOR_PAIR(6) | A_UNDERLINE);
+                     | COLOR_PAIR(C_MARKS1) | A_UNDERLINE);
                } else {
                   waddch(grid, (abs(grid_data[i][j]) + '0') 
                      | A_REVERSE | A_UNDERLINE);
@@ -218,7 +218,7 @@ void draw_grid_contents(void)
             /* If grid is empty, but mark showmarks[0] is set */
             } else if (!grid_data[i][j] && marks[i][j][showmarks[0]]) {
                if (use_colors) {
-                  waddch(grid, (showmarks[0] + '0') | COLOR_PAIR(6));
+                  waddch(grid, (showmarks[0] + '0') | COLOR_PAIR(C_MARKS1));
                } else {
                   waddch(grid, (showmarks[0] + '0') | A_REVERSE);
                }
@@ -233,7 +233,7 @@ void draw_grid_contents(void)
             if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[1]) {
                if (use_colors) {
                   waddch(grid, (abs(grid_data[i][j]) + '0') 
-                     | COLOR_PAIR(5) | A_UNDERLINE);
+                     | COLOR_PAIR(C_MARKS2) | A_UNDERLINE);
                } else {
                   waddch(grid, (abs(grid_data[i][j]) + '0') 
                      | A_REVERSE | A_UNDERLINE);
@@ -245,7 +245,8 @@ void draw_grid_contents(void)
                    && abs(grid_data[i][j]) != showmarks[2]))) {
                /* Square value was input by user, show in cyan */
                if (grid_data[i][j] > 0 && has_colors()) {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(1));
+                  waddch(grid, (abs(grid_data[i][j]) + '0') 
+                     | COLOR_PAIR(C_INPUT));
                /* Square value is part of the generated puzzle */
                } else {
                   waddch(grid, abs(grid_data[i][j]) + '0');
@@ -253,7 +254,7 @@ void draw_grid_contents(void)
             /* If grid is empty, but mark showmarks[1] is set */
             } else if (!grid_data[i][j] && marks[i][j][showmarks[1]]) {
                if (use_colors) {
-                  waddch(grid, (showmarks[1] + '0') | COLOR_PAIR(5));
+                  waddch(grid, (showmarks[1] + '0') | COLOR_PAIR(C_MARKS2));
                } else {
                   waddch(grid, (showmarks[1] + '0') | A_REVERSE);
                }
@@ -267,7 +268,8 @@ void draw_grid_contents(void)
             if (grid_data[i][j]) {
                /* Square value was input by user, show in cyan */
                if (grid_data[i][j] > 0 && has_colors()) {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') | COLOR_PAIR(1));
+                  waddch(grid, (abs(grid_data[i][j]) + '0') 
+                     | COLOR_PAIR(C_INPUT));
                   /* Square value is part of the generated puzzle */
                } else {
                   waddch(grid, abs(grid_data[i][j]) + '0');
@@ -283,7 +285,7 @@ void draw_grid_contents(void)
             if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[2]) {
                   if (use_colors) {
                      waddch(grid, (abs(grid_data[i][j]) + '0') 
-                        | COLOR_PAIR(7) | A_UNDERLINE);
+                        | COLOR_PAIR(C_MARKS3) | A_UNDERLINE);
                   } else {
                      waddch(grid, (abs(grid_data[i][j]) + '0') 
                         | A_REVERSE | A_UNDERLINE);
@@ -291,7 +293,7 @@ void draw_grid_contents(void)
             /* If grid is empty, but mark showmarks[2] is set */
             } else if (!grid_data[i][j] && marks[i][j][showmarks[2]]) {
                if (use_colors) {
-                  waddch(grid, (showmarks[2] + '0') | COLOR_PAIR(7));
+                  waddch(grid, (showmarks[2] + '0') | COLOR_PAIR(C_MARKS3));
                } else {
                   waddch(grid, (showmarks[2] + '0') | A_REVERSE);
                }

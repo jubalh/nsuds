@@ -69,17 +69,12 @@ static void init_ncurses()
    if ((colors_when == AUTO && has_colors()) || colors_when==ALWAYS) {
       use_colors=1;
       start_color(); 
-      init_pair(1, COLOR_CYAN, COLOR_BLACK);  /* Filled numbers/Fbar */
-      init_pair(2, COLOR_WHITE, COLOR_RED);   /* G/O Screen */
-      init_pair(3, COLOR_WHITE, COLOR_GREEN); /* Win Screen */
-      init_pair(4, COLOR_WHITE, COLOR_BLUE);  /* Confirm dialog */
-      /* Highlighting */
-      init_pair(5, COLOR_BLACK, COLOR_YELLOW); /* Highlighted square */
-      init_pair(6, COLOR_BLACK, COLOR_GREEN);  
-      init_pair(7, COLOR_BLACK, COLOR_BLUE);
-      init_pair(8, COLOR_RED, COLOR_BLACK); 
-      init_pair(9, COLOR_BLACK, COLOR_WHITE);
-      init_pair(10, COLOR_WHITE, COLOR_BLACK);
+      init_pair(C_INPUT, COLOR_CYAN, COLOR_BLACK);    /* Input and keys */
+      init_pair(C_DIALOG, COLOR_WHITE, COLOR_BLUE);   /* Confirm dialog */
+      init_pair(C_MARKS1, COLOR_BLACK, COLOR_GREEN);  /* Marks..*/
+      init_pair(C_MARKS2, COLOR_BLACK, COLOR_YELLOW);
+      init_pair(C_MARKS3, COLOR_BLACK, COLOR_BLUE);
+      init_pair(C_URGENT, COLOR_RED, COLOR_BLACK);    /* Urgent text */
    }
    cbreak();      /* Disable line buffering */
    noecho();      /* Don't echo typed chars */
@@ -180,15 +175,15 @@ static void draw_title(void)
 }
 
 /* Add highlighted string, using color if supported */
-#define waddhlstr(w, str)                                   \
-   do {                                                     \
-      wattrset(w, (use_colors?COLOR_PAIR(1):A_UNDERLINE));  \
-      waddstr(w, str);                                      \
-      wattrset(w, 0);                                       \
+#define waddhlstr(w, str)                                      \
+   do {                                                        \
+      wattrset(w, (use_colors?COLOR_PAIR(C_KEY):A_UNDERLINE)); \
+      waddstr(w, str);                                         \
+      wattrset(w, 0);                                          \
    } while(0)
 
 /* Add highlighted character, using color if supported */
-#define waddhlch(w,c) waddch(w, c | (use_colors?COLOR_PAIR(1):A_UNDERLINE))
+#define waddhlch(w,c) waddch(w, c | (use_colors?COLOR_PAIR(C_KEY):A_UNDERLINE))
 
 /* Draw function bar at bottom of screen
  * Always on the last line, full width */
@@ -267,7 +262,7 @@ static bool launch_confirm(char *question)
    curs_set(!paused);
 
    /* Draw dialog */
-   wbkgd(confirm, COLOR_PAIR(4));
+   wbkgd(confirm, COLOR_PAIR(C_DIALOG));
    box(confirm, 0, 0);
    mvwaddstr(confirm, 0, col * 0.35 - (strlen("Confirm..") / 2), "Confirm");
    mvwaddstr(confirm, 2, col * 0.35 - (strlen(question) / 2), question);

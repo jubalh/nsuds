@@ -34,5 +34,11 @@ extern void draw_all(void);
 extern void hide_fbar(void);
 extern void new_level(void);
 
+enum {
+   C_INPUT=1, C_KEY=1, C_DIALOG=2, 
+   C_MARKS1=3, C_MARKS2=4, C_MARKS3=5,
+   C_URGENT=6
+};
+
 #endif
 

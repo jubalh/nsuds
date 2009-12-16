@@ -2,7 +2,6 @@ NSUDS TODO
 ==========
 TIMELINE
 - Keep track of prior level times/scores so we can show a score breakdown
-- Remove old colors used only for above screens
 - Write a menu module similar to the scroller interface
 - Use menu module to create a menu for difficulty
 - Use number of squares filled in and time to make the requested difficulty
@@ -31,7 +30,6 @@ SMALL THINGS
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses
 - Use accessors for data?
-- Enum COLOR_PAIRS (and check we don't exceed the max)
 - sys/queue.h needs to be included locally for portability, if we 
 use SAFE variants
 - Handle signals

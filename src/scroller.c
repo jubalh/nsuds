@@ -130,7 +130,7 @@ scrollbar:
 
       for (i=0; i<sbar_height;i++) {
          mvwaddch(s->window, sbar_start + i + 1, s->width-1, 
-            ACS_DIAMOND | COLOR_PAIR(10));
+            ACS_DIAMOND);
       }
    }
 
@@ -240,9 +240,9 @@ void scroller_write(Scroller *s, char *msg)
                nline->fmask[i]=0;
                /* Red OR cyan */
                if (in_cyan) {
-                  nline->fmask[i] |= COLOR_PAIR(1);
+                  nline->fmask[i] |= COLOR_PAIR(C_KEY);
                } else if (in_red) {
-                  nline->fmask[i] |= COLOR_PAIR(8) | A_BOLD;
+                  nline->fmask[i] |= COLOR_PAIR(C_URGENT) | A_BOLD;
                }
                /* Can be combined with underline */
                if (in_ul) {
