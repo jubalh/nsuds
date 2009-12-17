@@ -20,6 +20,7 @@
 #ifndef _NSUDS_SCORE_H
 #define _NSUDS_SCORE_H
 #include <sys/queue.h>
+#include "timer.h"
 
 /* Headers */
 extern void game_win(void);
@@ -28,20 +29,16 @@ extern void game_over(void);
 extern int score;
 extern int level;
 
-#if 0
 /* Stats for each level */
 struct level {
    short level;
    struct ltimer time;  
    short score;
-   TAILQ_ENTRY(scrl_line) entries;
+   TAILQ_ENTRY(level) entries;
 };
 
-struct breakdown {
-   struct level *cur;  /* First line shown in the scroller */
-   TAILQ_HEAD(lhn, level) lbuffer; /* List of lines */
-} scores;
-#endif
+TAILQ_HEAD(lhn, level) level_data;
+
 
 #endif
 

@@ -229,6 +229,10 @@ static void draw_xs(void)
 {
    int i;
    werase(grid);
+   /* FIXME: Makes redrawing VERY slow, 
+    * it seems xterm draws characters very slowly, but 
+    * black space is cheap. Switching windows with nsuds
+    * large is hideously slow! */
    for (i=0; i<row; i++)
       mvhline(i, 0, ACS_CKBOARD, col);
    wnoutrefresh(stdscr);

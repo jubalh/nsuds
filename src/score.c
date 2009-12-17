@@ -38,22 +38,36 @@
 
 int score=0;
 int level=1;
+static bool initialized=0;
+static char *rasline;   /* For rasprintf */
 
-static char *rasprintf(char *str, char *format, ...);
+static char *rasprintf(char *format, ...);
+static void free_ras(void);
 
 /* Allocate string and parse with vsprintf, then return the allocated string,
  * for use with scroller_write. Note that if the formatting characters
  * expand to 20 or more characters, it'll overflow! */
-static char *rasprintf(char *str, char *format, ...) {
+static char *rasprintf(char *format, ...)
+{
    va_list ap;
-   if (str) free(str);
-   str = tmalloc(strlen(format) + 20);
+   if (rasline) free(rasline);
+   rasline = tmalloc(strlen(format) + 20);
 
    va_start(ap, format);
-   vsprintf(str, format, ap);
+   vsprintf(rasline, format, ap);
    va_end(ap);
 
-   return str;
+   return rasline;
+}
+
+/* Free data used by rasprintf, when it's
+ * no longer going to be accessed. */
+static void free_ras(void)
+{
+   if (rasline) {
+      free(rasline);
+      rasline=NULL;
+   }
 }
 
 /* Display the level win screen. The game may end, or they
@@ -61,27 +75,42 @@ static char *rasprintf(char *str, char *format, ...) {
 void game_win(void)
 {
    Scroller *s;
-   char *line=NULL;
+   struct level *curlev, *i;  /* Current level data (and temp) */
+   int cscore=0;              /* Cumulative score */
+
+   /* Make sure the tail queue is initialized */
+   if (!initialized) {
+      TAILQ_INIT(&level_data);
+      initialized=1;
+   }
+   /* Pause */
    paused = 1;
    curs_set(0);
 
    s = scroller_new(row * 0.9, col * 0.9, row * 0.05, col * 0.05, 
      "Congratulations!");
-   score += (cdown.mins * 60 + cdown.secs) * (1+difficulty/100);
+
+   /* Record level data */
+   curlev = tmalloc(sizeof(struct level));
+   curlev->level = level;
+   curlev->score = (cdown.mins * 60 + cdown.secs) * (1+difficulty/100);
+   curlev->time.mins = (20*60 - (cdown.mins * 60 + cdown.secs)) / 60;
+   curlev->time.secs = (20*60 - (cdown.mins * 60 + cdown.secs)) % 60;
+   TAILQ_INSERT_TAIL(&level_data, curlev, entries);
+
+   score += curlev->score;
 
    /* Don't draw until we're done adding lines */
    scroller_set(s, SCRL_RFRESH, 0);
 
-   /* Add lines */
+   /* Add text of level win screen */
    scroller_write(s, "{Congratulations! You have won the level}");
    scroller_write(s, " ");
-
-   scroller_write(s, rasprintf(line, "Time for Level:  {_%d_} minutes and "
-      "{_%d_} seconds", (20 * 60 - (cdown.mins * 60 + cdown.secs)) / 60,
-      (20 * 60 - (cdown.mins * 60 + cdown.secs)) % 60));
-   scroller_write(s, rasprintf(line, "Total Game time: {_%d_} minutes and "
+   scroller_write(s, rasprintf("Time for Level:  {_%d_} minutes and "
+      "{_%d_} seconds", curlev->time.mins, curlev->time.secs));
+   scroller_write(s, rasprintf("Total Game time: {_%d_} minutes and "
       "{_%d_} seconds", gtime.mins, gtime.secs));
-   scroller_write(s, rasprintf(line, "Score so far:    {%d}", score));
+   scroller_write(s, rasprintf("Score so far:    {%d}", score));
    scroller_write(s, " ");
    scroller_write(s, " ");
    scroller_write(s, "%Press Enter to continue to the next level%");
@@ -89,19 +118,19 @@ void game_win(void)
    scroller_write(s, "_Score Breakdown_:");
    scroller_write(s, "Here is the breakdown of your current score.");
    scroller_write(s, " ");
-   scroller_write(s, "         Time              Score   Total");
-#if 0
-   scroller_write(s, rasprintf(line, "Level 1: %2d mins %2d secs "
-      "|   -   |  %d", cdown.mins, cdown.secs, score));
-   scroller_write(s, rasprintf(line, "Level 2: %2d mins %2d secs "
-      "|   -   |  %d", cdown.mins, cdown.secs, score));
-#endif
-   scroller_write(s, rasprintf(line, "Total:   %2d mins %2d secs "
-      "|   -   |  %d", gtime.mins, gtime.secs, score));
+   scroller_write(s, "           _Time_             _Score_  _Total_");
+   TAILQ_FOREACH(i, &level_data, entries) {
+      cscore += i->score;
+      scroller_write(s, rasprintf("Level %2d: %2d mins %2d secs "
+         "| %5d | %d", i->level, i->time.mins, i->time.secs,
+         i->score, cscore));
+   }
+   scroller_write(s, "----------------------------------------");
+   scroller_write(s, rasprintf("Total:    %2d mins %2d secs "
+      "|   -   | %d", gtime.mins, gtime.secs, score));
    scroller_write(s, " ");
    scroller_write(s, "%Press Enter to continue to the next level%");
-   free(line);
-
+   free_ras(); /* Free memory from rasprintf */
 
    /* Allow draws again (and draw) */
    scroller_set(s, SCRL_RFRESH, 1);
@@ -123,7 +152,10 @@ void game_win(void)
 void game_over(void)
 {
    Scroller *s;
-   char *line=NULL;
+   struct level *i;
+   int cscore=0;     /* Cumulative score */
+
+   /* Pause */
    paused=1;
    curs_set(0);
 
@@ -132,7 +164,7 @@ void game_over(void)
    /* Don't draw until we're done adding lines */
    scroller_set(s, SCRL_RFRESH, 0);
 
-   /* Add lines */
+   /* Add text of game over screen */
    if (level >= 30) {
       scroller_write(s, "%Game completed! You have beaten nsuds%");
    } else {
@@ -154,28 +186,35 @@ void game_over(void)
    }
    scroller_write(s, " ");
    scroller_write(s, "_Statistics_");
-   scroller_write(s, rasprintf(line, "Total score:   %d", score));
-   scroller_write(s, rasprintf(line, "Level reached: %d", level));
-   scroller_write(s, rasprintf(line, "High score:    %s", "?"));
+   scroller_write(s, rasprintf("Total score:   %d", score));
+   scroller_write(s, rasprintf("Level reached: %d", level));
+   scroller_write(s, rasprintf("High score:    %s", "?"));
    scroller_write(s, " ");
    scroller_write(s, " ");
    scroller_write(s, "{Press Enter to start a new game}");
    scroller_write(s, " ");
    scroller_write(s, "_Score Breakdown_:");
-   scroller_write(s, "Here is the breakdown of your final score.");
+   scroller_write(s, "Here is the breakdown of your current score.");
    scroller_write(s, " ");
-   scroller_write(s, "         Time              Score   Total");
-#if 0
-   scroller_write(s, rasprintf(line, "Level 1: %2d mins %2d secs "
-      "|   -   |  %d", cdown.mins, cdown.secs, score));
-   scroller_write(s, rasprintf(line, "Level 2: %2d mins %2d secs "
-      "|   -   |  %d", cdown.mins, cdown.secs, score));
-#endif
-   scroller_write(s, rasprintf(line, "Total:   %2d mins %2d secs "
-      "|   -   |  %d", cdown.mins, cdown.secs, score));
+   scroller_write(s, "           _Time_             _Score_  _Total_");
+   TAILQ_FOREACH(i, &level_data, entries) {
+      cscore += i->score;
+      scroller_write(s, rasprintf("Level %2d: %2d mins %2d secs "
+         "| %5d | %d", i->level, i->time.mins, i->time.secs,
+         i->score, cscore));
+   }
+   scroller_write(s, "----------------------------------------");
+   scroller_write(s, rasprintf("Total:    %2d mins %2d secs "
+      "|   -   | %d", gtime.mins, gtime.secs, score));
    scroller_write(s, " ");
    scroller_write(s, "{Press Enter to start a new game}");
-   free(line);
+   free_ras(); /* Free memory from rasprintf */
+
+   /* Free level data */
+   while ((i=TAILQ_FIRST(&level_data))) {
+      TAILQ_REMOVE(&level_data, i, entries);
+      free(i);
+   }
 
    /* TODO: Show high scores after */
 
