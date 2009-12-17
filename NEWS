@@ -9,6 +9,7 @@ clean state.
 - Added some new movement keys (press '?' in-game for details)
 - Pencil-marks are cleared when a new level starts
 - Added a scroll bar the help windows
+- Improved level win and game-over screen with a detailed score breakdown
 
 Changes in 0.4B
 ---------------

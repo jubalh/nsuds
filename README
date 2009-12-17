@@ -1,6 +1,6 @@
 nsuds - The Ncurses Sudoku System
 *********************************
-. Version: nsuds-0.4B (Beta release)
+. Version: nsuds-0.5B (Beta release)
 . Written by Vincent Launchbury
 . See AUTHORS for a complete list of contributors
 . Report bugs to: <vincent@doublecreations.com>
@@ -22,6 +22,7 @@ The point of the project is to provide a portable implementation of sudoku with
 the minimum possible dependencies. The only library dependency is ncurses,
 although regular curses should surfice in it's place.
 
+
 ADDITIONAL DOCUMENTATION
 ========================
 AUTHORS           - A list of authors and contributors
@@ -33,6 +34,8 @@ NEWS              - A basic changelog, for users
 Project Website : Not yet up
 Sourceforge site: http://www.sourceforge.net/projects/nsuds/
 Git Repository  : http://nsuds.git.sourceforge.net/git/gitweb.cgi?p=nsuds/nsuds  
+
+For help on how to use nsuds, press '?' in game.
 
 
 COMPILING AND INSTALLING ON *NIX

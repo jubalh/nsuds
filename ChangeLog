@@ -16,6 +16,8 @@ clean state.
 . Text attributes in scrollers are now no longer mutually exclusive.
 . Level win/game over screens now use a scroller, and display more
 information.
+. Color pairs use an enum to make their use clearer
+. Level win and game over screens now show a detailed score breakdown.
 
 
 nsuds-v0.4B (2009/12/06)
