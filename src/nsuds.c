@@ -1,5 +1,5 @@
 /* nsuds - The ncurses sudoku program
- * Text-graphical sudoku with campaign or free-play
+ * Text-graphical sudoku with pencil-marking support.
  * Copyright (C) Vincent Launchbury 2009.
  * -------------------------------------------
  *
@@ -56,7 +56,6 @@ static bool launch_confirm(char *question);
 WINDOW *grid, *timer, *stats, *title, *fbar;
 static MEVENT mouse_e;
 int paused=0, difficulty=0;
-bool campaign=0;
 int fbar_time = 0;   /* Seconds to keep fbar up */
 enum {NEVER, AUTO, ALWAYS} colors_when=AUTO;
 int use_colors=0;
@@ -154,8 +153,8 @@ void draw_stats(void)
 
    left = 1;
    box(stats, 0, 0);
-   mvwprintw(stats, 1, 1, "Mode: %s", campaign?"Campaign":"Free Play");
-   if (campaign) mvwaddstr(stats, 2, 1, "Level: 1");
+   mvwprintw(stats, 1, 1, "Mode: Free play");
+   mvwprintw(stats, 2, 1, "Level: %d/30", level);
    mvwprintw(stats, 4, 1, "Difficulty: %s", "Medium");
    mvwprintw(stats, 5, 1, "Numbers:    %2d/81", grid_filled());
    mvwprintw(stats, 6 ,1, "Remaining:  %2d left", 81-grid_filled());
@@ -488,7 +487,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          /* New game, in freeplay */
          case 'N':
          case 'n':
-            if (campaign) break;
             if (launch_confirm("End current game and start a fresh?")) {
                /* Reset score and timers */
                score = 0;

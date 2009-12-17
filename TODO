@@ -1,6 +1,7 @@
 NSUDS TODO
 ==========
 TIMELINE
+- Update level win screen to show hours and mins in total
 - Game over at level 30, with a success screen
 - Write a menu module similar to the scroller interface
 - Use menu module to create a menu for difficulty
