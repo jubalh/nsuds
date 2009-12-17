@@ -1,5 +1,5 @@
 /* nsuds - The ncurses sudoku program
- * Text-graphical sudoku with campaign or free-play
+ * Text-graphical sudoku with pencil-marking support
  * Copyright (C) Vincent Launchbury 2009.
  * -------------------------------------------
  *
@@ -27,7 +27,11 @@
 #else /* Old system with only <strings.h> */
    #include <strings.h>
 #endif
-#include <ncurses.h>
+#ifdef HAVE_NCURSES_H
+   #include <ncurses.h>
+#else 
+   #include <curses.h>
+#endif
 
 #include "score.h"
 #include "nsuds.h"
