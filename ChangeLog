@@ -1,4 +1,11 @@
-nsuds-v0.5B (not yet released)
+nsuds-v0.6B (not yet released)
+-----------
+. Levels now limited to 30
+. n key now triggers game over
+. Score breakdown total now shows hours and minutes
+
+
+nsuds-v0.5B (2009/12/17)
 -----------
 . Added support for regular curses, albeit not fully tested
 . Added support for systems with only strings.h

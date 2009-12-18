@@ -1,6 +1,11 @@
 This file contains a non-definitive list of user-visible changes. 
 See ChangeLog for a more detailed log of changes, geared toward developers
 
+Changes in 0.6B
+---------------
+. Levels now limited to 30
+. Score breakdown total now shows hours and minutes
+
 Changes in 0.5B
 ---------------
 - Added support for using the curses library if ncurses isn't available

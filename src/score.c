@@ -101,8 +101,13 @@ void game_win(void)
    curlev->time.mins = (20*60 - (cdown.mins * 60 + cdown.secs)) / 60;
    curlev->time.secs = (20*60 - (cdown.mins * 60 + cdown.secs)) % 60;
    TAILQ_INSERT_TAIL(&level_data, curlev, entries);
-
    score += curlev->score;
+
+   /* It's game over if we reach the last level */
+   if (level==30) {
+      game_over();
+      return;
+   }
 
    /* Don't draw until we're done adding lines */
    scroller_set(s, SCRL_RFRESH, 0);
@@ -130,8 +135,8 @@ void game_win(void)
          i->score, cscore));
    }
    scroller_write(s, "----------------------------------------");
-   scroller_write(s, rasprintf("Total:    %2d mins %2d secs "
-      "|   -   | %d", gtime.mins, gtime.secs, score));
+   scroller_write(s, rasprintf("Total:    %2d hrs  %2d mins "
+      "|   -   | %d", gtime.hours, gtime.mins, score));
    scroller_write(s, " ");
    scroller_write(s, "%Press Enter to continue to the next level%");
    free_ras(); /* Free memory from rasprintf */
@@ -170,13 +175,13 @@ void game_over(void)
 
    /* Add text of game over screen */
    if (level >= 30) {
-      scroller_write(s, "%Game completed! You have beaten nsuds%");
+      scroller_write(s, "%Game completed! You have beaten nsuds!%");
    } else {
       scroller_write(s, "%Game Over! You failed to complete the "
          "puzzle in time!%");
    }
    scroller_write(s, " ");
-   if (level < 3) {
+   if (level <= 3) {
       scroller_write(s, "Keep practicing, to improve your skills. If you're "
          "stuck, you can get extensive help on how to play by pressing the "
          "{?} key while in a game.");
@@ -184,6 +189,8 @@ void game_over(void)
       scroller_write(s, "Your doing pretty good, but keep practicing, to "
          "improve your skills. If you're stuck, you can get extensive help "
          "by pressing the {?} key while in a game.");
+   } else if (level>=30) {
+      scroller_write(s, "You have beaten all 30 levels! Very impressive!");
    } else {
       scroller_write(s, "You played a good game. But keep practicing, as the "
          "faster you play, the higher you score!");
@@ -208,8 +215,8 @@ void game_over(void)
          i->score, cscore));
    }
    scroller_write(s, "----------------------------------------");
-   scroller_write(s, rasprintf("Total:    %2d mins %2d secs "
-      "|   -   | %d", gtime.mins, gtime.secs, score));
+   scroller_write(s, rasprintf("Total:    %2d hrs  %2d mins "
+      "|   -   | %d", gtime.hours, gtime.mins, score));
    scroller_write(s, " ");
    scroller_write(s, "{Press Enter to start a new game}");
    free_ras(); /* Free memory from rasprintf */

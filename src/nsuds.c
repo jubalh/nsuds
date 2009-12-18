@@ -488,11 +488,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case 'N':
          case 'n':
             if (launch_confirm("End current game and start a fresh?")) {
-               /* Reset score and timers */
-               score = 0;
-               gtime.hours = gtime.mins = 0;
-
-               new_level();
+               game_over();
             }
             break;
 

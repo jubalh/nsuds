@@ -1,8 +1,6 @@
 NSUDS TODO
 ==========
 TIMELINE
-- Update level win screen to show hours and mins in total
-- Game over at level 30, with a success screen
 - Write a menu module similar to the scroller interface
 - Use menu module to create a menu for difficulty
 - Use better scoring formula
@@ -32,6 +30,5 @@ SMALL THINGS
 - Handle resize properly so that
    - Detects if win is too small, shows error and pauses
 - Use accessors for data?
-- sys/queue.h needs to be included locally for portability, if we 
-use SAFE variants
+- sys/queue.h needs to be included locally if we use SAFE variants
 - Handle signals
