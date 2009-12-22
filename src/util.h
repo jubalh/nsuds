@@ -25,5 +25,14 @@ extern void *trealloc(void *p, size_t n);
 
 #define clamp(x,low,high) (((x)>(high)) ? (high) : (((x)<(low)) ? (low) : (x)))
 
-#endif
+/* Get rid warnings when we need an unused parameter */
+#ifdef __GNUC__
+#  define unused __attribute__((unused))
+#elif defined (__LCLINT__)
+#  define unused /*@unused@*/
+#else
+#  define unused /* */
+#endif /* __GNUC__ */
+
+#endif /* _NSUDS_UTIL_H */
 

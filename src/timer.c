@@ -33,6 +33,7 @@
 #include "nsuds.h"
 #include "timer.h"
 #include "grid.h"
+#include "util.h"
 
 
 /* "Font" for numbers taken from htop, by Hisham Muhammad */
@@ -77,7 +78,7 @@ void start_timer(int mins, int secs)
 
 /* Called every second when in game (unless paused).
  * Update game timers, and handle the fbar timeout */
-void catch_alarm(int sig)
+void catch_alarm(unused int sig)
 {
    alarm(1);
 

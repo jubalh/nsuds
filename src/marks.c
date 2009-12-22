@@ -161,5 +161,6 @@ static int ask_int(char *question, ...)
          return 0;
       }
    }
+   return 0;
 }
 
