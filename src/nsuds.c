@@ -177,21 +177,21 @@ void draw_intro(void)
 {
    werase(intro);
    box(intro, 0, 0);
-   wattrset(intro, A_UNDERLINE);	
-   mvwprintw(intro, 1, 1, "Welcome to nsuds!");
+   mvwaddstr(intro, 0, 10, "Welcome to nsuds");
    wattrset(intro, COLOR_PAIR(C_KEY));	
-   mvwprintw(intro, 2, 1, "Press '?' while in-game for help");
+   mvwaddstr(intro, 1, 1, "Press '?' while in-game for help");
    wattrset(intro, 0);	
-   mvwprintw(intro, 4, 1, "Nsuds creates valid single solution");
-   mvwprintw(intro, 5, 1, "puzzles of varying difficulies. The");
-   mvwprintw(intro, 6, 1, "difficulty level affects the number");
-   mvwprintw(intro, 7, 1, "of filled in squares and the time");
-   mvwprintw(intro, 8, 1, "you have to complete each level.");
-   mvwprintw(intro, 10, 1, "- 30 levels in total.");
-   mvwprintw(intro, 11, 1, "- Full pencil-marking support.");
-   mvwprintw(intro, 12, 1, "- 100%% Free software");
-   mvwprintw(intro, 13, 1, "- High score tables to come!");
-   mvwprintw(intro, 17, 1, "By Vincent Launchbury et. al. ");
+   mvwaddstr(intro, 3, 1, "Nsuds creates valid single solution");
+   mvwaddstr(intro, 4, 1, "puzzles of varying difficulies. The");
+   mvwaddstr(intro, 5, 1, "difficulty level affects the number");
+   mvwaddstr(intro, 6, 1, "of filled in squares you start with");
+   mvwaddstr(intro, 7, 1, "as well as the ammount of time you");
+   mvwaddstr(intro, 8, 1, "have to complete each level.");
+   mvwaddstr(intro, 10, 1, "  - 30 levels in total.");
+   mvwaddstr(intro, 11, 1, "  - Full pencil-marking support.");
+   mvwaddstr(intro, 12, 1, "  - 100%% Free software");
+   mvwaddstr(intro, 13, 1, "  - High score tables to come!");
+   mvwaddstr(intro, 17, 1, "By Vincent Launchbury et. al. ");
 
    wnoutrefresh(intro);
 }
