@@ -26,6 +26,7 @@ extern int score;
 extern int fbar_time;
 extern int row,col;
 extern int use_colors;
+extern int dmode; 
 extern void game_over(void);
 extern void game_win(void);
 extern void draw_stats(void);
@@ -33,6 +34,7 @@ extern void draw_grid(void);
 extern void draw_all(void);
 extern void hide_fbar(void);
 extern void new_level(void);
+extern void new_game(void);
 
 enum {
    C_INPUT=1, C_KEY=1, C_DIALOG=2, 

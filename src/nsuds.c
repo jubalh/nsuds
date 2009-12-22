@@ -41,6 +41,7 @@
 #include "marks.h"
 #include "score.h"
 #include "scroller.h"
+#include "menu.h"
 
 /* FIXME: Let autotools do this, set to /usr/share/doc/nsuds-VERSION/ 
  * or something. */
@@ -53,13 +54,18 @@ static void draw_xs(void);
 static void draw_fbar(void);
 static bool launch_confirm(char *question);
 
-WINDOW *grid, *timer, *stats, *title, *fbar;
+WINDOW *grid, *timer, *stats, *title, *fbar, *intro;
 static MEVENT mouse_e;
 int paused=0, difficulty=0;
 int fbar_time = 0;   /* Seconds to keep fbar up */
 enum {NEVER, AUTO, ALWAYS} colors_when=AUTO;
 int use_colors=0;
+/* Display mode:
+ *    0) Select Difficulty & intro
+ *    1) Grid & timer/stats window */
+int dmode=0; 
 int row,col;
+char *difficulties[] = {"Easy", "Medium", "Hard", "Expert", "Insane",NULL};
 
 /* Set up decent defaults */
 static void init_ncurses()
@@ -97,6 +103,7 @@ static void init_windows(void)
    timer = newwin(6, 25, 2, 1);
    stats = newwin(13, 25, 8, 1);
    fbar = newwin(1, col, row-1, 0);
+   intro = newwin(19, 37, 2, 28);
 }
 
 
@@ -155,7 +162,7 @@ void draw_stats(void)
    box(stats, 0, 0);
    mvwprintw(stats, 1, 1, "Mode: Free play");
    mvwprintw(stats, 2, 1, "Level: %d/30", level);
-   mvwprintw(stats, 4, 1, "Difficulty: %s", "Medium");
+   mvwprintw(stats, 4, 1, "Difficulty: %s", difficulties[difficulty-1]);
    mvwprintw(stats, 5, 1, "Numbers:    %2d/81", grid_filled());
    mvwprintw(stats, 6 ,1, "Remaining:  %2d left", 81-grid_filled());
    mvwprintw(stats, 8,1, "Time Taken: %dm %2ds", ltime.mins, ltime.secs);
@@ -164,6 +171,29 @@ void draw_stats(void)
    mvwprintw(stats, 11,1, " Score:   %d", score);
 
    wnoutrefresh(stats);
+}
+
+void draw_intro(void)
+{
+   werase(intro);
+   box(intro, 0, 0);
+   wattrset(intro, A_UNDERLINE);	
+   mvwprintw(intro, 1, 1, "Welcome to nsuds!");
+   wattrset(intro, COLOR_PAIR(C_KEY));	
+   mvwprintw(intro, 2, 1, "Press '?' while in-game for help");
+   wattrset(intro, 0);	
+   mvwprintw(intro, 4, 1, "Nsuds creates valid single solution");
+   mvwprintw(intro, 5, 1, "puzzles of varying difficulies. The");
+   mvwprintw(intro, 6, 1, "difficulty level affects the number");
+   mvwprintw(intro, 7, 1, "of filled in squares and the time");
+   mvwprintw(intro, 8, 1, "you have to complete each level.");
+   mvwprintw(intro, 10, 1, "- 30 levels in total.");
+   mvwprintw(intro, 11, 1, "- Full pencil-marking support.");
+   mvwprintw(intro, 12, 1, "- 100%% Free software");
+   mvwprintw(intro, 13, 1, "- High score tables to come!");
+   mvwprintw(intro, 17, 1, "By Vincent Launchbury et. al. ");
+
+   wnoutrefresh(intro);
 }
 
 static void draw_title(void)
@@ -239,14 +269,28 @@ static void draw_xs(void)
 
 void draw_all(void)
 {
-   clear();
-   draw_xs();
-   draw_title();
-   draw_timer();
-   draw_grid();
-   draw_stats();
-   movec(CUR);
-   doupdate();
+   switch (dmode) {
+      case 0:
+         clear();
+         draw_xs();
+         draw_title();
+         draw_intro();
+         difficulty = launch_menu(19, 25, 2, 1, 
+                    "Select difficulty", difficulties);
+         movec(CUR);
+         doupdate();
+         break;
+      case 1:
+         clear();
+         draw_xs();
+         draw_title();
+         draw_timer();
+         draw_grid();
+         draw_stats();
+         movec(CUR);
+         doupdate();
+         break;
+   }
 }
 
 /* Launch a dialog that asks OK/Cancel for a question,
@@ -316,6 +360,21 @@ static bool launch_confirm(char *question)
       }
    }
    return 0;
+}
+
+
+/* Draw menu to select difficulty */
+void new_game(void) {
+   /* Set to main-menu */
+   dmode=0;
+   /* Pause */
+   paused=1;
+   curs_set(0);
+   /* Draw everything, wait for difficulty input */
+   draw_all();
+   /* Start a game */
+   dmode=1;
+   new_level();
 }
 
 /* Start a new level */
@@ -394,9 +453,10 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
    /* Setup ncurses and windows */
    init_ncurses();
    init_windows();
-   generate();
-   start_timer(20, 0);
-   draw_all();
+
+   /* Start the game */
+   new_game();
+
    
    /* Main input loop */
    while ((c = getch())) {
@@ -446,8 +506,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case 'Q':
          case 'q':
             if (launch_confirm("Really quit?")) {
-               werase(grid);
-               delwin(grid);
                endwin();
                goto done;
             }

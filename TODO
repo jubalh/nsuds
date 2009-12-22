@@ -1,8 +1,6 @@
 NSUDS TODO
 ==========
 TIMELINE
-- Write a menu module similar to the scroller interface
-- Use menu module to create a menu for difficulty
 - Use better scoring formula
 - Use number of squares filled in and time to make the requested difficulty
 - Add save module so that a game can be continued later

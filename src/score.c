@@ -246,6 +246,6 @@ void game_over(void)
    level=1;
    gtime.hours = gtime.mins = 0;
 
-   new_level();
+   new_game();
 }
 

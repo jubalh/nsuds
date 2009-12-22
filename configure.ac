@@ -21,7 +21,7 @@ AC_PREREQ([2.63])
 t://nsuds.git.sourceforge.net/gitroot/nsuds/nsuds
 AC_INIT([nsuds], [0.5B], [vincent@doublecreations.com])
 AC_CONFIG_AUX_DIR([build])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([-Wportability])
 AC_CONFIG_SRCDIR([src/nsuds.c])
 AC_CONFIG_HEADERS([src/config.h])
 AC_CONFIG_FILES([Makefile

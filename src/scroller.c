@@ -318,10 +318,9 @@ static void scroller_scroll(Scroller *s, int dir)
             } while ((s->cur=TAILQ_PREV(s->cur, scrl_hn, entries)));
 
             /* Not enough lines to fill the screen */
-            s->cur = TAILQ_FIRST(&s->buffer);
-            s->overview=0;
-            s->cur_sl=0;
+            scroller_scroll(s, SCROLL_TOP);
          }
+         break;
    }
    if (s->rfresh || s->smooth) draw_scroller(s);
 }
