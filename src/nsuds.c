@@ -19,9 +19,12 @@
  */
 #include "config.h"
 
+#define _XOPEN_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #if STDC_HEADERS || HAVE_STRING_H
    #include <string.h>
 #else /* Old system with only <strings.h> */
@@ -34,6 +37,8 @@
    #include <curses.h>
 #endif
 #include <getopt.h>
+#include <errno.h>
+#include <err.h>
 
 #include "nsuds.h"
 #include "timer.h"
@@ -53,6 +58,8 @@ static void draw_title(void);
 static void draw_xs(void);
 static void draw_fbar(void);
 static bool launch_confirm(char *question);
+static void init_signals(void);
+void catch_signal(int sig);
 
 WINDOW *grid, *timer, *stats, *title, *fbar, *intro;
 static MEVENT mouse_e;
@@ -96,6 +103,8 @@ static void init_ncurses()
    refresh();
 }
 
+/* Set up every window we might use. Doesn't include Menus or
+ * Scrollers as they're managed automatically. */
 static void init_windows(void) 
 {
    title = newwin(1, 64, 0, 1);
@@ -104,6 +113,59 @@ static void init_windows(void)
    stats = newwin(13, 25, 8, 1);
    fbar = newwin(1, col, row-1, 0);
    intro = newwin(19, 37, 2, 28);
+}
+
+/* Set up all the signal handlers */
+static void init_signals(void)
+{
+   struct sigaction new;
+
+   /* Set up signal handler */
+   new.sa_handler = catch_signal;
+   sigemptyset(&new.sa_mask);
+   new.sa_flags = 0;
+   
+#ifdef SA_RESTART
+   /* Restart interrupted system calls */
+   new.sa_flags |= SA_RESTART;
+#endif
+   if (sigaction(SIGINT, &new, NULL) < 0)
+      err(errno, "Can't set up signal handler!");
+   if (sigaction(SIGTERM, &new, NULL) < 0)
+      err(errno, "Can't set up signal handler!");
+   if (sigaction(SIGQUIT, &new, NULL) < 0)
+      err(errno, "Can't set up signal handler!");
+   if (sigaction(SIGILL, &new, NULL) < 0)
+      err(errno, "Can't set up signal handler!");
+   if (sigaction(SIGSEGV, &new, NULL) < 0)
+      err(errno, "Can't set up signal handler!");
+}
+
+
+/* Handle all the signals */
+void catch_signal(int sig)
+{
+   switch (sig) {
+      case SIGINT:
+         /* Interrupt acts similar to the 'q' key */
+         /* FIXME: Causes problems when help is popped up */
+         if (!dmode || launch_confirm("Really quit?")) {
+            endwin();
+            exit(EXIT_SUCCESS);
+         }
+         break;
+      case SIGILL:
+      case SIGSEGV:
+         /* Die nicely from a fatal error */
+         endwin();
+         errx(errno, "Segmentation fault!");
+         exit(EXIT_FAILURE);
+      case SIGQUIT:
+      case SIGTERM:
+         /* Exit nicely from a kill */
+         endwin();
+         exit(EXIT_FAILURE);
+   }
 }
 
 
@@ -469,6 +531,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
    /* Setup ncurses and windows */
    init_ncurses();
    init_windows();
+   init_signals();
 
    /* Start the game */
    new_game();

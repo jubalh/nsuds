@@ -1,21 +1,18 @@
 NSUDS TODO
 ==========
-TIMELINE
-- Add save module so that a game can be continued later
-- Automatically save on quit, or fatal signal
+- Saving (possibly)
+   - Add save module so that a game can be continued later
+   - Automatically save on quit, or fatal signal
 - Maintain a high score table, with an option to display them in main menu
-    - Per user, with name, date, difficulty and score stored
-    - Perhaps in human readable format so launch_file can be used.
+   - Per user, with name, date, difficulty and score stored
+   - Perhaps in human readable format so launch_file can be used directly
 - In help system:
-   - Implement a hyperlink system <Title|file> which goes to the line 
-   containing _TITLE_ in helpfiles/file
-   - Alternatively, use a menu, in which each item launches the relevant
-     scroller.
-   - Maybe keep a history of pages visited, or atleast a way to get back to the
-     originally opened page.
+   - Config autotools to set up a help dir properly
+   - Use a menu for help topics, each of which launches the relevant scroller.
    - Maybe add setting to enable smooth scrolling (perhaps w/ getopt too?)
-   - Could then be used as a general help system for other ncurses projects
    - Expand help system with useful help, such as how to actually play sudoku.
+- General
+   - Fix all instances of $grep -E 'TODO|FIXME' src/*.c
 
 LONG-TERM (probably never to be implemented)
 - Replace solve function in src/gen.c
@@ -23,8 +20,5 @@ LONG-TERM (probably never to be implemented)
 - Port to windows (extremely low priority)
 
 SMALL THINGS
-- Handle resize properly so that
-   - Detects if win is too small, shows error and pauses
-- Use accessors for data?
+- Handle resize properly for very small windows 
 - sys/queue.h needs to be included locally if we use SAFE variants
-- Handle signals

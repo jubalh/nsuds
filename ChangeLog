@@ -9,6 +9,7 @@ nsuds-v0.6B (not yet released)
 . Updated the intro window
 . Difficulty selection now affects the actual difficulty
 . Updated scoring formula
+. Added signal handling for interrupts and clean exiting
 
 
 nsuds-v0.5B (2009/12/17)
