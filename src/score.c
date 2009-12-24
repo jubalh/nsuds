@@ -91,6 +91,7 @@ void game_win(void)
    /* Pause */
    paused = 1;
    curs_set(0);
+   scrl_open=1;
 
    s = scroller_new(row * 0.9, col * 0.9, row * 0.05, col * 0.05, 
      "Congratulations!");
@@ -170,6 +171,7 @@ void game_win(void)
 
    level++;
    new_level();
+   scrl_open=0;
 }
 
 /* Draw game over screen */
@@ -182,6 +184,7 @@ void game_over(void)
    /* Pause */
    paused=1;
    curs_set(0);
+   scrl_open=1;
 
    s = scroller_new(row * 0.9, col * 0.9, row * 0.05, col * 0.05, "Game Over");
 
@@ -262,5 +265,6 @@ void game_over(void)
    gtime.hours = gtime.mins = 0;
 
    new_game();
+   scrl_open=0;
 }
 

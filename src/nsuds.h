@@ -27,6 +27,7 @@ extern int fbar_time;
 extern int row,col;
 extern int use_colors;
 extern int dmode; 
+extern int scrl_open;
 extern void game_over(void);
 extern void game_win(void);
 extern void draw_stats(void);

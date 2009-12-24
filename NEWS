@@ -7,6 +7,7 @@ Changes in 0.6B
 . Score breakdown total now shows hours and minutes
 . Added a difficulty selection menu and an intro screen
 . Updated scoring formula
+. Ctrl-c now quits, with a dialog to confirm
 
 Changes in 0.5B
 ---------------

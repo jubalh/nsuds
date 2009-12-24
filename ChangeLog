@@ -10,6 +10,11 @@ nsuds-v0.6B (not yet released)
 . Difficulty selection now affects the actual difficulty
 . Updated scoring formula
 . Added signal handling for interrupts and clean exiting
+. C-c can now open a yesno dialog over an open scroller without
+problems.
+. Removed extra doupdate from a KEY_RESIZE
+. launch_scroller no longer runs recursively on KEY_RESIZE
+. Updated helpfiles/main
 
 
 nsuds-v0.5B (2009/12/17)

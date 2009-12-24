@@ -15,8 +15,12 @@ _BASIC KEYS_:
          will cause the grid contents to be hidden.
 
 {q}
-{Q}        Quit nsuds. A dialog will popup for you to 
-         confirm the action.
+{Q}        Close a dialog, if in one. Otherwise, quit nsuds. 
+         A dialog will popup for you to confirm the action.
+
+{C-c}      Quit nsuds regardless of whether you're in a
+         dialog. A dialog will popup for you to confirm
+         the action.
 
 {1}-{9}      Input a number in the current square. You 
          cannot overwrite a number that was part of

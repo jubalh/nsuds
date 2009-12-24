@@ -72,6 +72,7 @@ int use_colors=0;
  *    1) Grid & timer/stats window */
 int dmode=0; 
 int row,col;
+int scrl_open=0; /* Is a scroller open? */
 char *difficulties[] = {"Easy", "Medium", "Hard", "Expert", "Insane",NULL};
 
 /* Set up decent defaults */
@@ -153,6 +154,8 @@ void catch_signal(int sig)
             endwin();
             exit(EXIT_SUCCESS);
          }
+         /* Redraw help if user cancelled quit */
+         if (scrl_open) ungetch(KEY_RESIZE);
          break;
       case SIGILL:
       case SIGSEGV:
@@ -349,8 +352,8 @@ void draw_all(void)
          draw_timer();
          draw_grid();
          draw_stats();
+         if (!scrl_open) doupdate();
          movec(CUR);
-         doupdate();
          break;
    }
 }
@@ -361,35 +364,42 @@ static bool launch_confirm(char *question)
 {
    int c;
    bool status=false;
-   WINDOW *confirm = newwin(row * 0.4, col * 0.7, row * 0.3, col * 0.15);
+   WINDOW *confirm;
 
-   alarm(0); /* Cancel alarm */
+   /* Cancel alarm */
+   alarm(0);
    /* Pause */
    paused=1;
-   draw_grid();
-   doupdate();
    curs_set(!paused);
+   /* Only redraw the grid if the help isn't open */
+   if (!scrl_open) draw_grid();
+
+redraw:
+   confirm = newwin(row * 0.4, col * 0.7, row * 0.3, col * 0.15);
 
    /* Draw dialog */
    wbkgd(confirm, COLOR_PAIR(C_DIALOG));
    box(confirm, 0, 0);
    mvwaddstr(confirm, 0, col * 0.35 - (strlen("Confirm..") / 2), "Confirm");
    mvwaddstr(confirm, 2, col * 0.35 - (strlen(question) / 2), question);
-   wattrset(confirm, A_REVERSE);
-   mvwaddstr(confirm, (row * 0.4) - 3, col * 0.35, " Cancel ");
+
+   /* Draw the options */
+   wattrset(confirm, A_REVERSE);	
+   mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
    wattroff(confirm, A_REVERSE);
-   mvwaddstr(confirm, (row * 0.4) - 3, col * 0.35 - 9, "   OK   ");
-   wrefresh(confirm);
+   mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
+
+   /* Draw over top of everything */
    overwrite(confirm, stats);
+   wrefresh(confirm);
+
+   /* Handle input */
    while ((c = getch())!=ERR) {
       switch (c) {
          case KEY_RESIZE:
-            werase(confirm);
-            wnoutrefresh(confirm);
-            delwin(confirm);
             getmaxyx(stdscr, row, col);
             draw_all();
-            return launch_confirm(question);
+            goto redraw;
          case KEY_LEFT:
          case KEY_RIGHT:
             wattrset(confirm, A_REVERSE);	
@@ -407,13 +417,13 @@ static bool launch_confirm(char *question)
             break;				
          /* Enter pressed */
          case 10:
-            wbkgd(confirm, COLOR_PAIR(0));
             werase(confirm);
-            wnoutrefresh(confirm);
             delwin(confirm);
-            paused=0;
-            curs_set(!paused);
-            draw_all();
+            if (!scrl_open) {
+               paused=0;
+               curs_set(!paused);
+               draw_all();
+            }
             catch_alarm(0);
             fbar_time=0;
             return status;
@@ -599,7 +609,9 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
                curs_set(!paused);
                movec(CUR);
             }
+            scrl_open=1;
             launch_file(HELPDIR "main", "Help with nsuds");
+            scrl_open=0;
             paused=0;
             curs_set(!paused);
             draw_all();
