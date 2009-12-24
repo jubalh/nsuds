@@ -3,11 +3,12 @@ See ChangeLog for a more detailed log of changes, geared toward developers
 
 Changes in 0.6B
 ---------------
-. Levels now limited to 30
-. Score breakdown total now shows hours and minutes
-. Added a difficulty selection menu and an intro screen
-. Updated scoring formula
-. Ctrl-c now quits, with a dialog to confirm
+- Levels now limited to 30
+- Score breakdown total now shows hours and minutes
+- Added a difficulty selection menu and an intro screen
+- Updated scoring formula
+- Ctrl-c now quits, with a dialog to confirm
+- Help menu can now be used from the main menu
 
 Changes in 0.5B
 ---------------

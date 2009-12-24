@@ -20,6 +20,10 @@
 #ifndef _NSUDS_NSUDS_H
 #define _NSUDS_NSUDS_H
 
+/* FIXME: Let autotools do this, set to /usr/share/doc/nsuds-VERSION/ 
+ * or something. */
+#define HELPDIR "./helpfiles/"
+
 extern WINDOW *grid, *timer, *stats, *title, *fbar;
 extern int paused, difficulty;
 extern int score;

@@ -281,6 +281,7 @@ int launch_menu(int height, int width, int starty, int startx,
             menu_resize(m, height, width, starty, startx);
             draw_all();
             draw_menu(m);
+            break;
          case KEY_UP:
             menu_scroll(m, SCROLL_UP);
             break;
@@ -290,6 +291,10 @@ int launch_menu(int height, int width, int starty, int startx,
          case 10:
             ret = m->selected;
             goto done;
+         case '?':
+            launch_file(HELPDIR "main", "Help with nsuds");
+            draw_all();
+            break;
          case 'Q':
          case 'q':
          case 27: /* Escape */

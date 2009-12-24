@@ -37,6 +37,7 @@ clean state.
 information.
 . Color pairs use an enum to make their use clearer
 . Level win and game over screens now show a detailed score breakdown.
+. Help menu can now be used from the main menu
 
 
 nsuds-v0.4B (2009/12/06)

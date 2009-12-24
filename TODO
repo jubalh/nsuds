@@ -1,5 +1,8 @@
 NSUDS TODO
 ==========
+- FIX:launch_menu() can't be called within draw_all, because when something is
+  launched above a menu and a redraw is required, two menu's will be present,
+  one above another, so enter will have to be pressed twice to get it working.
 - Saving (possibly)
    - Add save module so that a game can be continued later
    - Automatically save on quit, or fatal signal
@@ -12,7 +15,7 @@ NSUDS TODO
    - Maybe add setting to enable smooth scrolling (perhaps w/ getopt too?)
    - Expand help system with useful help, such as how to actually play sudoku.
 - General
-   - Fix all instances of $grep -E 'TODO|FIXME' src/*.c
+   - Fix all instances of $grep -E 'TODO|FIXME' src/*.[ch]
 
 LONG-TERM (probably never to be implemented)
 - Replace solve function in src/gen.c

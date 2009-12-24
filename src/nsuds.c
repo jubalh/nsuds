@@ -48,10 +48,6 @@
 #include "scroller.h"
 #include "menu.h"
 
-/* FIXME: Let autotools do this, set to /usr/share/doc/nsuds-VERSION/ 
- * or something. */
-#define HELPDIR "./helpfiles/"
-
 static void init_ncurses(void);
 static void init_windows(void);
 static void draw_title(void);
@@ -244,7 +240,7 @@ void draw_intro(void)
    box(intro, 0, 0);
    mvwaddstr(intro, 0, 10, "Welcome to nsuds");
    wattrset(intro, COLOR_PAIR(C_KEY));	
-   mvwaddstr(intro, 1, 1, "Press '?' while in-game for help");
+   mvwaddstr(intro, 1, 1, "Press '?' at any time for help");
    wattrset(intro, 0);	
    mvwaddstr(intro, 3, 1, "Nsuds creates valid single solution");
    mvwaddstr(intro, 4, 1, "puzzles of varying difficulies. The");
