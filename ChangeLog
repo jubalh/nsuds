@@ -3,6 +3,12 @@ nsuds-v0.6B (not yet released)
 . Levels now limited to 30
 . n key now triggers game over
 . Score breakdown total now shows hours and minutes
+. Added a menu module
+. Implemented a main menu to select difficulty
+. Fixed some trivial compiler warnings
+. Updated the intro window
+. Difficulty selection now affects the actual difficulty
+. Updated scoring formula
 
 
 nsuds-v0.5B (2009/12/17)

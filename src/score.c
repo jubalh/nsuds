@@ -32,6 +32,7 @@
 #else 
    #include <curses.h>
 #endif
+#include <math.h>
 
 #include "score.h"
 #include "nsuds.h"
@@ -97,7 +98,21 @@ void game_win(void)
    /* Record level data */
    curlev = tmalloc(sizeof(struct level));
    curlev->level = level;
-   curlev->score = (cdown.mins * 60 + cdown.secs) * (1+difficulty/100);
+   /* Calculate score */
+   curlev->score = pow(800 + cdown.mins * 60 + cdown.secs, 1.7) / 1000;
+   switch (difficulty) {
+      case EASY:
+      case MEDIUM:
+      case HARD:
+         curlev->score *= 1+3*difficulty;
+         break;
+      case EXPERT:
+         curlev->score *= 1+4*difficulty;
+         break;
+      case INSANE:
+         curlev->score *= 1+5*difficulty;
+         break;
+   }
    curlev->time.mins = (20*60 - (cdown.mins * 60 + cdown.secs)) / 60;
    curlev->time.secs = (20*60 - (cdown.mins * 60 + cdown.secs)) % 60;
    TAILQ_INSERT_TAIL(&level_data, curlev, entries);

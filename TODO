@@ -1,8 +1,6 @@
 NSUDS TODO
 ==========
 TIMELINE
-- Use better scoring formula
-- Use number of squares filled in and time to make the requested difficulty
 - Add save module so that a game can be continued later
 - Automatically save on quit, or fatal signal
 - Maintain a high score table, with an option to display them in main menu

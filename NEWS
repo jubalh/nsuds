@@ -5,6 +5,8 @@ Changes in 0.6B
 ---------------
 . Levels now limited to 30
 . Score breakdown total now shows hours and minutes
+. Added a difficulty selection menu and an intro screen
+. Updated scoring formula
 
 Changes in 0.5B
 ---------------
