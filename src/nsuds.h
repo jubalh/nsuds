@@ -41,6 +41,7 @@ enum {
    C_MARKS1=3, C_MARKS2=4, C_MARKS3=5,
    C_URGENT=6
 };
+enum {EASY=1, MEDIUM, HARD, EXPERT, INSANE};
 
 #endif
 

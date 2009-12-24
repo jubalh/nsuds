@@ -137,7 +137,7 @@ void catch_alarm(unused int sig)
 /* Shorthand */
 #define TD timer_digits
 /* If time < 10 mins, first 0 digit isn't shown */
-#define FTD(l, m) m>10 ? TD[l][m/10] : empty
+#define FTD(l, m) m>=10 ? TD[l][m/10] : empty
 /* t2s(line, mins, seconds): Get ascii strings from time */
 #define t2s(l,m,s) FTD(l, m), TD[l][m%10], TD[l][s/10], TD[l][s%10]
 

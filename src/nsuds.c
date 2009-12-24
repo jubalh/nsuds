@@ -189,7 +189,7 @@ void draw_intro(void)
    mvwaddstr(intro, 8, 1, "have to complete each level.");
    mvwaddstr(intro, 10, 1, "  - 30 levels in total.");
    mvwaddstr(intro, 11, 1, "  - Full pencil-marking support.");
-   mvwaddstr(intro, 12, 1, "  - 100%% Free software");
+   mvwaddstr(intro, 12, 1, "  - 100% Free software");
    mvwaddstr(intro, 13, 1, "  - High score tables to come!");
    mvwaddstr(intro, 17, 1, "By Vincent Launchbury et. al. ");
 
@@ -388,7 +388,23 @@ void new_level(void)
 
    /* Start a new game */
    generate();
-   start_timer(20, 0);
+   switch (difficulty) {
+      case EASY:
+         start_timer(20, 0);
+         break;
+      case MEDIUM:
+         start_timer(17, 30);
+         break;
+      case HARD:
+         start_timer(15, 0);
+         break;
+      case EXPERT:
+         start_timer(10, 0);
+         break;
+      case INSANE:
+         start_timer(7, 30);
+         break;
+   }
    paused = 0;
    curs_set(1);
    draw_all();

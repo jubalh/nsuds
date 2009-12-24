@@ -310,6 +310,22 @@ void draw_grid_contents(void)
 /* Generate a puzzle */
 void generate(void)
 {
-   do_generate(35);
+   switch (difficulty) {
+      case EASY:
+         do_generate(38);
+         break;
+      case MEDIUM:
+         do_generate(32);
+         break;
+      case HARD:
+         do_generate(28);
+         break;
+      case EXPERT:
+         do_generate(26);
+         break;
+      case INSANE:
+         do_generate(18);
+         break;
+   }
 }
 
