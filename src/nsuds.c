@@ -145,7 +145,6 @@ void catch_signal(int sig)
    switch (sig) {
       case SIGINT:
          /* Interrupt acts similar to the 'q' key */
-         /* FIXME: Causes problems when help is popped up */
          if (!dmode || launch_confirm("Really quit?")) {
             endwin();
             exit(EXIT_SUCCESS);
@@ -332,7 +331,6 @@ void draw_all(void)
 {
    switch (dmode) {
       case 0:
-         clear();
          draw_xs();
          draw_title();
          draw_intro();
@@ -342,7 +340,6 @@ void draw_all(void)
          doupdate();
          break;
       case 1:
-         clear();
          draw_xs();
          draw_title();
          draw_timer();
