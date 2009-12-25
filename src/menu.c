@@ -110,7 +110,7 @@ static void draw_menu(Menu *m)
 
        /* Print item, storing how many chars were printed so
         * we can pad the right with spaces below */
-       mvwprintw(m->window, y, 1, "%s%n", it->name, &nx);
+       mvwprintw(m->window, y, 1, "%.22s%n", it->name, &nx);
 
        /* If selected, use padding to highlight the rest of the line */
        if (m->selected == i + 1) {
@@ -228,8 +228,7 @@ static void menu_check_over(Menu *m)
    }
 }
 
-/* Add an item to the menu. 
- * TODO: truncate name */
+/* Add an item to the menu. */
 void menu_add_item(Menu *m, char *name)
 {
    struct item *nitem;
