@@ -49,7 +49,7 @@ extern void menu_scroll(Menu *m, int dir);
 extern void menu_add_item(Menu *m, char *name);
 extern void free_menu(Menu *m);
 extern int launch_menu(int height, int width, int starty, int startx,
-       char *title, char *items[]);
+       char *title, char *items[], int select);
 
 #endif
 

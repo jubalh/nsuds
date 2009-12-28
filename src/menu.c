@@ -257,15 +257,17 @@ void free_menu(Menu *m)
 
 /* Launch a menu and let the user select an item.  Takes an array of item
  * names terminated with a NULL name. Returns the index in the array of the
- * selected item.  */
+ * selected item.  If select is nonzero, select that item by default. */
 int launch_menu(int height, int width, int starty, int startx,
-    char *title, char *items[])
+    char *title, char *items[], int select)
 {
    Menu *m;
    int i,c;
    int ret=0;
 
    m = menu_new(height, width, starty, startx, title);
+   if (select) m->selected = select;
+
    /* Don't redraw until all items are added */
    menu_set(m, MENU_RFRESH, 0);
    for (i=0; items[i]; i++) {

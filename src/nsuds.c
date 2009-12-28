@@ -317,7 +317,6 @@ void hide_fbar(void)
 static void draw_xs(void)
 {
    int i;
-   werase(grid);
    /* FIXME: Makes redrawing VERY slow, 
     * it seems xterm draws characters very slowly, but 
     * black space is cheap. Switching windows with nsuds
@@ -334,10 +333,7 @@ void draw_all(void)
          draw_xs();
          draw_title();
          draw_intro();
-         difficulty = launch_menu(19, 25, 2, 1, 
-                    "Select difficulty", difficulties);
          movec(CUR);
-         doupdate();
          break;
       case 1:
          draw_xs();
@@ -435,8 +431,13 @@ void new_game(void) {
    /* Pause */
    paused=1;
    curs_set(0);
-   /* Draw everything, wait for difficulty input */
+
+   /* Draw windows */
    draw_all();
+   /* Wait for user to select difficulty */
+   difficulty = launch_menu(19, 25, 2, 1, 
+              "Select difficulty", difficulties, difficulty);
+
    /* Start a game */
    dmode=1;
    new_level();
