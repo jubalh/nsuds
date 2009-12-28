@@ -9,6 +9,8 @@ Changes in 0.6B
 - Updated scoring formula
 - Ctrl-c now quits, with a dialog to confirm
 - Help menu can now be used from the main menu
+- Fixed an issue that caused a flicker when resizing the window
+- Difficulty menu now remembers prior selection
 
 Changes in 0.5B
 ---------------

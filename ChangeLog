@@ -1,4 +1,4 @@
-nsuds-v0.6B (not yet released)
+nsuds-v0.6B (2009/12/28)
 -----------
 . Levels now limited to 30
 . n key now triggers game over
@@ -15,6 +15,9 @@ problems.
 . Removed extra doupdate from a KEY_RESIZE
 . launch_scroller no longer runs recursively on KEY_RESIZE
 . Updated helpfiles/main
+. Menu items are now truncated
+. Fixed inefficient redrawing that caused a flicker
+. Menu now remembers prior difficulty
 
 
 nsuds-v0.5B (2009/12/17)

@@ -1,16 +1,15 @@
 nsuds - The Ncurses Sudoku System
 *********************************
-. Version: nsuds-0.5B (Beta release)
+. Version: nsuds-0.6B (Beta release)
 . Written by Vincent Launchbury
 . See AUTHORS for a complete list of contributors
 . Report bugs to: <vincent@doublecreations.com>
 
 !!NOTE!!
-This is beta software. It is being actively developed, but it is currently
-unfinished and unstable, and is not meant for general use. As an example, the
+This is beta software. It is being actively developed, but is currently
+unfinished, and is not meant for general use. As an example, the
 help system will only function if the program is invoked as ./src/nsuds from
-the source code directory. And the game itself is too easy with no difficulty
-settings as of yet. 
+the source code directory. 
 
 Which means, if you're not developing, you probably don't want to run it yet.
 !!NOTE!!
@@ -46,8 +45,8 @@ yourself.
 
 To extract the source code, fire up a terminal, cd into your download directory
 and type the following commands:
-   $tar xzf nsuds-0.3B.tar.gz
-   $cd nsuds-0.3B
+   $tar xzf nsuds-0.6B.tar.gz
+   $cd nsuds-0.6B
 
 Then, to compile and install, run the following commands:
    $./configure
@@ -109,6 +108,6 @@ SUPPORTED OPERATING SYSTEMS
 ===========================
 nsuds is currently in beta, but it has been confirmed to work on the following
 platforms:
-   . Linux: Gentoo
-   . Linux: Ubuntu
+   . GNU/Linux: Gentoo
+   . GNU/Linux: Ubuntu
 
