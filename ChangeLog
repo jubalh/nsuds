@@ -2,6 +2,10 @@ nsuds-v0.7B (not yet released)
 -----------
 . We now reinit the ncurses windows on a sigwinch so that
 the window heights don't mess up (see src/nsuds.c:draw_all).
+. Fixed autotool files so it follows $prefix and family
+. Default prefix is now /usr/, which fixes problems with /usr/local
+not working on some distros.
+. Now installs helpfiles into proper doc dir
 
 nsuds-v0.6B (2009/12/28)
 -----------

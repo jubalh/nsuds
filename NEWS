@@ -1,6 +1,10 @@
 This file contains a non-definitive list of user-visible changes. 
 See ChangeLog for a more detailed log of changes, geared toward developers
 
+Changes in 0.7B
+---------------
+- We now properly support --prefix and family for building (see INSTALL)
+
 Changes in 0.6B
 ---------------
 - Levels now limited to 30
