@@ -1,6 +1,6 @@
 /* nsuds - The ncurses sudoku program
  * Text-graphical sudoku with pencil-marking support.
- * Copyright (C) Vincent Launchbury 2009.
+ * Copyright (C) 2009, 2010 Vincent Launchbury.
  * -------------------------------------------
  *
  * This program is free software; you can redistribute it and/or modify

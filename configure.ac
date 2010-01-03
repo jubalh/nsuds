@@ -1,6 +1,6 @@
 dnl nsuds - The ncurses sudoku program
 dnl Text-graphical sudoku with campaign or free-play
-dnl Copyright (C) Vincent Launchbury 2009.
+dnl Copyright (C) 2009, 2010 Vincent Launchbury.
 dnl -------------------------------------------
 dnl
 dnl This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@ dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
 AC_PREREQ([2.63])
 t://nsuds.git.sourceforge.net/gitroot/nsuds/nsuds
 AC_INIT([nsuds], [0.6B], [vincent@doublecreations.com])
+AC_COPYRIGHT([Parts Copyright (C) 2009, 2010 Vincent Launchbury])
 AC_CONFIG_AUX_DIR([build])
 AM_INIT_AUTOMAKE([-Wportability])
 AC_CONFIG_SRCDIR([src/nsuds.c])
