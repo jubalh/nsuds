@@ -29,7 +29,6 @@
 #include "marks.h"
 #include "grid.h"
 
-/* TODO: Perhaps use a sparse matrix */
 bool marks[9][9][9] = {{{0}}};
 short showmarks[3]={0};
 

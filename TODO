@@ -18,6 +18,3 @@ LONG-TERM (probably never to be implemented)
 - Replace solve function in src/gen.c
 - Also implement Sudoku X and Jigsaw
 - Port to windows (extremely low priority)
-
-SMALL THINGS
-- sys/queue.h needs to be included locally if we use SAFE variants
