@@ -6,6 +6,7 @@ the window heights don't mess up (see src/nsuds.c:draw_all).
 . Default prefix is now /usr/, which fixes problems with /usr/local
 not working on some distros.
 . Now installs helpfiles into proper doc dir
+. Main menu now redraws after help is closed
 
 nsuds-v0.6B (2009/12/28)
 -----------

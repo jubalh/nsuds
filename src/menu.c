@@ -294,7 +294,7 @@ int launch_menu(int height, int width, int starty, int startx,
             goto done;
          case '?':
             launch_file(HELPDIR "main", "Help with nsuds");
-            draw_all();
+            ungetch(KEY_RESIZE);
             break;
          case 'Q':
          case 'q':

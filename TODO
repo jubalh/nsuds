@@ -1,6 +1,5 @@
 NSUDS TODO
 ==========
-- Menu doesn't redraw after scroller closes.
 - Saving (possibly)
    - Add save module so that a game can be continued later
    - Automatically save on quit, or fatal signal
