@@ -7,7 +7,6 @@ NSUDS TODO
    - Per user, with name, date, difficulty and score stored
    - Perhaps in human readable format so launch_file can be used directly
 - In help system:
-   - Config autotools to set up a help dir properly
    - Use a menu for help topics, each of which launches the relevant scroller.
    - Maybe add setting to enable smooth scrolling (perhaps w/ getopt too?)
    - Expand help system with useful help, such as how to actually play sudoku.

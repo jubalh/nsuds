@@ -5,15 +5,6 @@ nsuds - The Ncurses Sudoku System
 . See AUTHORS for a complete list of contributors
 . Report bugs to: <vincent@doublecreations.com>
 
-!!NOTE!!
-This is beta software. It is being actively developed, but is currently
-unfinished, and is not meant for general use. As an example, the
-help system will only function if the program is invoked as ./src/nsuds from
-the source code directory. 
-
-Which means, if you're not developing, you probably don't want to run it yet.
-!!NOTE!!
-
 INTRODUCTION
 ============
 The nsuds project is a text graphical sudoku game with pencil-marking support.
