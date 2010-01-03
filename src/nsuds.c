@@ -330,12 +330,27 @@ void draw_all(void)
 {
    switch (dmode) {
       case 0:
+         delwin(intro);
+         intro = newwin(19, 37, 2, 28);
          draw_xs();
          draw_title();
          draw_intro();
          movec(CUR);
          break;
       case 1:
+         /* We have to do this because otherwise, if any of the windows are too
+          * large for the screen, and then the screen is enlarged, ncurses
+          * messes up the heights. */
+         delwin(title);
+         delwin(grid);
+         delwin(timer);
+         delwin(stats);
+         delwin(fbar);
+         title = newwin(1, 64, 0, 1);
+         grid=newwin(19, 37, 2, 28);
+         timer = newwin(6, 25, 2, 1);
+         stats = newwin(13, 25, 8, 1);
+         fbar = newwin(1, col, row-1, 0);
          draw_xs();
          draw_title();
          draw_timer();

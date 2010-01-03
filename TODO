@@ -20,5 +20,4 @@ LONG-TERM (probably never to be implemented)
 - Port to windows (extremely low priority)
 
 SMALL THINGS
-- Handle resize properly for very small windows 
 - sys/queue.h needs to be included locally if we use SAFE variants

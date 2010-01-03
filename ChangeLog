@@ -1,3 +1,8 @@
+nsuds-v0.7B (not yet released)
+-----------
+. We now reinit the ncurses windows on a sigwinch so that
+the window heights don't mess up (see src/nsuds.c:draw_all).
+
 nsuds-v0.6B (2009/12/28)
 -----------
 . Levels now limited to 30
