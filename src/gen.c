@@ -128,7 +128,7 @@ void do_generate(int filled)
  *
  *  Needs a major cleanup. Fast, but HORRIBLE code.
  */
-static int solve()			
+static int solve()
 {
    short Rows[325], Row[325][10], Col[730][5];
    short Urow[730], Ucol[325], V[325], W[325];

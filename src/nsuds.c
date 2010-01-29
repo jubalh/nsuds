@@ -102,7 +102,7 @@ static void init_ncurses()
 
 /* Set up every window we might use. Doesn't include Menus or
  * Scrollers as they're managed automatically. */
-static void init_windows(void) 
+static void init_windows(void)
 {
    title = newwin(1, 64, 0, 1);
    grid=newwin(19, 37, 2, 28);
@@ -269,7 +269,7 @@ static void draw_title(void)
       wattrset(w, (use_colors?COLOR_PAIR(C_KEY):A_UNDERLINE)); \
       waddstr(w, str);                                         \
       wattrset(w, 0);                                          \
-   } while(0)
+   } while(0) 
 
 /* Add highlighted character, using color if supported */
 #define waddhlch(w,c) waddch(w, c | (use_colors?COLOR_PAIR(C_KEY):A_UNDERLINE))
@@ -440,7 +440,8 @@ redraw:
 
 
 /* Draw menu to select difficulty */
-void new_game(void) {
+void new_game(void)
+{
    /* Set to main-menu */
    dmode=0;
    /* Pause */
@@ -459,7 +460,7 @@ void new_game(void) {
 }
 
 /* Start a new level */
-void new_level(void) 
+void new_level(void)
 {
    int i;
 
