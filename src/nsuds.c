@@ -70,6 +70,11 @@ int dmode=0;
 int row,col;
 int scrl_open=0; /* Is a scroller open? */
 char *difficulties[] = {"Easy", "Medium", "Hard", "Expert", "Insane",NULL};
+char level_times[][2] = {{20,0}, 
+                         {17,30},
+                         {15,0},
+                         {10,0},
+                         {7, 30}};
 
 /* Set up decent defaults */
 static void init_ncurses()
@@ -470,23 +475,7 @@ void new_level(void)
 
    /* Start a new game */
    generate();
-   switch (difficulty) {
-      case EASY:
-         start_timer(20, 0);
-         break;
-      case MEDIUM:
-         start_timer(17, 30);
-         break;
-      case HARD:
-         start_timer(15, 0);
-         break;
-      case EXPERT:
-         start_timer(10, 0);
-         break;
-      case INSANE:
-         start_timer(7, 30);
-         break;
-   }
+   start_timer(level_times[difficulty-1][0], level_times[difficulty-1][1]);
    paused = 0;
    curs_set(1);
    draw_all();

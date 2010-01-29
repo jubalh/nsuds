@@ -82,6 +82,7 @@ void game_win(void)
    Scroller *s;
    struct level *curlev, *i;  /* Current level data (and temp) */
    int cscore=0;              /* Cumulative score */
+   int origtime;              /* Original time given for level */
 
    /* Make sure the tail queue is initialized */
    if (!initialized) {
@@ -114,8 +115,12 @@ void game_win(void)
          curlev->score *= 1+5*difficulty;
          break;
    }
-   curlev->time.mins = (20*60 - (cdown.mins * 60 + cdown.secs)) / 60;
-   curlev->time.secs = (20*60 - (cdown.mins * 60 + cdown.secs)) % 60;
+   
+   /* Original time given for level (in seconds) */
+   origtime=level_times[difficulty-1][0] * 60 + 
+         level_times[difficulty-1][1];
+   curlev->time.mins = (origtime - (cdown.mins * 60 + cdown.secs)) / 60;
+   curlev->time.secs = (origtime - (cdown.mins * 60 + cdown.secs)) % 60;
    TAILQ_INSERT_TAIL(&level_data, curlev, entries);
    score += curlev->score;
 

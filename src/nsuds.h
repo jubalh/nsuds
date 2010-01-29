@@ -22,6 +22,7 @@
 
 extern WINDOW *grid, *timer, *stats, *title, *fbar;
 extern int paused, difficulty;
+extern char level_times[][2]; 
 extern int score;
 extern int fbar_time;
 extern int row,col;
