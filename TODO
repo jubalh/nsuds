@@ -4,8 +4,7 @@ NSUDS TODO
    - Add save module so that a game can be continued later
    - Automatically save on quit, or fatal signal
 - Maintain a high score table, with an option to display them in main menu
-   - Per user, with name, date, difficulty and score stored
-   - Perhaps in human readable format so launch_file can be used directly
+   - Global with name, date, difficulty and score stored
 - In help system:
    - Use a menu for help topics, each of which launches the relevant scroller.
    - Maybe add setting to enable smooth scrolling (perhaps w/ getopt too?)

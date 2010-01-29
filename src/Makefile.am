@@ -7,3 +7,12 @@ nsuds_CFLAGS = -pedantic -ansi -Wall -W -DHELPDIR='"$(datadir)/doc/$(PACKAGE_NAM
 nsuds_LDFLAGS = @CURSES_LIB@ -lm
  
 dist_man_MANS = nsuds.1
+
+# Set group to games, and setgid unless asked not to
+install-exec-hook:
+	chgrp games $(DESTDIR)$(bindir)/nsuds
+if USE_SETGID
+	chmod 2555  $(DESTDIR)$(bindir)/nsuds
+else 
+	chmod 0555  $(DESTDIR)$(bindir)/nsuds
+endif

@@ -57,5 +57,27 @@ else
 fi
 AC_SUBST([CURSES_LIB])
 
+dnl Let user disable setgid for nsuds (i.e if user
+dnl   is already in the games group)
+AC_ARG_ENABLE(setgid,
+              [  --disable-setgid Don't install nsuds with setgid],
+              [case "${enableval}" in
+                no) skip_setgid=true ;;
+               yes) skip_setgid=false ;;
+                 *) AC_MSG_ERROR(bad value ${enableval} for --disable-setgid) ;;
+               esac],
+               [skip_setgid=false])
+AM_CONDITIONAL(USE_SETGID, 
+               test "$skip_setgid" != true)
+
+if test "$silent" != yes ; then
+   echo -n "checking if we should setgid nsuds.. "
+   if test "$skip_setgid" = false; then
+      echo "yes"
+   else
+      echo "no"
+   fi
+fi
+
 AC_OUTPUT
 

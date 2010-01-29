@@ -7,6 +7,11 @@ the window heights don't mess up (see src/nsuds.c:draw_all).
 not working on some distros.
 . Now installs helpfiles into proper doc dir
 . Main menu now redraws after help is closed
+. Added 'make debug' target for useful debugging
+. score.c had a static level time and made incorrect calculations
+. Use setgid games with nsuds (in prep for high score system)
+. Added configure option to disable setgid (for distros that
+just use a supplementary groups for gamers)
 
 nsuds-v0.6B (2009/12/28)
 -----------
