@@ -668,6 +668,16 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             marks_clear(ALL);
             break;
 
+#ifdef DEBUG
+         /* Very useful for debugging */
+         case 'z':
+            game_win();
+            break;
+         case 'Z':
+            game_over();
+            break;
+#endif
+
          /* Catch mouse events */
          case KEY_MOUSE:
             if (getmouse(&mouse_e) == OK) {
