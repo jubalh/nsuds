@@ -552,31 +552,31 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case ERR:
             break;
          case KEY_LEFT:
-         case 'H':
          case 'h':
-         case 'A':
          case 'a':
+         case CTRL('b'):
             movec(LEFT);
             break;
          case KEY_RIGHT:
-         case 'L':
          case 'l':
-         case 'D':
          case 'd':
+         case CTRL('f'):
             movec(RIGHT);
             break;
          case KEY_UP:
-         case 'K':
          case 'k':
-         case 'W':
          case 'w':
+         case CTRL('u'):
+         case CTRL('y'):
+         case CTRL('p'):
             movec(UP);
             break;
          case KEY_DOWN:
-         case 'J':
          case 'j':
-         case 'S':
          case 's':
+         case CTRL('d'):
+         case CTRL('e'):
+         case CTRL('n'):
             movec(DOWN);
             break;
          case KEY_HOME:
@@ -615,7 +615,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             curs_set(!paused);
             draw_all();
             break;
-         case 'P':
          case 'p':
             paused=!paused;
             draw_grid();
@@ -623,7 +622,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             curs_set(!paused);
             movec(CUR);
             break;
-         case 'X':
          case 'x':
          case KEY_DC:
             gaddch('0');
@@ -633,7 +631,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             movec(CUR);
             break;
          /* New game, in freeplay */
-         case 'N':
          case 'n':
             if (launch_confirm("End current game and start a fresh?")) {
                game_over();

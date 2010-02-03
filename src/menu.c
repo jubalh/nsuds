@@ -284,9 +284,22 @@ int launch_menu(int height, int width, int starty, int startx,
             draw_menu(m);
             break;
          case KEY_UP:
+         case CTRL('p'):
+         case ALT('p'):
+         case CTRL('y'):
+         case ALT('y'):
+         case 'k':
+         case 'w':
             menu_scroll(m, SCROLL_UP);
             break;
          case KEY_DOWN:
+         case CTRL('n'):
+         case ALT('n'):
+         case CTRL('e'):
+         case ALT('e'):
+         case 'j':
+         case 's':
+         case 32: /* 32 = space */
             menu_scroll(m, SCROLL_DOWN);
             break;
          case 10:

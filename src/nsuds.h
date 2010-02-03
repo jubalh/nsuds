@@ -45,5 +45,9 @@ enum {
 };
 enum {EASY=1, MEDIUM, HARD, EXPERT, INSANE};
 
+#define CTRL(key) 1+key-'a'
+#define ALT(key) 225+key-'a'
+#define CTRL_ALT(key) 129+key-'a'
+
 #endif
 

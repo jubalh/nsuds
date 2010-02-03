@@ -407,35 +407,41 @@ void scroller_input_loop(Scroller *s)
             draw_scroller(s);
             break;
          case KEY_UP:
-         case 'K':
+         case CTRL('p'):
+         case CTRL('y'):
          case 'k':
-         case 'W':
          case 'w':
             scroller_scroll(s, SCROLL_UP);
             break;
          case KEY_DOWN:
-         case 'J':
+         case CTRL('n'):
+         case CTRL('e'):
          case 'j':
-         case 'S':
          case 's':
          case 32: /* 32 = space */
             scroller_scroll(s, SCROLL_DOWN);
             break;
          case KEY_PPAGE:
+         case CTRL('u'):
+         case ALT('v'):
             scroller_set(s, SCRL_RFRESH, 0);
             for (i=0;i<6;i++) scroller_scroll(s, SCROLL_UP);
             scroller_set(s, SCRL_RFRESH, 1);
             break;
          case KEY_NPAGE:
+         case CTRL('d'):
+         case CTRL('v'):
             scroller_set(s, SCRL_RFRESH, 0);
             for (i=0;i<6;i++) scroller_scroll(s, SCROLL_DOWN);
             scroller_set(s, SCRL_RFRESH, 1);
             break;
          case KEY_HOME:
+         case 'g':
             scroller_scroll(s, SCROLL_TOP);
             draw_scroller(s);
             break;
          case KEY_END:
+         case 'G':
             scroller_scroll(s, SCROLL_BASE);
             draw_scroller(s);
             break;

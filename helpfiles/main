@@ -1,21 +1,18 @@
-{nsuds 0.4.1 - Copyright (C) 2009 Vincent Launchbury}
+{nsuds 0.7 - Copyright (C) 2009 Vincent Launchbury}
 {Released under the GNU GPL}
 %Report bugs to <vincent@doublecreations.com>%
 
 The nsuds project is a text graphical sudoku game that uses the ncurses display library. The point of the project is to provide a portable implementation with the minimum possible dependencies. 
 
 _BASIC KEYS_:
-{N}
 {n}        Start a new game, abandoning the current
          one. If the current score is a high score,
          it will be entered.
 
-{p}
-{P}        Pause or unpause the game. Pausing the game
+{p}        Pause or unpause the game. Pausing the game
          will cause the grid contents to be hidden.
 
-{q}
-{Q}        Close a dialog, if in one. Otherwise, quit nsuds. 
+{q}        Close a dialog, if in one. Otherwise, quit nsuds. 
          A dialog will popup for you to confirm the action.
 
 {C-c}      Quit nsuds regardless of whether you're in a
@@ -26,28 +23,52 @@ _BASIC KEYS_:
          cannot overwrite a number that was part of
          the original generated puzzle.
 
-{DEL}
-{x}
-{X}        Delete an input number from the current
+{DEL}, {x} 
+         Delete an input number from the current
          square. You cannot erase a number that was
          part of the original generated puzzle.
 
-{Arrows}
-{WASD}
-{HJKL}
-{Click}    Move the cursor to a different square in the
-         grid. Note that mouse support in a tty
-         requires gpm.
+_MOVEMENT KEYS_
+When moving around in a menu, a scrollable dialog (like this help system), or in the sudoku grid, nsuds supports vi and emacs style keymappings, as well as things like wasd.
 
-{Home}
-{End}
-{Page UP/DOWN}
-         Move the cursor to the beginning or end of the
-         current row or column.
+{Mouse Click}
+         Click to select a grid square. Mouse support requires
+         gpm in a tty.
 
+{LEFT}, {a}, {h}, {C-b}
+         Move left one square in the sudoku grid.
+
+{RIGHT}, {d}, {l}, {C-f}
+         Move right one square in the sudoku grid.
+
+{HOME}, {C-a}, {M-i}
+         Move to the first row in the sudoku grid.
+
+{END}, {C-e}, {M-a}
+         Move to the last row in the sudoku grid.
+
+{HOME}, g
+         Move to the top of a menu or scrollable dialog
+
+{END}, G
+         Move to the bottom of a menu or scrollable dialog
+
+{UP}, {w}, {k}, {C-y}, {C-p}
+         Move up one square in the sudoku grid, or
+         scroll up one line in a menu or scrollable dialog.
+
+{DOWN}, {s}, {j}, {C-e}, {C-n}
+         Move down one square in the sudoku grid, or
+         scroll down one line in a menu or scrollable dialog.
+
+{Page UP}, {C-u}, {M-v}
+         Scroll up half a page in a scrollable dialog.
+
+{Page DOWN}, {C-d}, {C-v}
+         Scroll down half a page in a scrollable dialog.
 
 _MARKS_:
-Marking squares in nsuds is similar to how you would put pencil marks on a real sudoku. When you mark a square with 1, you are saying that 1 may belong in that square, but it doesn't input the number in the square.  However, when you reveal sqaures marked with 1, it will highlight all the squares that you thought may contain a 1, and temporarily show a 1 in those squares. Squares that actually do contain a 1 will also be highlighted, but they will be underlined to distinguish them from marks. 
+Marking squares in nsuds is similar to how you would put pencil marks on a real sudoku. When you mark a square with 1, you are saying that 1 may belong in that square, but it doesn't input the number in the square.  However, when you reveal squares marked with 1, it will highlight all the squares that you thought may contain a 1, and temporarily show a 1 in those squares. Squares that actually do contain a 1 will also be highlighted, but they will be underlined to distinguish them from marks. 
 
 {m} + {#}
 {M} + {#}    Mark the current square with {#}. That is,
@@ -60,7 +81,7 @@ Marking squares in nsuds is similar to how you would put pencil marks on a real 
 {C} + {#}    Clear all mark {#}'s from all squares. That
          is, for all squares, set mark {#} to false.
 
-{r} + {#}    Reveal (highlight) all sqaures that are
+{r} + {#}    Reveal (highlight) all squares that are
          marked with {#}. That is, highlight all squares
          for which mark {#} is set to true.
 
@@ -71,4 +92,4 @@ Marking squares in nsuds is similar to how you would put pencil marks on a real 
 
 _CREDITS_
 Help file written by Vincent Launchbury.
-Last updated: December 6th, 2009.
+Last updated: February 3rd, 2010.
