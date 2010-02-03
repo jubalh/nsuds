@@ -397,8 +397,8 @@ void launch_file(char *fname, char *title)
 void scroller_input_loop(Scroller *s)
 {
    int c, i;
-   /* Handle input (10=Enter) */
-   while ((c=getch()) != 10) {
+   /* Handle input */
+   while ((c=getch())) {
       switch (c) {
          case KEY_RESIZE:
             getmaxyx(stdscr, row, col);
@@ -448,7 +448,14 @@ void scroller_input_loop(Scroller *s)
          case 'Q':
          case 'q':
          case 27: /* Escape */
+         case 10: /* Enter */
+            hide_fbar();
             return;
+         case ERR:
+            break;
+         default:
+            unknown_key();
+            break;
       }
    }
 }

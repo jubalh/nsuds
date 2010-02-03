@@ -301,11 +301,15 @@ static void draw_fbar(void)
 
    /* DEL/C remove number */
    waddstr(fbar, " Del:");
-   waddhlstr(fbar, "DEL/X");
+   waddhlstr(fbar, "DEL/x");
 
    /* Move */
    waddstr(fbar, " Move:");
-   waddhlstr(fbar, "Arrows/WASD/HJKL/Click");
+   waddhlstr(fbar, "Arrows/Mouse/hjkl");
+
+   /* Help */
+   waddstr(fbar, " Help:");
+   waddhlstr(fbar, "?");
    wnoutrefresh(fbar);
 
 }
@@ -318,6 +322,15 @@ void hide_fbar(void)
    wrefresh(fbar);
 }
 
+void unknown_key(void)
+{
+   if (!fbar_time) {
+      draw_fbar();
+      doupdate();
+      movec(CUR);
+      fbar_time = 5;
+   }
+}
 
 static void draw_xs(void)
 {
@@ -452,6 +465,9 @@ void new_game(void)
    /* Pause */
    paused=1;
    curs_set(0);
+
+   /* Start a blank timer so that the fbar works */
+   start_timer(0,0);
 
    /* Draw windows */
    draw_all();
@@ -617,6 +633,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             curs_set(!paused);
             draw_all();
             break;
+         case 'P':
          case 'p':
             paused=!paused;
             draw_grid();
@@ -634,6 +651,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             break;
          /* New game, in freeplay */
          case 'n':
+         case 'N':
             if (launch_confirm("End current game and start a fresh?")) {
                game_over();
             }
@@ -692,11 +710,8 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
                   movec(CUR);
                }
             /* Key unknown, show function bar */
-            } else if (!fbar_time) {
-               draw_fbar();
-               doupdate();
-               movec(CUR);
-               fbar_time = 5;
+            } else {
+               unknown_key();
             }
             break;
       }

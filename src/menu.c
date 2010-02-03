@@ -325,13 +325,17 @@ int launch_menu(int height, int width, int starty, int startx,
             endwin();
             exit(EXIT_SUCCESS);
             break;
+         case ERR:
+            break;
          default:
+            unknown_key();
             break;
       }
    }
 done:
    delwin(m->window);
    free_menu(m);
+   hide_fbar();
    return ret;
 }
 
