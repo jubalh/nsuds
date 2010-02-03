@@ -41,10 +41,10 @@ When moving around in a menu, a scrollable dialog (like this help system), or in
 {RIGHT}, {d}, {l}, {C-f}
          Move right one square in the sudoku grid.
 
-{HOME}, {C-a}, {M-i}
+{HOME}, {M-i}
          Move to the first row in the sudoku grid.
 
-{END}, {C-e}, {M-a}
+{END}, {M-a}
          Move to the last row in the sudoku grid.
 
 {HOME}, g

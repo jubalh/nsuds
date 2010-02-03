@@ -1,14 +1,14 @@
 NSUDS TODO
 ==========
-- Saving (possibly)
-   - Add save module so that a game can be continued later
-   - Automatically save on quit, or fatal signal
 - Maintain a high score table, with an option to display them in main menu
    - Global with name, date, difficulty and score stored
 - In help system:
    - Use a menu for help topics, each of which launches the relevant scroller.
    - Maybe add setting to enable smooth scrolling (perhaps w/ getopt too?)
    - Expand help system with useful help, such as how to actually play sudoku.
+- Saving (possibly)
+   - Add save module so that a game can be continued later
+   - Automatically save on quit, or fatal signal
 - General
    - Fix all instances of $grep -E 'TODO|FIXME' src/*.[ch]
 

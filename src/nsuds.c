@@ -247,10 +247,10 @@ void draw_intro(void)
    mvwaddstr(intro, 1, 1, "Press '?' at any time for help");
    wattrset(intro, 0);	
    mvwaddstr(intro, 3, 1, "Nsuds creates valid single solution");
-   mvwaddstr(intro, 4, 1, "puzzles of varying difficulies. The");
+   mvwaddstr(intro, 4, 1, "puzzles of varying difficulties.The");
    mvwaddstr(intro, 5, 1, "difficulty level affects the number");
    mvwaddstr(intro, 6, 1, "of filled in squares you start with");
-   mvwaddstr(intro, 7, 1, "as well as the ammount of time you");
+   mvwaddstr(intro, 7, 1, "as well as the amount of time you");
    mvwaddstr(intro, 8, 1, "have to complete each level.");
    mvwaddstr(intro, 10, 1, "  - 30 levels in total.");
    mvwaddstr(intro, 11, 1, "  - Full pencil-marking support.");
@@ -580,9 +580,11 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             movec(DOWN);
             break;
          case KEY_HOME:
+         case ALT('i'):
             movec(HOME);
             break;
          case KEY_END:
+         case ALT('a'):
             movec(END);
             break;
          case KEY_NPAGE:
