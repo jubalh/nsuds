@@ -425,14 +425,14 @@ void scroller_input_loop(Scroller *s)
          case CTRL('u'):
          case ALT('v'):
             scroller_set(s, SCRL_RFRESH, 0);
-            for (i=0;i<6;i++) scroller_scroll(s, SCROLL_UP);
+            for (i=0;i<(s->height/2);i++) scroller_scroll(s, SCROLL_UP);
             scroller_set(s, SCRL_RFRESH, 1);
             break;
          case KEY_NPAGE:
          case CTRL('d'):
          case CTRL('v'):
             scroller_set(s, SCRL_RFRESH, 0);
-            for (i=0;i<6;i++) scroller_scroll(s, SCROLL_DOWN);
+            for (i=0;i<(s->height/2);i++) scroller_scroll(s, SCROLL_DOWN);
             scroller_set(s, SCRL_RFRESH, 1);
             break;
          case KEY_HOME:
