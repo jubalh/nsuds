@@ -175,7 +175,7 @@ void menu_scroll(Menu *m, int dir)
       case SCROLL_TOP:
          m->cur = TAILQ_FIRST(&m->items);
          m->offset=0;
-         m->selected=0;
+         m->selected=1;
          break;
       /* Scroll to the bottom line, but don't udpated
        * the selected item */
@@ -301,6 +301,15 @@ int launch_menu(int height, int width, int starty, int startx,
          case 's':
          case 32: /* 32 = space */
             menu_scroll(m, SCROLL_DOWN);
+            break;
+         case KEY_HOME:
+         case 'g':
+            menu_scroll(m, SCROLL_TOP);
+            break;
+         case KEY_END:
+         case 'G':
+            m->selected=m->size;
+            menu_scroll(m, SCROLL_BASE);
             break;
          case 10:
             ret = m->selected;
