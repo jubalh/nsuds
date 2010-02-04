@@ -1,0 +1,10 @@
+# Nsuds high score list
+#
+# Sorted by: high score, low time, low level
+#   - In case of a tie, the oldest record remains higher
+#
+# Format: Tab seperated entries as follows:
+#   Date  |Vers|Score|Diff  |Lv|H:MM|Name
+2009/02/13|0.7B|32500|Medium|14|3:14|Falard*|
+1970/01/01|0.7B|12002|Hard|6|2:71|Apoc*|
+2001/09/09|0.7B|500|Easy|1|0:12|The Monk*|

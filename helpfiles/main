@@ -19,6 +19,9 @@ _BASIC KEYS_:
          dialog. A dialog will popup for you to confirm
          the action.
 
+{H}        View the high score tables. A dialog will pop
+         up and the game will pause itself.
+
 {1}-{9}      Input a number in the current square. You 
          cannot overwrite a number that was part of
          the original generated puzzle.
@@ -92,4 +95,4 @@ Marking squares in nsuds is similar to how you would put pencil marks on a real 
 
 _CREDITS_
 Help file written by Vincent Launchbury.
-Last updated: February 3rd, 2010.
+Last updated: February 4th, 2010.

@@ -318,6 +318,10 @@ int launch_menu(int height, int width, int starty, int startx,
             launch_file(HELPDIR "main", "Help with nsuds");
             ungetch(KEY_RESIZE);
             break;
+         case 'H':
+            display_scores();
+            ungetch(KEY_RESIZE);
+            break;
          case 'Q':
          case 'q':
          case 27: /* Escape */

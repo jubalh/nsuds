@@ -47,6 +47,7 @@
 #include "score.h"
 #include "scroller.h"
 #include "menu.h"
+#include "highscores.h"
 
 static void init_ncurses(void);
 static void init_windows(void);
@@ -255,7 +256,7 @@ void draw_intro(void)
    mvwaddstr(intro, 10, 1, "  - 30 levels in total.");
    mvwaddstr(intro, 11, 1, "  - Full pencil-marking support.");
    mvwaddstr(intro, 12, 1, "  - 100% Free software");
-   mvwaddstr(intro, 13, 1, "  - High score tables to come!");
+   mvwaddstr(intro, 13, 1, "  - Press 'H' to view high scores");
    mvwaddstr(intro, 17, 1, "By Vincent Launchbury et. al. ");
 
    wnoutrefresh(intro);
@@ -628,6 +629,22 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             }
             scrl_open=1;
             launch_file(HELPDIR "main", "Help with nsuds");
+            scrl_open=0;
+            paused=0;
+            curs_set(!paused);
+            draw_all();
+            break;
+         /* High scores */
+         case 'H':
+            if (!paused)  {
+               paused=1;
+               draw_grid();
+               doupdate();
+               curs_set(!paused);
+               movec(CUR);
+            }
+            scrl_open=1;
+            display_scores();
             scrl_open=0;
             paused=0;
             curs_set(!paused);

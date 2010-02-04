@@ -31,6 +31,12 @@ dnl /usr/local doesn't work on some distros I tested,
 dnl  also fixes the man issue.
 AC_PREFIX_DEFAULT([/usr])
 
+# Use /var, unless user specifies non /usr location
+if test "$prefix" = NONE || test "$prefix" = /usr || \
+      test "$prefix" = /usr/local; then
+   test "$localstatedir" = '${prefix}/var' && localstatedir=/var
+fi
+
 dnl Programs
 AC_PROG_CC
 AM_PROG_CC_C_O
