@@ -16,3 +16,7 @@ src/nsuds
 # And any other tool generated files
 tags
 gmon.out
+
+# Ignore dist tarballs
+*.tar.gz
+*.tar.bz2
