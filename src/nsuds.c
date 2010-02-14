@@ -406,17 +406,25 @@ redraw:
 
    /* Draw the options */
    wattrset(confirm, A_REVERSE);	
-   mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
-   wattroff(confirm, A_REVERSE);
-   mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
+   if (status) {
+      mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
+      wattroff(confirm, A_REVERSE);
+      mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
+   } else {
+      mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
+      wattroff(confirm, A_REVERSE);
+      mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
+   }
 
    /* Draw over top of everything */
    overwrite(confirm, stats);
    wrefresh(confirm);
 
    /* Handle input */
-   while ((c = getch())!=ERR) {
+   while ((c = getch())) {
       switch (c) {
+         case ERR:
+            continue;
          case KEY_RESIZE:
             getmaxyx(stdscr, row, col);
             draw_all();
