@@ -150,8 +150,13 @@ static int ask_int(char *question, ...)
    /* Wait for input */
    while ((c = getch())) {
       if (c==ERR) continue;
+      if (c==KEY_RESIZE) {
+         ungetch(KEY_RESIZE);
+         return 0;
+      }
       /* Real input occured, erase line */
-      mvhline(row-1, 0, ACS_CKBOARD, col);
+      if (row <= 30) mvhline(row-1, 0, ACS_CKBOARD, col);
+      else mvhline(row-1, 0, ' ', col);
       movec(CUR);
       /* Return int or invalid */
       if (c>='1' && c<='9') {

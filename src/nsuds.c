@@ -319,7 +319,8 @@ void hide_fbar(void)
 {
    fbar_time=0;
    werase(fbar);
-   mvwhline(fbar, 0, 0, ACS_CKBOARD, col);
+   if (row <= 30) mvwhline(fbar, 0, 0, ACS_CKBOARD, col);
+   else mvwhline(fbar, 0, 0, ' ', col);
    wrefresh(fbar);
 }
 
@@ -336,12 +337,9 @@ void unknown_key(void)
 static void draw_xs(void)
 {
    int i;
-   /* FIXME: Makes redrawing VERY slow, 
-    * it seems xterm draws characters very slowly, but 
-    * black space is cheap. Switching windows with nsuds
-    * large is hideously slow! */
-   for (i=0; i<row; i++)
-      mvhline(i, 0, ACS_CKBOARD, col);
+   erase();
+   for (i=0; i<30; i++)
+      mvhline(i, 0, ACS_CKBOARD, 90);
    wnoutrefresh(stdscr);
 }
 
