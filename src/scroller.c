@@ -398,7 +398,7 @@ void scroller_input_loop(Scroller *s)
 {
    int c, i;
    /* Handle input */
-   while ((c=getch())) {
+   while ((c=getkey())) {
       switch (c) {
          case KEY_RESIZE:
             getmaxyx(stdscr, row, col);
@@ -451,8 +451,6 @@ void scroller_input_loop(Scroller *s)
          case 10: /* Enter */
             hide_fbar();
             return;
-         case ERR:
-            break;
          default:
             unknown_key();
             break;

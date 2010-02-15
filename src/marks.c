@@ -148,8 +148,7 @@ static int ask_int(char *question, ...)
    movec(CUR);
 
    /* Wait for input */
-   while ((c = getch())) {
-      if (c==ERR) continue;
+   while ((c = getkey())) {
       if (c==KEY_RESIZE) {
          ungetch(KEY_RESIZE);
          return 0;

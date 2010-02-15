@@ -324,6 +324,34 @@ void hide_fbar(void)
    wrefresh(fbar);
 }
 
+/* Higher level getch that converts ESC+key to the meta value */
+int getkey(void)
+{
+   int c;
+   while ((c=getch())) {
+      switch (c) {
+         /* Escape (meta sequence) */
+         case 27: 
+            while ((c=getch())) {
+               switch (c) {
+                  case 27: /* Escape */
+                  case ERR:
+                     continue;
+                  default:
+                     return ALT(c);
+               }
+            }
+         /* Don't return for this! */
+         case ERR:
+            continue;
+         /* Regular key, return */
+         default:
+            return c;
+      }
+   }
+}
+
+
 void unknown_key(void)
 {
    if (!fbar_time) {
@@ -421,10 +449,8 @@ redraw:
    wrefresh(confirm);
 
    /* Handle input */
-   while ((c = getch())) {
+   while ((c = getkey())) {
       switch (c) {
-         case ERR:
-            continue;
          case KEY_RESIZE:
             getmaxyx(stdscr, row, col);
             draw_all();
@@ -570,10 +596,8 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
 
    
    /* Main input loop */
-   while ((c = getch())) {
+   while ((c = getkey())) {
       switch (c) {
-         case ERR:
-            break;
          case KEY_LEFT:
          case 'h':
          case 'a':

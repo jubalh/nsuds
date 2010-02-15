@@ -275,7 +275,7 @@ int launch_menu(int height, int width, int starty, int startx,
    }
    menu_set(m, MENU_RFRESH, 1);
    overwrite(m->window, grid);
-   while ((c = getch())) {
+   while ((c = getkey())) {
       switch (c) {
          case KEY_RESIZE:
             getmaxyx(stdscr, row, col);
@@ -328,8 +328,6 @@ int launch_menu(int height, int width, int starty, int startx,
             /* Just quit at this point, don't bother asking */
             endwin();
             exit(EXIT_SUCCESS);
-            break;
-         case ERR:
             break;
          default:
             unknown_key();

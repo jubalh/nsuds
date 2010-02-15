@@ -38,6 +38,7 @@ extern void hide_fbar(void);
 extern void new_level(void);
 extern void new_game(void);
 extern void unknown_key(void);
+extern int getkey(void);
 
 enum {
    C_INPUT=1, C_KEY=1, C_DIALOG=2, 
