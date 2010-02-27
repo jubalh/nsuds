@@ -627,11 +627,15 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             movec(DOWN);
             break;
          case KEY_HOME:
-         case ALT('i'):
+         case 'I':
+         case '0':
+         case ALT('a'):
             movec(HOME);
             break;
          case KEY_END:
-         case ALT('a'):
+         case 'A':
+         case '$':
+         case ALT('e'):
             movec(END);
             break;
          case KEY_NPAGE:
