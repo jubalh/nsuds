@@ -12,6 +12,14 @@ not working on some distros.
 . Use setgid games with nsuds (in prep for high score system)
 . Added configure option to disable setgid (for distros that
 just use a supplementary groups for gamers)
+. Added CTRL/META key support
+. Added Vi/Emacs style keybindings for scrollers et al.
+. Fbar now works everywhere
+. Added support to install and display high score tables (can't yet record)
+. Limited size of chequered background, to avoid slow redrawing
+. Confirm dialog now works properly with window resizes
+. ESC+key can now be used instead of Alt+key (tty support!)
+. Added string input dialog, for upcoming high score entry
 
 nsuds-v0.6B (2009/12/28)
 -----------
