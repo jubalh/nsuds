@@ -83,9 +83,7 @@ void display_scores(void)
             /* Comment */
             if (*buffer == '#') continue;
             h = tmalloc(sizeof(struct highscore));
-            h->difficulty = tmalloc(12);
-            h->version = tmalloc(8);
-            h->name = tmalloc(15);
+            h->next = NULL;
             /* Parse in the line */
             sscanf(buffer, "%d/%d/%d|%[^|]|%d|%[^|]|%d|%d:%d|%[^|]%*c",
                &h->year, &h->month, &h->day, h->version, &h->score,
@@ -97,10 +95,8 @@ void display_scores(void)
                h->difficulty,h->level, h->hours, h->mins, h->name);
             scroller_write(s, record);
             position++;
-            free(h->difficulty);
-            free(h->version);
-            free(h->name);
             free(h);
+            if (++position >= 15) break;
          }
          scroller_write(s, " ");
          scroller_write(s, "%Press Enter to return to the game%");

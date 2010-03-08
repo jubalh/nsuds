@@ -17,24 +17,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  US
  */
-#ifndef _NSUDS_HIGHSCORES_H
-#define _NSUDS_HIGHSCORES_H
+#ifndef _NSUDS_DIALOG_H
+#define _NSUDS_DIALOG_H
 
-void display_scores(void);
-
-struct highscore {
-   int year;
-   int month;
-   int day;
-   int score;
-   int level;
-   int hours;
-   int mins;
-   char version[5];
-   char difficulty[7];
-   char name[21];
-   struct highscore *next;
-};
+bool confirm(char *question);
+char *getstring(char *question);
 
 #endif
-

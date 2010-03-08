@@ -48,13 +48,13 @@
 #include "scroller.h"
 #include "menu.h"
 #include "highscores.h"
+#include "dialog.h"
 
 static void init_ncurses(void);
 static void init_windows(void);
 static void draw_title(void);
 static void draw_xs(void);
 static void draw_fbar(void);
-static bool launch_confirm(char *question);
 static void init_signals(void);
 void catch_signal(int sig);
 
@@ -151,7 +151,7 @@ void catch_signal(int sig)
    switch (sig) {
       case SIGINT:
          /* Interrupt acts similar to the 'q' key */
-         if (!dmode || launch_confirm("Really quit?")) {
+         if (!dmode || confirm("Really quit?")) {
             endwin();
             exit(EXIT_SUCCESS);
          }
@@ -402,93 +402,10 @@ void draw_all(void)
          draw_grid();
          draw_stats();
          if (!scrl_open) doupdate();
-         movec(CUR);
+         if (!scrl_open) movec(CUR);
          break;
    }
 }
-
-/* Launch a dialog that asks OK/Cancel for a question,
- * pausing the game while it waits for input */
-static bool launch_confirm(char *question)
-{
-   int c;
-   bool status=false;
-   WINDOW *confirm;
-
-   /* Cancel alarm */
-   alarm(0);
-   /* Pause */
-   paused=1;
-   curs_set(!paused);
-   /* Only redraw the grid if the help isn't open */
-   if (!scrl_open) draw_grid();
-
-redraw:
-   confirm = newwin(row * 0.4, col * 0.7, row * 0.3, col * 0.15);
-
-   /* Draw dialog */
-   wbkgd(confirm, COLOR_PAIR(C_DIALOG));
-   box(confirm, 0, 0);
-   mvwaddstr(confirm, 0, col * 0.35 - (strlen("Confirm..") / 2), "Confirm");
-   mvwaddstr(confirm, 2, col * 0.35 - (strlen(question) / 2), question);
-
-   /* Draw the options */
-   wattrset(confirm, A_REVERSE);	
-   if (status) {
-      mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
-      wattroff(confirm, A_REVERSE);
-      mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
-   } else {
-      mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
-      wattroff(confirm, A_REVERSE);
-      mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
-   }
-
-   /* Draw over top of everything */
-   overwrite(confirm, stats);
-   wrefresh(confirm);
-
-   /* Handle input */
-   while ((c = getkey())) {
-      switch (c) {
-         case KEY_RESIZE:
-            getmaxyx(stdscr, row, col);
-            draw_all();
-            goto redraw;
-         case KEY_LEFT:
-         case KEY_RIGHT:
-            wattrset(confirm, A_REVERSE);	
-            if (!status) {
-               mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
-               wattroff(confirm, A_REVERSE);
-               mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
-            } else {
-               mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
-               wattroff(confirm, A_REVERSE);
-               mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
-            }
-            status = !status;
-            wrefresh(confirm);
-            break;				
-         /* Enter pressed */
-         case 10:
-            werase(confirm);
-            delwin(confirm);
-            if (!scrl_open) {
-               paused=0;
-               curs_set(!paused);
-               draw_all();
-            }
-            catch_alarm(0);
-            fbar_time=0;
-            return status;
-         default:
-            break;
-      }
-   }
-   return 0;
-}
-
 
 /* Draw menu to select difficulty */
 void new_game(void)
@@ -646,7 +563,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             break;
          case 'Q':
          case 'q':
-            if (launch_confirm("Really quit?")) {
+            if (confirm("Really quit?")) {
                endwin();
                goto done;
             }
@@ -703,7 +620,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          /* New game, in freeplay */
          case 'n':
          case 'N':
-            if (launch_confirm("End current game and start a fresh?")) {
+            if (confirm("End current game and start a fresh?")) {
                game_over();
             }
             break;
@@ -724,7 +641,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case 'C':
             marks_clear(ALL);
             break;
-
 #ifdef DEBUG
          /* Very useful for debugging */
          case 'z':
@@ -732,6 +648,10 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             break;
          case 'Z':
             game_over();
+            break;
+         /* Testing string input */
+         case 'B':
+            getstring("Please enter your name:");
             break;
 #endif
 

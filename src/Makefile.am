@@ -1,9 +1,10 @@
 bin_PROGRAMS = nsuds
-nsuds_SOURCES = gen.c nsuds.c timer.c grid.c marks.c scroller.c \
-					 util.c score.c menu.c highscores.c
-noinst_HEADERS = gen.h nsuds.h timer.h grid.h marks.h scroller.h \
-					  util.h score.h menu.h highscores.h
-nsuds_CFLAGS = -pedantic -ansi -Wall -W -DHELPDIR='"$(datadir)/doc/$(PACKAGE)-${VERSION}/"' \
+nsuds_SOURCES = dialog.c gen.c grid.c highscores.c marks.c \
+					 menu.c nsuds.c score.c scroller.c timer.c util.c
+noinst_HEADERS = dialog.h gen.h grid.h highscores.h marks.h \
+					 menu.h nsuds.h score.h scroller.h timer.h util.h
+nsuds_CFLAGS = -pedantic -ansi -Wall -W \
+					-DHELPDIR='"$(datadir)/doc/$(PACKAGE)-${VERSION}/"' \
 					-DSCOREDIR='"$(localstatedir)/games/$(PACKAGE)/"'
 nsuds_LDFLAGS = @CURSES_LIB@ -lm
  
