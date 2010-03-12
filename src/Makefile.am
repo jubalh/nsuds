@@ -21,3 +21,8 @@ if USE_SETGID
 else 
 	chmod 0555  $(DESTDIR)$(bindir)/nsuds
 endif
+
+# Make sure games group can write the score file
+install-data-hook:
+	chgrp games $(DESTDIR)$(localstatedir)/games/$(PACKAGE)/high_scores
+
