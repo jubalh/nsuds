@@ -84,6 +84,12 @@ redraw:
             goto redraw;
          case KEY_LEFT:
          case KEY_RIGHT:
+         case 'h':
+         case 'l':
+         case 'a':
+         case 'd':
+         case CTRL('f'):
+         case CTRL('b'):
             wattrset(confirm, A_REVERSE);	
             if (!status) {
                mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
