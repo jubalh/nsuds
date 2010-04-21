@@ -5,6 +5,11 @@ Changes in 0.7B
 ---------------
 - We now properly support --prefix and family for building (see INSTALL)
 - Fixed bug where timing was incorrect in the score windows
+- Added configure option to disable setgid
+- Added CTRL/ALT key support
+- Added vi and emacs style bindings
+- Added highscore table (can't yet record new scores)
+- Limited size of background to speed drawing on slow terminals
 
 Changes in 0.6B
 ---------------

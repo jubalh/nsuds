@@ -1,4 +1,4 @@
-nsuds-v0.7B (not yet released)
+nsuds-v0.7B (2010/04/20)
 -----------
 . We now reinit the ncurses windows on a sigwinch so that
 the window heights don't mess up (see src/nsuds.c:draw_all).
@@ -20,6 +20,9 @@ just use a supplementary groups for gamers)
 . Confirm dialog now works properly with window resizes
 . ESC+key can now be used instead of Alt+key (tty support!)
 . Added string input dialog, for upcoming high score entry
+. Added hook to chgrp the high score file to games
+. Updated TODO
+. Cofirm dialog now works with vi/emacs style keys
 
 nsuds-v0.6B (2009/12/28)
 -----------
