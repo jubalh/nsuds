@@ -44,16 +44,16 @@ When moving around in a menu, a scrollable dialog (like this help system), or in
 {RIGHT}, {d}, {l}, {C-f}
          Move right one square in the sudoku grid.
 
-{HOME}, I, 0, {M-a}
+{HOME}, {I}, {0}, {M-a}
          Move to the first row in the sudoku grid.
 
-{END}, A, $, {M-e}
+{END}, {A}, {$}, {M-e}
          Move to the last row in the sudoku grid.
 
-{HOME}, g
+{HOME}, {g}
          Move to the top of a menu or scrollable dialog
 
-{END}, G
+{END}, {G}
          Move to the bottom of a menu or scrollable dialog
 
 {UP}, {w}, {k}, {C-y}, {C-p}
