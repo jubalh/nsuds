@@ -32,11 +32,11 @@
 #endif
 
 #include "nsuds.h"
-#include "gen.h"
 #include "grid.h"
 #include "marks.h"
 
 static bool grid_valid(void);
+static void sub_move(int *a1, int *a2, int toward);
 
 char grid_data[9][9]={{0}}; /* grid_data[y/row][x/col] */
 int curx=0,cury=0;          /* Current (selected) grid coords */
@@ -57,7 +57,6 @@ int curx=0,cury=0;          /* Current (selected) grid coords */
 /* Move screen cursor to grid coord */
 #define smove(y, x) move(gy2scr(y), gx2scr(x))
 
-
 /* Move cursor to another grid space */
 void movec(int dir)
 {
@@ -74,27 +73,54 @@ void movec(int dir)
       case RIGHT:
          if (curx < 8) smove(cury, ++curx);
          break;
-      case TOP:
-         cury=0;
-         smove(cury, curx);
+
+      /* Go to the center of the an adjacent sub-square */
+      case SUB_RIGHT:
+         sub_move(&curx, &cury, 9);
          break;
-      case BOTTOM:
-         cury=8;
-         smove(cury, curx);
+      case SUB_LEFT:
+         sub_move(&curx, &cury, 0);
          break;
-      case HOME:
-         curx=0;
-         smove(cury, curx);
+      case SUB_UP:
+         sub_move(&cury, &curx, 0);
          break;
-      case END:
-         curx=8;
-         smove(cury, curx);
+      case SUB_DOWN:
+         sub_move(&cury, &curx, 9);
          break;
+
+      /* Move to current position (after a redraw) */
       case CUR:
          smove(cury, curx);
          break;
    }
 }
+
+
+/* Move to the center of an adjacent subsection by:
+ *  - Moving along axis1 toward the cell 'toward' 
+ *  - Centering axis2 */
+static void sub_move(int *a1, int *a2, int toward) {
+   /* Moving along axis1 toward 0 */
+   if (toward == 0) {
+      if (*a1 <= 2) return;
+      else if (*a1 >= 3 && *a1 <= 5) *a1=1;
+      else *a1=4;
+   /* Moving along axis1 toward 9 */
+   } else {
+      if (*a1 <= 2) *a1=4;
+      else if (*a1 >= 3 && *a1 <= 5) *a1=7;
+      else return;
+   }
+
+   /* Center axis2 */
+   if (*a2 <= 2) *a2=1;
+   else if (*a2 >= 3 && *a2 <= 4) *a2=4;
+   else *a2=7;
+
+   smove(cury, curx);
+}
+
+   
 
 /* Move to specified screen location, if user
  * clicked on a valid grid square */
@@ -225,7 +251,7 @@ void draw_grid_contents(void)
 {
    int i, j, k;
 
-   if (paused) return;
+   if (is_paused()) return;
 
    /* For each square */
    for (i=0; i<9; i++) {
@@ -269,27 +295,5 @@ void draw_grid_contents(void)
    }
 
    wnoutrefresh(grid);
-}
-
-/* Generate a puzzle */
-void generate(void)
-{
-   switch (difficulty) {
-      case EASY:
-         do_generate(38);
-         break;
-      case MEDIUM:
-         do_generate(32);
-         break;
-      case HARD:
-         do_generate(28);
-         break;
-      case EXPERT:
-         do_generate(26);
-         break;
-      case INSANE:
-         do_generate(18);
-         break;
-   }
 }
 

@@ -90,8 +90,7 @@ void game_win(void)
       initialized=1;
    }
    /* Pause */
-   paused = 1;
-   curs_set(0);
+   game_pause(1);
    scrl_open=1;
 
    s = scroller_new(row * 0.9, col * 0.9, row * 0.05, col * 0.05, 
@@ -186,9 +185,7 @@ void game_over(void)
    struct level *i;
    int cscore=0;     /* Cumulative score */
 
-   /* Pause */
-   paused=1;
-   curs_set(0);
+   game_pause(1);
    scrl_open=1;
 
    s = scroller_new(row * 0.9, col * 0.9, row * 0.05, col * 0.05, "Game Over");

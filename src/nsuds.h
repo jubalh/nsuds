@@ -21,13 +21,12 @@
 #define _NSUDS_NSUDS_H
 
 extern WINDOW *grid, *timer, *stats, *title, *fbar;
-extern int paused, difficulty;
+extern int difficulty;
 extern char level_times[][2]; 
 extern int score;
 extern int fbar_time;
 extern int row,col;
 extern int use_colors;
-extern int dmode; 
 extern int scrl_open;
 extern void game_over(void);
 extern void game_win(void);
@@ -39,6 +38,8 @@ extern void new_level(void);
 extern void new_game(void);
 extern void unknown_key(void);
 extern int getkey(void);
+int is_paused(void);
+void game_pause(int action);
 
 enum {
    C_INPUT=1, C_KEY=1, C_DIALOG=2, 

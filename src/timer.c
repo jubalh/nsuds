@@ -89,7 +89,7 @@ void catch_alarm(unused int sig)
    }
 
    /* Don't countdown if paused */
-   if (paused) return;
+   if (is_paused()) return;
 
    /* Decrement level timer */
    if (cdown.secs > 0) {

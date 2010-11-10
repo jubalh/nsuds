@@ -21,7 +21,7 @@
 #ifndef _NSUDS_GRID_H
 #define _NSUDS_GRID_H
 
-enum {CUR, LEFT, RIGHT, UP, DOWN, END, HOME, TOP, BOTTOM};
+enum {CUR, LEFT, RIGHT, UP, DOWN, SUB_LEFT, SUB_RIGHT, SUB_UP, SUB_DOWN};
 #define abs(x) (((x)>0)?(x):-(x))
 extern int curx,cury;    /* Current (selected) grid coords */
 
@@ -30,8 +30,5 @@ extern void movec_mouse(int x, int y);
 extern void gsetcur(char ch);
 extern int grid_filled(void);
 extern void draw_grid_contents(void);
-
-extern void generate(void);
-
 #endif
 

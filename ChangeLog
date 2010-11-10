@@ -1,3 +1,12 @@
+nsuds-v0.8B (not yet released)
+-----------
+- Added functions to pause game, so it isn't spread everywhere
+- Added keys (and functionality) to move to the center of an adjacent subgrid
+- Removed keys to move to the edge of the grid  (pretty useless)
+- Removed menu-overflow code (our needs aren't that complex)
+- Removed mode from stats, added % of grid filled in
+- Updated helpfiled
+
 nsuds-v0.7B (2010/04/20)
 -----------
 . We now reinit the ncurses windows on a sigwinch so that

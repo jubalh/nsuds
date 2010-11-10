@@ -26,15 +26,15 @@ _BASIC KEYS_:
          cannot overwrite a number that was part of
          the original generated puzzle.
 
-{DEL}, {x} 
+{DEL}, {x}, {0}
          Delete an input number from the current
          square. You cannot erase a number that was
          part of the original generated puzzle.
 
 _MOVEMENT KEYS_
-When moving around in a menu, a scrollable dialog (like this help system), or in the sudoku grid, nsuds supports vi and emacs style keymappings, as well as things like wasd.
+When moving around in a menu, a dialog with a scrollbar, or the sudoku grid, nsuds supports vi and emacs style keymappings, so that you can move around efficiently, in a style that you're familiar with.
 
-{Mouse Click}
+{Left Click}
          Click to select a grid square. Mouse support requires
          gpm in a tty.
 
@@ -44,18 +44,6 @@ When moving around in a menu, a scrollable dialog (like this help system), or in
 {RIGHT}, {d}, {l}, {C-f}
          Move right one square in the sudoku grid.
 
-{HOME}, {I}, {0}, {M-a}
-         Move to the first row in the sudoku grid.
-
-{END}, {A}, {$}, {M-e}
-         Move to the last row in the sudoku grid.
-
-{HOME}, {g}
-         Move to the top of a menu or scrollable dialog
-
-{END}, {G}
-         Move to the bottom of a menu or scrollable dialog
-
 {UP}, {w}, {k}, {C-y}, {C-p}
          Move up one square in the sudoku grid, or
          scroll up one line in a menu or scrollable dialog.
@@ -64,11 +52,32 @@ When moving around in a menu, a scrollable dialog (like this help system), or in
          Move down one square in the sudoku grid, or
          scroll down one line in a menu or scrollable dialog.
 
+{HOME}, {g}
+         Move to the top of a menu or scrollable dialog
+
+{END}, {G}
+         Move to the bottom of a menu or scrollable dialog
+
 {Page UP}, {C-u}, {M-v}
          Scroll up half a page in a scrollable dialog.
 
 {Page DOWN}, {C-d}, {C-v}
          Scroll down half a page in a scrollable dialog.
+
+To fill in the sudoku puzzle faster, use these keys to move between one of the 9 sub-grids of the puzzle. The cursor will be placed in the center of the subgrid, so that you can quickly select any square.
+
+{C-h}, {M-b}
+         Move left one sub-grid.
+
+{C-l}, {M-f}
+         Move right one sub-grid.
+
+{C-j}, {C-v}, {M-n}
+         Move down one sub-grid.
+
+{C-k}, {M-v}, {M-p}
+         Move up one subgrid.
+
 
 _MARKS_:
 Marking squares in nsuds is similar to how you would put pencil marks on a real sudoku. When you mark a square with 1, you are saying that 1 may belong in that square, but it doesn't input the number in the square.  However, when you reveal squares marked with 1, it will highlight all the squares that you thought may contain a 1, and temporarily show a 1 in those squares. Squares that actually do contain a 1 will also be highlighted, but they will be underlined to distinguish them from marks. 
@@ -95,4 +104,4 @@ Marking squares in nsuds is similar to how you would put pencil marks on a real 
 
 _CREDITS_
 Help file written by Vincent Launchbury.
-Last updated: February 4th, 2010.
+Last updated: November 10th, 2010.

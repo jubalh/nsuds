@@ -43,6 +43,7 @@
 #include "nsuds.h"
 #include "timer.h"
 #include "grid.h"
+#include "gen.h"
 #include "marks.h"
 #include "score.h"
 #include "scroller.h"
@@ -57,25 +58,22 @@ static void draw_xs(void);
 static void draw_fbar(void);
 static void init_signals(void);
 void catch_signal(int sig);
+static void generate(void);
+
+
+enum {NEVER, AUTO, ALWAYS} colors_when=AUTO; /* For getopt */
+enum {INTRO, IN_GAME} dmode=INTRO;           /* Display mode */
+static MEVENT mouse_e;
+static int paused=1;
 
 WINDOW *grid, *timer, *stats, *title, *fbar, *intro;
-static MEVENT mouse_e;
-int paused=0, difficulty=0;
+int difficulty=0;
 int fbar_time = 0;   /* Seconds to keep fbar up */
-enum {NEVER, AUTO, ALWAYS} colors_when=AUTO;
 int use_colors=0;
-/* Display mode:
- *    0) Select Difficulty & intro
- *    1) Grid & timer/stats window */
-int dmode=0; 
 int row,col;
 int scrl_open=0; /* Is a scroller open? */
-char *difficulties[] = {"Easy", "Medium", "Hard", "Expert", "Insane",NULL};
-char level_times[][2] = {{20,0}, 
-                         {17,30},
-                         {15,0},
-                         {10,0},
-                         {7, 30}};
+char *difficulties[] = {"Easy", "Medium", "Hard", "Expert", "Insane", NULL};
+char level_times[][2] = {{20,0}, {17,30}, {15,0}, {10,0},   {7, 30}};
 
 /* Set up decent defaults */
 static void init_ncurses()
@@ -96,6 +94,7 @@ static void init_ncurses()
    keypad(stdscr, TRUE); /* Catch special keys */
    mousemask(BUTTON1_CLICKED, NULL); /* Catch left click */
    getmaxyx(stdscr, row, col);
+   curs_set(0);   /* Hide the cursor */
    /* It seems that there's a bug in ncurses where
     * anything written to the virtual screen before 
     * the very first call to refresh() will sometimes 
@@ -147,7 +146,7 @@ void catch_signal(int sig)
    switch (sig) {
       case SIGINT:
          /* Interrupt acts similar to the 'q' key */
-         if (!dmode || confirm("Really quit?")) {
+         if (dmode == INTRO || confirm("Really quit?")) {
             endwin();
             exit(EXIT_SUCCESS);
          }
@@ -178,7 +177,7 @@ void draw_grid(void)
 
    box(grid, 0, 0);
 
-   if (paused) {
+   if (is_paused()) {
       mvwaddstr(grid, 9, 15, "Paused");
    } else {
 
@@ -371,7 +370,7 @@ static void draw_xs(void)
 void draw_all(void)
 {
    switch (dmode) {
-      case 0:
+      case INTRO:
          delwin(intro);
          intro = newwin(19, 37, 2, 28);
          draw_xs();
@@ -379,7 +378,7 @@ void draw_all(void)
          draw_intro();
          movec(CUR);
          break;
-      case 1:
+      case IN_GAME:
          /* We have to do this because otherwise, if any of the windows are too
           * large for the screen, and then the screen is enlarged, ncurses
           * messes up the heights. */
@@ -388,11 +387,7 @@ void draw_all(void)
          delwin(timer);
          delwin(stats);
          delwin(fbar);
-         title = newwin(1, 64, 0, 1);
-         grid=newwin(19, 37, 2, 28);
-         timer = newwin(6, 25, 2, 1);
-         stats = newwin(13, 25, 8, 1);
-         fbar = newwin(1, col, row-1, 0);
+         init_windows();
          draw_xs();
          draw_title();
          draw_timer();
@@ -407,43 +402,76 @@ void draw_all(void)
 /* Draw menu to select difficulty */
 void new_game(void)
 {
-   /* Set to main-menu */
-   dmode=0;
-   /* Pause */
-   paused=1;
-   curs_set(0);
+   dmode=INTRO;      /* Go to main-menu */
+   start_timer(0,0); /* Start a blank timer so that the fbar works */
+   draw_all();       /* Redraw windows */
 
-   /* Start a blank timer so that the fbar works */
-   start_timer(0,0);
-
-   /* Draw windows */
-   draw_all();
    /* Wait for user to select difficulty */
    difficulty = launch_menu(19, 25, 2, 1, 
               "Select difficulty", difficulties, difficulty);
 
    /* Start a game */
-   dmode=1;
+   dmode=IN_GAME;
    new_level();
 }
 
 /* Start a new level */
 void new_level(void)
 {
-   int i;
-
    /* Clear all marks */
-   for (i=0; i<729; i++) *(&marks[0][0][0] + i) = 0;
-   for (i=0;i<3;i++) showmarks[i]=0;
+   memset(marks, 0, sizeof(marks));
+   memset(showmarks, 0, 3);
 
    /* Start a new game */
    generate();
    start_timer(level_times[difficulty-1][0], level_times[difficulty-1][1]);
-   paused = 0;
-   curs_set(1);
-   draw_all();
+   game_pause(0);
 }
 
+/* Generate a puzzle */
+static void generate(void)
+{
+   switch (difficulty) {
+      case EASY:
+         do_generate(38);
+         break;
+      case MEDIUM:
+         do_generate(32);
+         break;
+      case HARD:
+         do_generate(28);
+         break;
+      case EXPERT:
+         do_generate(26);
+         break;
+      case INSANE:
+         do_generate(18);
+         break;
+   }
+}
+
+/* Pause the game */
+void game_pause(int action)
+{
+   switch (action) {
+      case 1:
+         paused=1;
+         curs_set(0);
+         break;
+      /* Unpause */
+      case 0:
+         paused=0;
+         curs_set(1);
+         draw_all();
+         break;
+   }
+}
+
+/* Check if the game is paused */
+int is_paused(void)
+{
+   return paused;
+}
 
 int main(int argc, char **argv)
 {
@@ -507,7 +535,6 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
 
    /* Start the game */
    new_game();
-
    
    /* Main input loop */
    while ((c = getkey())) {
@@ -540,23 +567,25 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          case CTRL('n'):
             movec(DOWN);
             break;
-         case KEY_HOME:
-         case 'I':
-         case '0':
-         case ALT('a'):
-            movec(HOME);
+         /* Move between sub-grids */
+         case CTRL('j'):
+         case ALT('n'):
+         case CTRL('v'):
+            movec(SUB_DOWN);
             break;
-         case KEY_END:
-         case 'A':
-         case '$':
-         case ALT('e'):
-            movec(END);
+         case KEY_BACKSPACE: /* C-h is often sent as backspace */
+         case CTRL('h'):
+         case ALT('b'):
+            movec(SUB_LEFT);
             break;
-         case KEY_NPAGE:
-            movec(BOTTOM);
+         case CTRL('k'):
+         case ALT('p'):
+         case ALT('v'):
+            movec(SUB_UP);
             break;
-         case KEY_PPAGE:
-            movec(TOP);
+         case CTRL('l'):
+         case ALT('f'):
+            movec(SUB_RIGHT);
             break;
          case 'Q':
          case 'q':
@@ -568,35 +597,29 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
 
          /* Help */
          case '?':
-            if (!paused)  {
-               paused=1;
+            if (!is_paused())  {
+               game_pause(1);
                draw_grid();
                doupdate();
-               curs_set(!paused);
                movec(CUR);
             }
             scrl_open=1;
             launch_file(HELPDIR "main", "Help with nsuds");
             scrl_open=0;
-            paused=0;
-            curs_set(!paused);
-            draw_all();
+            game_pause(0);
             break;
          /* High scores */
          case 'H':
-            if (!paused)  {
-               paused=1;
+            if (!is_paused())  {
+               game_pause(1);
                draw_grid();
                doupdate();
-               curs_set(!paused);
                movec(CUR);
             }
             scrl_open=1;
             display_scores();
             scrl_open=0;
-            paused=0;
-            curs_set(!paused);
-            draw_all();
+            game_pause(0);
             break;
          case 'P':
          case 'p':
@@ -607,6 +630,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             movec(CUR);
             break;
          case 'x':
+         case '0':
          case KEY_DC:
             gsetcur(0);
             draw_grid();
@@ -671,7 +695,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
          default:
             /* Handle number input */
             if (c>='1' && c<='9') {
-               if (!paused) {
+               if (!is_paused()) {
                   gsetcur(c-'0');
                   draw_stats();
                   doupdate();

@@ -39,14 +39,12 @@
 bool confirm(char *question)
 {
    int c;
-   bool status=false;
+   bool status=true;
    WINDOW *confirm;
 
    /* Cancel alarm */
    alarm(0);
-   /* Pause */
-   paused=1;
-   curs_set(!paused);
+   game_pause(1);
    /* Only redraw the grid if the help isn't open */
    if (!scrl_open) draw_grid();
 
@@ -56,24 +54,13 @@ redraw:
    /* Draw dialog */
    wbkgd(confirm, COLOR_PAIR(C_DIALOG));
    box(confirm, 0, 0);
-   mvwaddstr(confirm, 0, col * 0.35 - (strlen("Confirm..") / 2), "Confirm");
+   mvwaddstr(confirm, 0, col * 0.35 - 4, "Confirm");
    mvwaddstr(confirm, 2, col * 0.35 - (strlen(question) / 2), question);
-
-   /* Draw the options */
-   wattrset(confirm, A_REVERSE);	
-   if (status) {
-      mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
-      wattroff(confirm, A_REVERSE);
-      mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
-   } else {
-      mvwaddstr(confirm, (row * 0.4) -3, col *0.35, " Cancel ");
-      wattroff(confirm, A_REVERSE);
-      mvwaddstr(confirm, (row * 0.4) -3, col *0.35 - 9, "   OK   ");
-   }
 
    /* Draw over top of everything */
    overwrite(confirm, stats);
-   wrefresh(confirm);
+   /* Draw the options */
+   ungetch('h');
 
    /* Handle input */
    while ((c = getkey())) {
@@ -108,9 +95,7 @@ redraw:
             werase(confirm);
             delwin(confirm);
             if (!scrl_open) {
-               paused=0;
-               curs_set(!paused);
-               draw_all();
+               game_pause(0);
             }
             catch_alarm(0);
             fbar_time=0;
@@ -131,8 +116,7 @@ char *getstring(char *question)
 
    /* Cancel alarm */
    alarm(0);
-   /* Pause */
-   paused=1;
+   game_pause(1);
    draw_grid();
    scrl_open=1;
 
@@ -177,9 +161,7 @@ redraw:
          case 10:
             werase(dialog);
             delwin(dialog);
-            paused=0;
-            curs_set(!paused);
-            draw_all();
+            game_pause(0);
             catch_alarm(0);
             fbar_time=0;
             scrl_open=0;
