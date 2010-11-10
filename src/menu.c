@@ -36,21 +36,44 @@
 
 #include "scroller.h"
 #include "menu.h"
+#include "highscores.h"
 #include "nsuds.h"
 #include "util.h"
+
+/* Structs */
+struct item {
+   char *name;    /* Name of item */
+   TAILQ_ENTRY(item) entries;
+};
+
+typedef struct {
+   WINDOW *window;	   /* Ncurses Window */
+   char *title;	      /* Window Title */
+   int height;		      /* Height of Window */
+   int width;		      /* Width of the window? */
+   int offset;	         /* Item offset (Which is shown first) */
+   int size;		      /* Number of items */
+   int selected;        /* Which item is selected */
+   struct item *cur;    /* Pointer to [offset]'th item  */
+   TAILQ_HEAD(item_hn, item) items; /* List of items */
+} Menu; 
 
 /* Prototypes */
 static void menu_resize(Menu *m, int height, int width, int starty, int startx);
 static void draw_menu(Menu *m);
+static Menu *menu_new(int height, int width, int starty, int startx, 
+            char *title);
+static void menu_scroll(Menu *m, int dir);
+static void menu_add_item(Menu *m, char *name);
+static void free_menu(Menu *m);
 
 /* Return a pointer to a new initialized menu */
-Menu *menu_new(int height, int width, int starty, int startx, char *title)
+static Menu *menu_new(int height, int width, int starty, int startx, char *title)
 {
    Menu *new = tmalloc(sizeof(Menu));
    new->window = newwin(height, width, starty, startx);
    new->height = height;
    new->width = width;
-   new->rfresh=true;
    new->selected=1;
    new->offset = 0;
    new->size = 0;
@@ -112,25 +135,9 @@ static void draw_menu(Menu *m)
    wrefresh(m->window);
 }
 
-/* Set properties of a menu */
-void menu_set(Menu *m, int flag, int val)
-{
-   switch (flag) {
-      case MENU_RFRESH:
-         /* Refresh when turning the setting back on */
-         if (!m->rfresh && val==1) {
-            draw_menu(m);
-         }
-         m->rfresh=val;
-         break;
-      default:
-         break;
-   }
-}
-
 /* Scroll a menu, i.e select the previous or
  * next items */
-void menu_scroll(Menu *m, int dir)
+static void menu_scroll(Menu *m, int dir)
 {
    switch (dir) {
       case SCROLL_UP:
@@ -197,7 +204,7 @@ draw:
 }
 
 /* Add an item to the menu. */
-void menu_add_item(Menu *m, char *name)
+static void menu_add_item(Menu *m, char *name)
 {
    struct item *nitem;
    nitem = tmalloc(sizeof(struct item));
@@ -207,11 +214,10 @@ void menu_add_item(Menu *m, char *name)
    TAILQ_INSERT_TAIL(&m->items, nitem, entries);
    m->size++;
    if (!m->cur) m->cur = TAILQ_FIRST(&m->items);
-   if (m->rfresh) draw_menu(m);
 }
 
 /* Free all the items in a menu */
-void free_menu(Menu *m)
+static void free_menu(Menu *m)
 {
    while ((m->cur=TAILQ_FIRST(&m->items))) {
       free(m->cur->name);
@@ -236,13 +242,12 @@ int launch_menu(int height, int width, int starty, int startx,
    m = menu_new(height, width, starty, startx, title);
    if (select) m->selected = select;
 
-   /* Don't redraw until all items are added */
-   menu_set(m, MENU_RFRESH, 0);
+   /* Add items */
    for (i=0; items[i]; i++) {
       menu_add_item(m, items[i]);
    }
-   menu_set(m, MENU_RFRESH, 1);
    overwrite(m->window, grid);
+   draw_menu(m);
    while ((c = getkey())) {
       switch (c) {
          case KEY_RESIZE:

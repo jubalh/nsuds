@@ -19,35 +19,8 @@
  */
 #ifndef _NSUDS_MENU_H
 #define _NSUDS_MENU_H
-#include <sys/queue.h>
-
-enum {MENU_RFRESH};
-
-struct item {
-   char *name;    /* Name of item */
-   TAILQ_ENTRY(item) entries;
-};
-
-typedef struct {
-   WINDOW *window;	   /* Ncurses Window */
-   char *title;	      /* Window Title */
-   int height;		      /* Height of Window */
-   int width;		      /* Width of the window? */
-   bool rfresh;         /* Refresh after a write */
-   int offset;	         /* Item offset (Which is shown first) */
-   int size;		      /* Number of items */
-   int selected;        /* Which item is selected */
-   struct item *cur;    /* Pointer to [offset]'th item  */
-   TAILQ_HEAD(item_hn, item) items; /* List of items */
-} Menu; 
 
 /* Prototypes */
-extern Menu *menu_new(int height, int width, int starty, int startx, 
-       char *title);
-extern void menu_set(Menu *m, int flag, int val);
-extern void menu_scroll(Menu *m, int dir);
-extern void menu_add_item(Menu *m, char *name);
-extern void free_menu(Menu *m);
 extern int launch_menu(int height, int width, int starty, int startx,
        char *title, char *items[], int select);
 
