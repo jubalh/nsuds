@@ -42,7 +42,6 @@
 /* Prototypes */
 static void menu_resize(Menu *m, int height, int width, int starty, int startx);
 static void draw_menu(Menu *m);
-static void menu_check_over(Menu *m);
 
 /* Return a pointer to a new initialized menu */
 Menu *menu_new(int height, int width, int starty, int startx, char *title)
@@ -73,7 +72,6 @@ static void menu_resize(Menu *m, int height, int width, int starty, int startx)
    m->window = newwin(height, width, starty, startx);
    m->height = height;
    m->width = width;
-   menu_check_over(m);
 }
 
 /* Redraw menu, when another item is selected for instance */
@@ -90,16 +88,6 @@ static void draw_menu(Menu *m)
    /* Print title if applicable */
    if (m->title) {
       mvwprintw(m->window, 0, (m->width/2) - (strlen(m->title)/2), m->title);
-   }
-
-   /* If menu shrunk from a window resize, adjust offset */
-   /* FIXME: Doesn't work correctly */
-   if (m->selected - m->offset > m->height-3) {
-      int diff = m->selected - m->offset - (m->height-3);
-      for (i=0; i<diff; i++) {
-         m->cur = TAILQ_NEXT(m->cur, entries);
-         m->offset++;
-      }
    }
 
    /* Draw items */
@@ -206,26 +194,6 @@ void menu_scroll(Menu *m, int dir)
    }
 draw:
    draw_menu(m);
-}
-
-/* Check if a menu is scrolled too far due to a window resize. 
- * If so, fix it 
- * FIXME: Doesn't work properly */
-static void menu_check_over(Menu *m)
-{
-   /* Not enough items to fill the screen*/
-   if (m->size < m->height-3) {
-      m->cur = TAILQ_FIRST(&m->items);
-      m->offset=0;
-      draw_menu(m);
-      return;
-   }
-
-   /* Blank space at bottom of screen, but more 
-    * items to show. */
-   if (m->selected - m->offset < m->height-3) {
-      menu_scroll(m, SCROLL_BASE);
-   }
 }
 
 /* Add an item to the menu. */
