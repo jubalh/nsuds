@@ -27,7 +27,7 @@ extern int curx,cury;    /* Current (selected) grid coords */
 
 extern void movec(int dir);
 extern void movec_mouse(int x, int y);
-extern void gaddch(char ch);
+extern void gsetcur(char ch);
 extern int grid_filled(void);
 extern void draw_grid_contents(void);
 

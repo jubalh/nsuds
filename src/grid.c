@@ -24,13 +24,12 @@
 #else 
    #include <curses.h>
 #endif
+
 #if STDC_HEADERS || HAVE_STRING_H
    #include <string.h>
 #else /* Old system with only <strings.h> */
    #include <strings.h>
 #endif
-#include <stdlib.h>
-#include <time.h>
 
 #include "nsuds.h"
 #include "gen.h"
@@ -117,13 +116,14 @@ void movec_mouse(int x, int y)
 }
 
 
-/* Add a mutable char to the current grid location */
-void gaddch(char ch)
+/* Fill in the current grid location */
+void gsetcur(char ch)
 {
    /* If char is immutable, do nothing */
    if (grid_data[cury][curx]<0) return;
+
    gmove(cury,curx);
-   grid_data[cury][curx]= ch-'0';
+   grid_data[cury][curx] = ch;
    draw_grid();
 
    /* Check if compelted */
@@ -154,7 +154,7 @@ static bool grid_valid(void)
       /* Check if a number was found more than once per
        * row/col */
       for (j=0; j<9; j++) {
-         if (colf[j] > 1|| rowf[j] > 1) return 0;
+         if (colf[j] > 1 || rowf[j] > 1) return 0;
       }
    }
 
@@ -162,7 +162,6 @@ static bool grid_valid(void)
    for (i=0; i<9; i+=3) {
       for (j=0; j<9; j+=3) {
          memset(&rowf, 0, 9);
-         memset(&colf, 0, 9);
          
          /* Check #'s within each segment */
          for (k=0;k<3;k++) {
@@ -190,117 +189,82 @@ int grid_filled(void)
    return ret;
 }
 
-/* Draw the contents of the grid, which includes handling the highlighting of
- * selected marks, as well as color. */
+
+/* Attributes for nubmer we're highlighting */
+static attr_t show_attr(int mark, int uline)
+{
+   int attr=0;
+
+   if (uline) attr |= A_UNDERLINE;
+   if (!use_colors) {
+      attr |= A_REVERSE;
+   } else {
+      switch (mark) {
+         case 1:
+            attr |= COLOR_PAIR(C_MARKS1);
+            break;
+         case 2:
+            attr |= COLOR_PAIR(C_MARKS2);
+            break;
+         case 3:
+            attr |= COLOR_PAIR(C_MARKS3);
+            break;
+      }
+   }
+   return attr;
+}
+
+/* Attribute for a regular number, user inputted or a default */
+static attr_t user_attr(int user)
+{
+   return (user > 0 && use_colors ? COLOR_PAIR(C_INPUT) : 0);
+}
+
+/* Draw the contents of the grid, including mark highlighting (if set) */
 void draw_grid_contents(void)
 {
-   int i, j;
+   int i, j, k;
 
-   /* Check if paused */
    if (paused) return;
 
-   /* Draw grid contents */
+   /* For each square */
    for (i=0; i<9; i++) {
       for (j=0; j<9; j++) {
+         /* Move to the square */
          gmovel(i, j);
 
-         /* If we're showing marks in the first space */
-         if (showmarks[0]) {
-            /* If grid is filled in, and equals showmarks[0] */
-            if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[0]) {
-               if (use_colors) {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') 
-                     | COLOR_PAIR(C_MARKS1) | A_UNDERLINE);
-               } else {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') 
-                     | A_REVERSE | A_UNDERLINE);
-               }
-            /* If grid is empty, but mark showmarks[0] is set */
-            } else if (!grid_data[i][j] && marks[i][j][showmarks[0]]) {
-               if (use_colors) {
-                  waddch(grid, (showmarks[0] + '0') | COLOR_PAIR(C_MARKS1));
-               } else {
-                  waddch(grid, (showmarks[0] + '0') | A_REVERSE);
-               }
-            /* Otherwise print a blank space */
-            } else waddch(grid, ' ');
-         } else waddch(grid, ' ');
-
-
-         /* If we're showing a mark in the second space */
-         if (showmarks[1]) {
-            /* If grid is filled in and equals showmarks[1] */
-            if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[1]) {
-               if (use_colors) {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') 
-                     | COLOR_PAIR(C_MARKS2) | A_UNDERLINE);
-               } else {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') 
-                     | A_REVERSE | A_UNDERLINE);
-               }
-            /* Grid is filled, but isn't a mark. Just show the value,
-             * unless it's shown in the first or third spaces */
-            } else if (grid_data[i][j] && (!showmarks[0] || 
-                 (abs(grid_data[i][j]) != showmarks[0] 
-                   && abs(grid_data[i][j]) != showmarks[2]))) {
-               /* Square value was input by user, show in cyan */
-               if (grid_data[i][j] > 0 && has_colors()) {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') 
-                     | COLOR_PAIR(C_INPUT));
-               /* Square value is part of the generated puzzle */
-               } else {
-                  waddch(grid, abs(grid_data[i][j]) + '0');
-               }
-            /* If grid is empty, but mark showmarks[1] is set */
-            } else if (!grid_data[i][j] && marks[i][j][showmarks[1]]) {
-               if (use_colors) {
-                  waddch(grid, (showmarks[1] + '0') | COLOR_PAIR(C_MARKS2));
-               } else {
-                  waddch(grid, (showmarks[1] + '0') | A_REVERSE);
-               }
-              /* If we're only showing one set of marks, output a question
-               * mark beside them */
-               if (!showmarks[0]) waddch(grid, '?');
-               /* Otherwise print a blank space */
-               } else waddch(grid, ' ');
-         /* If we're not showing marks, show contents of the square, if any */
-         } else if (!showmarks[0]) {
+         /* If we're not highlighting any marks */
+         if (!showmarks[1]) {
             if (grid_data[i][j]) {
-               /* Square value was input by user, show in cyan */
-               if (grid_data[i][j] > 0 && has_colors()) {
-                  waddch(grid, (abs(grid_data[i][j]) + '0') 
-                     | COLOR_PAIR(C_INPUT));
-                  /* Square value is part of the generated puzzle */
-               } else {
-                  waddch(grid, abs(grid_data[i][j]) + '0');
-               }
-               /* Square is empty */
-            } else waddch(grid, ' ');
-         }
+               /* Square is filled, show */
+               waddch(grid, ' ');
+               waddch(grid, (abs(grid_data[i][j]) + '0') | user_attr(grid_data[i][j]));
+            }
+         /* If we're highlighting something */
+         } else {
+            int output=0; /* Have we output a number? */
 
-         
-         /* If we're showing marks in the third space */
-         if (showmarks[2]) {
-            /* If grid is filled in, and equals showmarks[2] */
-            if (grid_data[i][j] && abs(grid_data[i][j]) == showmarks[2]) {
-                  if (use_colors) {
-                     waddch(grid, (abs(grid_data[i][j]) + '0') 
-                        | COLOR_PAIR(C_MARKS3) | A_UNDERLINE);
-                  } else {
-                     waddch(grid, (abs(grid_data[i][j]) + '0') 
-                        | A_REVERSE | A_UNDERLINE);
-                  }
-            /* If grid is empty, but mark showmarks[2] is set */
-            } else if (!grid_data[i][j] && marks[i][j][showmarks[2]]) {
-               if (use_colors) {
-                  waddch(grid, (showmarks[2] + '0') | COLOR_PAIR(C_MARKS3));
-               } else {
-                  waddch(grid, (showmarks[2] + '0') | A_REVERSE);
-               }
-            /* Otherwise print nothing */
+            /* For each of the 3 positions */
+            for (k=0; k <= 2; k++) {
+               if (showmarks[k]) {
+                  /* Square is filled with a number to be highlighted */
+                  if (abs(grid_data[i][j]) == showmarks[k]) {
+                     output=1;
+                     waddch(grid, (abs(grid_data[i][j]) + '0') | show_attr(k+1,1));
+                  /* Square is empty, but a mark is set */
+                  } else if (!grid_data[i][j] && marks[i][j][showmarks[k]]) {
+                     output=1;
+                     waddch(grid, (showmarks[k] + '0') | show_attr(k+1,0));
+                  } else waddch(grid, ' ');
+               } else waddch(grid, ' ');
+            } 
+
+            /* Grid is filled, but it isn't anything we're highlighting */
+            if (grid_data[i][j]  && !output) {
+                  gmove(i,j);
+                  waddch(grid, (abs(grid_data[i][j]) + '0') | user_attr(grid_data[i][j]));
             }
          }
-
       }
    }
 

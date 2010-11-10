@@ -611,7 +611,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             break;
          case 'x':
          case KEY_DC:
-            gaddch('0');
+            gsetcur(0);
             draw_grid();
             draw_stats();
             doupdate();
@@ -675,7 +675,7 @@ Send bug reports to <" PACKAGE_BUGREPORT ">\n",
             /* Handle number input */
             if (c>='1' && c<='9') {
                if (!paused) {
-                  gaddch(c);
+                  gsetcur(c-'0');
                   draw_stats();
                   doupdate();
                   movec(CUR);
