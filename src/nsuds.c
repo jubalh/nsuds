@@ -132,16 +132,12 @@ static void init_signals(void)
    /* Restart interrupted system calls */
    new.sa_flags |= SA_RESTART;
 #endif
-   if (sigaction(SIGINT, &new, NULL) < 0)
-      err(errno, "Can't set up signal handler!");
-   if (sigaction(SIGTERM, &new, NULL) < 0)
-      err(errno, "Can't set up signal handler!");
-   if (sigaction(SIGQUIT, &new, NULL) < 0)
-      err(errno, "Can't set up signal handler!");
-   if (sigaction(SIGILL, &new, NULL) < 0)
-      err(errno, "Can't set up signal handler!");
-   if (sigaction(SIGSEGV, &new, NULL) < 0)
-      err(errno, "Can't set up signal handler!");
+   if (sigaction(SIGINT, &new, NULL) < 0  ||
+       sigaction(SIGTERM, &new, NULL) < 0 || 
+       sigaction(SIGQUIT, &new, NULL) < 0 || 
+       sigaction(SIGILL, &new, NULL) < 0  || 
+       sigaction(SIGSEGV, &new, NULL) < 0)
+     err(errno, "Can't set up signal handlers!");
 }
 
 
@@ -162,8 +158,7 @@ void catch_signal(int sig)
       case SIGSEGV:
          /* Die nicely from a fatal error */
          endwin();
-         errx(errno, "Segmentation fault!");
-         exit(EXIT_FAILURE);
+         errx(EXIT_FAILURE, "Segmentation fault!");
       case SIGQUIT:
       case SIGTERM:
          /* Exit nicely from a kill */
@@ -226,11 +221,11 @@ void draw_stats(void)
 
    left = 1;
    box(stats, 0, 0);
-   mvwprintw(stats, 1, 1, "Mode: Free play");
-   mvwprintw(stats, 2, 1, "Level: %d/30", level);
-   mvwprintw(stats, 4, 1, "Difficulty: %s", difficulties[difficulty-1]);
-   mvwprintw(stats, 5, 1, "Numbers:    %2d/81", grid_filled());
-   mvwprintw(stats, 6 ,1, "Remaining:  %2d left", 81-grid_filled());
+   mvwprintw(stats, 1, 1, "Level:      %d/30", level);
+   mvwprintw(stats, 2, 1, "Difficulty: %s", difficulties[difficulty-1]);
+   mvwprintw(stats, 4, 1, "Numbers:    %2d/81", grid_filled());
+   mvwprintw(stats, 5 ,1, "Remaining:  %2d left", 81-grid_filled());
+   mvwprintw(stats, 6 ,1, "Percent:    %-2.1f%%", ((double)grid_filled()/81)*100);
    mvwprintw(stats, 8,1, "Time Taken: %dm %2ds", ltime.mins, ltime.secs);
    mvwprintw(stats, 9,1, "Game total: %dh %2dm", gtime.hours, gtime.mins);
    mvwhline(stats, 10, 1, ACS_HLINE, 23);
@@ -247,17 +242,19 @@ void draw_intro(void)
    wattrset(intro, COLOR_PAIR(C_KEY));	
    mvwaddstr(intro, 1, 1, "Press '?' at any time for help");
    wattrset(intro, 0);	
-   mvwaddstr(intro, 3, 1, "Nsuds creates valid single solution");
-   mvwaddstr(intro, 4, 1, "puzzles of varying difficulties.The");
-   mvwaddstr(intro, 5, 1, "difficulty level affects the number");
-   mvwaddstr(intro, 6, 1, "of filled in squares you start with");
-   mvwaddstr(intro, 7, 1, "as well as the amount of time you");
-   mvwaddstr(intro, 8, 1, "have to complete each level.");
-   mvwaddstr(intro, 10, 1, "  - 30 levels in total.");
-   mvwaddstr(intro, 11, 1, "  - Full pencil-marking support.");
-   mvwaddstr(intro, 12, 1, "  - 100% Free software");
-   mvwaddstr(intro, 13, 1, "  - Press 'H' to view high scores");
-   mvwaddstr(intro, 17, 1, "By Vincent Launchbury et. al. ");
+
+   mvwaddstr(intro, 3, 1, "Nsuds is a curses sudoku game that");
+   mvwaddstr(intro, 4, 1, "generates single-solution puzzles ");
+   mvwaddstr(intro, 5, 1, "of varying difficulties. It was");
+   mvwaddstr(intro, 6, 1, "designed to be small, portable and");
+   mvwaddstr(intro, 7, 1, "efficient, with few depedencies.");
+   mvwaddstr(intro, 9, 1, "Currently in beta, nsuds features:");
+   mvwaddstr(intro, 10, 1, " - Multiple levels");
+   mvwaddstr(intro, 11, 1, " - Varying difficulties");
+   mvwaddstr(intro, 12, 1, " - Full pencil-marking support");
+   mvwaddstr(intro, 13, 1, " - 100% Free software");
+   mvwaddstr(intro, 14, 1, " - Press 'H' to view high scores");
+   mvwaddstr(intro, 17, 1, "   By Vincent Launchbury et. al. ");
 
    wnoutrefresh(intro);
 }
@@ -300,7 +297,7 @@ static void draw_fbar(void)
    waddstr(fbar, "Add:");
    waddhlstr(fbar, "1-9");
 
-   /* DEL/C remove number */
+   /* DEL/X remove number */
    waddstr(fbar, " Del:");
    waddhlstr(fbar, "DEL/x");
 
