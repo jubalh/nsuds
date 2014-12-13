@@ -170,9 +170,7 @@ void catch_signal(int sig)
 void draw_grid(void)
 {
    int i, j;
-   int left;
 
-   left = 28;
    werase(grid);
 
    box(grid, 0, 0);
@@ -215,10 +213,8 @@ void draw_grid(void)
 
 void draw_stats(void)
 {
-   int left;
    werase(stats);
 
-   left = 1;
    box(stats, 0, 0);
    mvwprintw(stats, 1, 1, "Level:      %d/30", level);
    mvwprintw(stats, 2, 1, "Difficulty: %s", difficulties[difficulty-1]);
