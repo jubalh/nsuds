@@ -341,6 +341,8 @@ int getkey(void)
             return c;
       }
    }
+   //for compilers sake
+   return c;
 }
 
 
